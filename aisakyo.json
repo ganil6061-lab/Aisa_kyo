@@ -1,122 +1,42 @@
 [
-  {
-    "name": "Anil Gupta",
-    "description": "Android Studio aur Java programming seekh rahe hain."
-  },
-  {
-    "name": "Rahul Sharma",
-    "description": "Java programming aur RecyclerView par practice kar rahe hain."
-  },
-  {
-    "name": "Priya Verma",
-    "description": "Android app development aur XML layouts seekh rahi hain."
-  },
-  {
-    "name": "Amit Patel",
-    "description": "JSON aur API ke saath kaam karna seekh rahe hain."
-  },
-  {
-    "name": "Neha Singh",
-    "description": "Java mein object oriented programming ki practice kar rahi hain."
-  },
-  {
-    "name": "Rohit Yadav",
-    "description": "Android applications banane aur testing karne mein interested hain."
-  },
-  {
-    "name": "Pooja Mishra",
-    "description": "Android Studio mein user interface design karna seekh rahi hain."
-  },
-  {
-    "name": "Vikas Tiwari",
-    "description": "Java classes aur objects ko samajhne ki practice kar rahe hain."
-  },
-  {
-    "name": "Sneha Jain",
-    "description": "Mobile application development ke basics seekh rahi hain."
-  },
-  {
-    "name": "Deepak Sharma",
-    "description": "RecyclerView aur Adapter ke concepts par practice kar rahe hain."
-  },
-  {
-    "name": "Kavita Patel",
-    "description": "Android XML aur different UI components ke baare mein seekh rahi hain."
-  },
-  {
-    "name": "Suresh Kumar",
-    "description": "Java mein ArrayList aur data handling ki practice kar rahe hain."
-  },
-  {
-    "name": "Riya Gupta",
-    "description": "JSON data ko Android application mein display karna seekh rahi hain."
-  },
-  {
-    "name": "Manish Verma",
-    "description": "Android apps mein API se data fetch karne ki practice kar rahe hain."
-  },
-  {
-    "name": "Komal Sharma",
-    "description": "Android Studio mein simple educational application bana rahi hain."
-  },
-  {
-    "name": "Ajay Singh",
-    "description": "Java methods aur arguments ko detail mein samajh rahe hain."
-  },
-  {
-    "name": "Nisha Yadav",
-    "description": "Android buttons aur click events ke saath practice kar rahi hain."
-  },
-  {
-    "name": "Rakesh Patel",
-    "description": "WebView aur JavaScript integration ke baare mein seekh rahe hain."
-  },
-  {
-    "name": "Simran Verma",
-    "description": "Android application mein external JSON file use karna seekh rahi hain."
-  },
-  {
-    "name": "Mohit Gupta",
-    "description": "Java programming ke basic concepts ko revise kar rahe hain."
-  },
-  {
-    "name": "Aarti Sharma",
-    "description": "RecyclerView mein multiple student records display kar rahi hain."
-  },
-  {
-    "name": "Karan Singh",
-    "description": "Android application ke liye custom Adapter banana seekh rahe hain."
-  },
-  {
-    "name": "Muskan Jain",
-    "description": "Java mein inheritance aur polymorphism ke concepts seekh rahi hain."
-  },
-  {
-    "name": "Naveen Kumar",
-    "description": "Android Studio mein different types ke layouts par practice kar rahe hain."
-  },
-  {
-    "name": "Shivani Patel",
-    "description": "JSON objects aur arrays ko samajhne ki practice kar rahi hain."
-  },
-  {
-    "name": "Gaurav Mishra",
-    "description": "Android applications mein internet se data load karna seekh rahe hain."
-  },
-  {
-    "name": "Pallavi Singh",
-    "description": "Java mein variables, methods aur classes par practice kar rahi hain."
-  },
-  {
-    "name": "Arjun Yadav",
-    "description": "Android Studio mein beginner level applications bana rahe hain."
-  },
-  {
-    "name": "Divya Sharma",
-    "description": "RecyclerView ke saath CardView use karna seekh rahi hain."
-  },
-  {
-    "name": "Ravi Gupta",
-    "description": "Android app mein JSON data ko parse karke display karna seekh rahe hain."
-  }
+{
+"name": "तारे क्यों चमकते हैं? जानिए आसमान की चमकती रोशनी का विज्ञान",
+"description": "तारे अपने अंदर लगातार होने वाली न्यूक्लियर फ्यूजन प्रक्रिया के कारण रोशनी और ऊर्जा पैदा करते हैं। इस प्रक्रिया में हाइड्रोजन परमाणु मिलकर हीलियम बनाते हैं और भारी मात्रा में प्रकाश उत्पन्न होता है। यही प्रकाश हमें रात के आसमान में चमकते तारों के रूप में दिखाई देता है।"
+},
+{
+"name": "तारों का रंग अलग-अलग क्यों होता है? जानिए तापमान का रहस्य",
+"description": "तारे का रंग उसके तापमान पर निर्भर करता है। नीले तारे सबसे अधिक गर्म होते हैं, उसके बाद सफेद, पीले, नारंगी और लाल तारे आते हैं। हमारा सूर्य एक पीला तारा है, जिसका तापमान लगभग 5,500 डिग्री सेल्सियस है। यही कारण है कि अलग-अलग तारे अलग-अलग रंगों में चमकते दिखाई देते हैं।"
+},
+{
+"name": "तारे टिमटिमाते क्यों दिखाई देते हैं? जानिए वायुमंडल की भूमिका",
+"description": "तारों का प्रकाश जब पृथ्वी के वायुमंडल से होकर गुजरता है, तो हवा की परतों, तापमान के बदलाव और वायुमंडलीय अशांति के कारण यह मुड़ता और बिखरता है। इसी कारण हमें तारे टिमटिमाते हुए दिखाई देते हैं। ध्यान देने वाली बात यह है कि अंतरिक्ष में तारे टिमटिमाते नहीं हैं।"
+},
+{
+"name": "सूर्य भी एक तारा है — जानिए हमारे सबसे नजदीकी तारे के बारे में",
+"description": "हमारा सूर्य भी एक तारा है, जो पृथ्वी से लगभग 15 करोड़ किलोमीटर दूर है। यह अपने अंदर न्यूक्लियर फ्यूजन की प्रक्रिया से लगातार ऊर्जा पैदा करता है और पृथ्वी पर जीवन के लिए आवश्यक प्रकाश और गर्मी प्रदान करता है। सूर्य के बिना पृथ्वी पर जीवन संभव नहीं है।"
+},
+{
+"name": "तारे कितने बड़े होते हैं? जानिए ब्रह्मांड के विशाल तारों के आकार",
+"description": "ब्रह्मांड में कुछ तारे सूर्य से छोटे होते हैं, तो कुछ सूर्य से सैकड़ों गुना बड़े भी होते हैं। सबसे बड़े तारों को सुपरजायंट कहा जाता है, जिनका आकार सूर्य से 1,000 गुना तक हो सकता है। वहीं न्यूट्रॉन स्टार जैसे छोटे तारे केवल कुछ किलोमीटर व्यास के होते हैं।"
+},
+{
+"name": "तारों की आयु कितनी होती है? जानिए तारों के जीवनकाल का रहस्य",
+"description": "तारों की आयु उनके आकार पर निर्भर करती है। छोटे तारे अरबों वर्षों तक जीवित रहते हैं, जबकि बड़े तारे अपने अधिक ईंधन की खपत के कारण कम समय में समाप्त हो जाते हैं। हमारे सूर्य की आयु लगभग 10 अरब वर्ष है, जिसमें से यह लगभग 4.6 अरब वर्ष पूरे कर चुका है।"
+},
+{
+"name": "तारे कैसे बनते हैं? जानिए तारों के जन्म की प्रक्रिया",
+"description": "तारों का जन्म गैस और धूल के विशाल बादलों से होता है, जिन्हें नेबुला कहा जाता है। गुरुत्वाकर्षण के कारण ये बादल सिकुड़ने लगते हैं और उनका तापमान बढ़ता जाता है। जब तापमान और दबाव बहुत अधिक हो जाता है, तो न्यूक्लियर फ्यूजन शुरू होता है और एक नया तारा जन्म लेता है।"
+},
+{
+"name": "तारों का अंत कैसे होता है? जानिए तारों की मृत्यु के रहस्य",
+"description": "तारे की मृत्यु उसके आकार पर निर्भर करती है। छोटे तारे धीरे-धीरे ठंडे होकर व्हाइट ड्वार्फ बन जाते हैं, मध्यम आकार के तारे न्यूट्रॉन स्टार में बदल जाते हैं, और सबसे बड़े तारे विस्फोट के बाद ब्लैक होल का रूप ले लेते हैं। यह प्रक्रिया लाखों-करोड़ों वर्षों में होती है।"
+},
+{
+"name": "तारे हमसे कितनी दूर हैं? जानिए ब्रह्मांड की विशाल दूरियों के बारे में",
+"description": "तारों की दूरियाँ प्रकाश वर्ष में मापी जाती हैं। हमारे सबसे नजदीकी तारा प्रॉक्सिमा सेंचुरी हमसे लगभग 4.24 प्रकाश वर्ष दूर है, यानी उसका प्रकाश हम तक पहुँचने में 4.24 वर्ष लगते हैं। कुछ तारे इतने दूर हैं कि उनका प्रकाश हम तक पहुँचने में लाखों वर्ष लग जाते हैं।"
+},
+{
+"name": "तारे और ग्रह में क्या अंतर है? जानिए दोनों में मूलभूत फर्क",
+"description": "तारे अपनी रोशनी खुद पैदा करते हैं, जबकि ग्रह किसी तारे की रोशनी को परावर्तित करते हैं। तारों का तापमान बहुत अधिक होता है और वे न्यूक्लियर फ्यूजन से ऊर्जा बनाते हैं, जबकि ग्रह ठंडे होते हैं और उनमें फ्यूजन प्रक्रिया नहीं होती। इसी कारण तारे रात में चमकते दिखाई देते हैं और ग्रह स्थिर प्रकाश के साथ दिखते हैं।"
+}
 ]

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memory Card Match Game</title>
+    <title>अकबर और बीरबल की कहानी - सबसे बड़ा मूर्ख</title>
     <style>
         * {
             margin: 0;
@@ -13,273 +13,186 @@
         }
 
         body {
-            background: linear-gradient(135deg, #1f4068, #162447);
+            background: linear-gradient(135deg, #2c3e50, #1a252f);
+            color: #ecf0f1;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .container {
-            text-align: center;
-            max-width: 400px;
+        .story-container {
+            background: #ffffff;
+            color: #2c3e50;
+            max-width: 700px;
             width: 100%;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            position: relative;
         }
 
-        h1 {
-            font-size: 26px;
-            margin-bottom: 5px;
-            color: #e43f5a;
+        .story-header {
+            text-align: center;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
         }
 
-        .stats {
+        .story-header h1 {
+            color: #8b0000;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .story-header p {
+            color: #7f8c8d;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        .story-body {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #34495e;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .story-body p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        /* Custom Scrollbar for Story Body */
+        .story-body::-webkit-scrollbar {
+            width: 6px;
+        }
+        .story-body::-webkit-scrollbar-thumb {
+            background: #bdc3c7;
+            border-radius: 10px;
+        }
+
+        .story-footer {
+            margin-top: 30px;
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
-            font-size: 16px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px 15px;
-            border-radius: 10px;
-        }
-
-        /* Game Grid */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            perspective: 1000px;
-            margin-bottom: 20px;
-        }
-
-        /* Card Styling */
-        .card {
-            aspect-ratio: 1;
-            background-color: #0f3460;
-            border-radius: 10px;
-            cursor: pointer;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.4s ease;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-
-        .card.flipped {
-            transform: rotateY(180deg);
-        }
-
-        .card-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            border-radius: 10px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
         }
 
-        .card-front {
-            background: #e43f5a;
-            color: white;
-        }
-
-        .card-back {
-            background: #ffffff;
-            transform: rotateY(180deg);
-        }
-
-        /* Restart Button */
-        .btn-restart {
-            background: #e43f5a;
+        .btn {
+            background: #8b0000;
             color: white;
             border: none;
-            padding: 12px 25px;
-            font-size: 16px;
+            padding: 10px 20px;
+            font-size: 14px;
             font-weight: bold;
             border-radius: 25px;
             cursor: pointer;
             transition: background 0.3s, transform 0.2s;
-            box-shadow: 0 4px 10px rgba(228, 63, 90, 0.4);
         }
 
-        .btn-restart:hover {
-            background: #d6304f;
+        .btn:hover {
+            background: #a30000;
             transform: scale(1.05);
         }
 
-        /* Win Modal Popup */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: #ffffff;
-            color: #333;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 320px;
-            width: 90%;
-            animation: popUp 0.3s ease;
-        }
-
-        .modal-content h2 {
-            color: #e43f5a;
-            margin-bottom: 10px;
-        }
-
-        .modal-content p {
-            margin-bottom: 20px;
-            font-size: 15px;
-            color: #666;
-        }
-
-        @keyframes popUp {
-            0% { transform: scale(0.7); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        .moral {
+            font-size: 14px;
+            color: #e67e22;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Memory Match</h1>
-        <div class="stats">
-            <span id="moves">Moves: 0</span>
-            <span id="timer">Time: 0s</span>
+    <div class="story-container">
+        <div class="story-header">
+            <h1>👑 अकबर और बीरबल: सबसे बड़ा मूर्ख</h1>
+            <p>एक मजेदार और सीख देने वाली ऐतिहासिक कथा</p>
         </div>
 
-        <div class="grid" id="gameGrid"></div>
+        <div class="story-body" id="storyContent">
+            <p>एक दिन की बात है, बादशाह अकबर अपने दरबार में बैठे थे और किसी गंभीर विषय पर विचार कर रहे थे। तभी उनके मन में एक अजीब सा विचार आया। उन्होंने अपने नवरत्नों में से एक बीरबल से कहा, "बीरबल, मुझे ऐसा लगता है कि हमारे इस विशाल राज्य में मूर्खों की कोई कमी नहीं है। लेकिन मैं यह देखना चाहता हूँ कि इस पूरे साम्राज्य में सबसे बड़ा मूर्ख कौन है।"</p>
+            
+            <p>बीरबल बादशाह की इस बात को अच्छी तरह समझ गए और मुस्कुराते हुए बोले, "जहाँपनाह, यह तो बहुत ही दिलचस्प और अनोखा काम है। मुझे एक महीने का समय दीजिए, मैं पूरे राज्य में घूमकर आपके लिए सबसे बड़े मूर्ख को ढूँढकर आपके सामने पेश कर दूंगा।" अकबर ने बीरबल को इसकी अनुमति दे दी।</p>
+            
+            <p>इसके बाद बीरबल रोज घोड़े पर सवार होकर राज्य की गलियों, बाजारों और गाँवों में घूमने लगे। वे लोगों के तौर-तरीके और उनकी हरकतें गौर से देखते थे। एक दिन वे शहर से दूर एक संकरे रास्ते से गुजर रहे थे, जहाँ खेतों के बीच एक रास्ता जाता था। वहाँ उन्होंने एक अजीब नज़ारा देखा।</p>
+            
+            <p>उन्होंने देखा कि एक व्यक्ति अपने सिर पर घास का एक भारी गट्ठर रखे हुए है और खुद एक घोड़े पर बैठा हुआ है। यह अजीब बात देखकर बीरबल को बहुत हैरानी हुई। उन्होंने अपना घोड़ा रोका और उस व्यक्ति के पास जाकर पूछा, "भाई, तुम घोड़े पर बैठे हो, फिर भी इस घास के गट्ठर को अपने सिर पर क्यों लाद रखा है? इसे घोड़े की पीठ पर या उसके साथ भी तो बाँधा जा सकता था।"</p>
+            
+            <p>उस व्यक्ति ने बड़े भोलेपन से जवाब दिया, "हुज़ूर, मेरा घोड़ा पहले से ही बूढ़ा और कमज़ोर है। अगर यह भारी गट्ठर भी उसकी पीठ पर लाद देता, तो बेचारा घोड़ा कैसे चल पाता? इसीलिए मैंने दया दिखाते हुए गट्ठर अपने सिर पर रख लिया ताकि घोड़े पर बोझ कम पड़े।"</p>
+            
+            <p>बीरबल ने जब यह मूर्खतापूर्ण जवाब सुना, तो वे समझ गए कि उन्हें उनका पहला नमूना मिल गया है। बीरबल ने मुस्कुराते हुए उससे कहा, "चलो, मेरे साथ बादशाह अकबर के दरबार में चलो। वे तुमसे मिलना चाहते हैं।"</p>
+            
+            <p>कुछ दिन बीतने के बाद, बीरबल एक और अजीब व्यक्ति को ढूँढकर लाए। वह व्यक्ति एक अंधेरे कमरे में दीया जलाने के बाद झाड़ू से कमरे का अंधेरा बाहर फेंकने की पूरी कोशिश कर रहा था! जब बीरबल ने उससे पूछा कि वह क्या कर रहा है, तो उसने गर्व से कहा कि वह कमरे से अंधेरा साफ कर रहा है। बीरबल ने उसे भी अपने साथ दरबार चलने के लिए कह दिया।</p>
+            
+            <p>एक महीने का समय पूरा होने पर बीरबल बादशाह अकबर के दरबार में हाजिर हुए। अकबर ने सिंहासन पर बैठते ही पूछा, "क्यों भाई बीरबल, मिला तुम्हें राज्य का सबसे बड़ा मूर्ख?"</p>
+            
+            <p>बीरबल ने उन दोनों आदमियों को दरबार में पेश किया और घास वाले तथा अंधेरा साफ करने वाले की पूरी कहानी विस्तार से सुनाई।</p>
+            
+            <p>अकबर ने उन दोनों को देखकर मुस्कुराया और बीरबल से पूछा, "चलो मान लिया कि ये दोनों अपनी हरकतों से बड़े मूर्ख हैं, लेकिन इनमें से भी सबसे बड़ा मूर्ख कौन है?"</p>
+            
+            <p>यह सुनकर बीरबल ने हाथ जोड़कर बड़े अदब से सिर झुकाया और कहा, "जहाँपनाह, इन दोनों में से सबसे बड़ा मूर्ख तो वह व्यक्ति है जो खुद एक समझदार, प्रतापी और ज्ञानी राजा होकर, राज्य के जरूरी और गंभीर कामों को छोड़कर, मुझ जैसे मंत्री को 'सबसे बड़े मूर्ख' को ढूँढने के इस फालतू काम पर भेज दिया और अपना पूरा एक महीना बर्बाद कर दिया!"</p>
+            
+            <p>यह बात सुनते ही अकबर पहले तो सन्न रह गए, लेकिन अगले ही पल बीरबल की इस हाजिरजवाबी और तीखे व्यंग्य पर वे जोरों से हंस पड़े। वे समझ गए कि बीरबल ने बिना किसी अपमान के कितनी खूबसूरती से उन्हें ही सबसे बड़ा मूर्ख साबित कर दिया था। अकबर ने खुश होकर बीरबल की चतुराई की जमकर तारीफ की और उन्हें कीमती उपहार दिए।</p>
+            <p>एक दिन की बात है, बादशाह अकबर अपने दरबार में बैठे थे और किसी गंभीर विषय पर विचार कर रहे थे। तभी उनके मन में एक अजीब सा विचार आया। उन्होंने अपने नवरत्नों में से एक बीरबल से कहा, "बीरबल, मुझे ऐसा लगता है कि हमारे इस विशाल राज्य में मूर्खों की कोई कमी नहीं है। लेकिन मैं यह देखना चाहता हूँ कि इस पूरे साम्राज्य में सबसे बड़ा मूर्ख कौन है।"</p>
+            
+            <p>बीरबल बादशाह की इस बात को अच्छी तरह समझ गए और मुस्कुराते हुए बोले, "जहाँपनाह, यह तो बहुत ही दिलचस्प और अनोखा काम है। मुझे एक महीने का समय दीजिए, मैं पूरे राज्य में घूमकर आपके लिए सबसे बड़े मूर्ख को ढूँढकर आपके सामने पेश कर दूंगा।" अकबर ने बीरबल को इसकी अनुमति दे दी।</p>
+            
+            <p>इसके बाद बीरबल रोज घोड़े पर सवार होकर राज्य की गलियों, बाजारों और गाँवों में घूमने लगे। वे लोगों के तौर-तरीके और उनकी हरकतें गौर से देखते थे। एक दिन वे शहर से दूर एक संकरे रास्ते से गुजर रहे थे, जहाँ खेतों के बीच एक रास्ता जाता था। वहाँ उन्होंने एक अजीब नज़ारा देखा।</p>
+            
+            <p>उन्होंने देखा कि एक व्यक्ति अपने सिर पर घास का एक भारी गट्ठर रखे हुए है और खुद एक घोड़े पर बैठा हुआ है। यह अजीब बात देखकर बीरबल को बहुत हैरानी हुई। उन्होंने अपना घोड़ा रोका और उस व्यक्ति के पास जाकर पूछा, "भाई, तुम घोड़े पर बैठे हो, फिर भी इस घास के गट्ठर को अपने सिर पर क्यों लाद रखा है? इसे घोड़े की पीठ पर या उसके साथ भी तो बाँधा जा सकता था।"</p>
+            
+            <p>उस व्यक्ति ने बड़े भोलेपन से जवाब दिया, "हुज़ूर, मेरा घोड़ा पहले से ही बूढ़ा और कमज़ोर है। अगर यह भारी गट्ठर भी उसकी पीठ पर लाद देता, तो बेचारा घोड़ा कैसे चल पाता? इसीलिए मैंने दया दिखाते हुए गट्ठर अपने सिर पर रख लिया ताकि घोड़े पर बोझ कम पड़े।"</p>
+            
+            <p>बीरबल ने जब यह मूर्खतापूर्ण जवाब सुना, तो वे समझ गए कि उन्हें उनका पहला नमूना मिल गया है। बीरबल ने मुस्कुराते हुए उससे कहा, "चलो, मेरे साथ बादशाह अकबर के दरबार में चलो। वे तुमसे मिलना चाहते हैं।"</p>
+            
+            <p>कुछ दिन बीतने के बाद, बीरबल एक और अजीब व्यक्ति को ढूँढकर लाए। वह व्यक्ति एक अंधेरे कमरे में दीया जलाने के बाद झाड़ू से कमरे का अंधेरा बाहर फेंकने की पूरी कोशिश कर रहा था! जब बीरबल ने उससे पूछा कि वह क्या कर रहा है, तो उसने गर्व से कहा कि वह कमरे से अंधेरा साफ कर रहा है। बीरबल ने उसे भी अपने साथ दरबार चलने के लिए कह दिया।</p>
+            
+            <p>एक महीने का समय पूरा होने पर बीरबल बादशाह अकबर के दरबार में हाजिर हुए। अकबर ने सिंहासन पर बैठते ही पूछा, "क्यों भाई बीरबल, मिला तुम्हें राज्य का सबसे बड़ा मूर्ख?"</p>
+            
+            <p>बीरबल ने उन दोनों आदमियों को दरबार में पेश किया और घास वाले तथा अंधेरा साफ करने वाले की पूरी कहानी विस्तार से सुनाई।</p>
+            
+            <p>अकबर ने उन दोनों को देखकर मुस्कुराया और बीरबल से पूछा, "चलो मान लिया कि ये दोनों अपनी हरकतों से बड़े मूर्ख हैं, लेकिन इनमें से भी सबसे बड़ा मूर्ख कौन है?"</p>
+            
+            <p>यह सुनकर बीरबल ने हाथ जोड़कर बड़े अदब से सिर झुकाया और कहा, "जहाँपनाह, इन दोनों में से सबसे बड़ा मूर्ख तो वह व्यक्ति है जो खुद एक समझदार, प्रतापी और ज्ञानी राजा होकर, राज्य के जरूरी और गंभीर कामों को छोड़कर, मुझ जैसे मंत्री को 'सबसे बड़े मूर्ख' को ढूँढने के इस फालतू काम पर भेज दिया और अपना पूरा एक महीना बर्बाद कर दिया!"</p>
+            
+            <p>यह बात सुनते ही अकबर पहले तो सन्न रह गए, लेकिन अगले ही पल बीरबल की इस हाजिरजवाबी और तीखे व्यंग्य पर वे जोरों से हंस पड़े। वे समझ गए कि बीरबल ने बिना किसी अपमान के कितनी खूबसूरती से उन्हें ही सबसे बड़ा मूर्ख साबित कर दिया था। अकबर ने खुश होकर बीरबल की चतुराई की जमकर तारीफ की और उन्हें कीमती उपहार दिए।</p>
+            <p>एक दिन की बात है, बादशाह अकबर अपने दरबार में बैठे थे और किसी गंभीर विषय पर विचार कर रहे थे। तभी उनके मन में एक अजीब सा विचार आया। उन्होंने अपने नवरत्नों में से एक बीरबल से कहा, "बीरबल, मुझे ऐसा लगता है कि हमारे इस विशाल राज्य में मूर्खों की कोई कमी नहीं है। लेकिन मैं यह देखना चाहता हूँ कि इस पूरे साम्राज्य में सबसे बड़ा मूर्ख कौन है।"</p>
+            
+            <p>बीरबल बादशाह की इस बात को अच्छी तरह समझ गए और मुस्कुराते हुए बोले, "जहाँपनाह, यह तो बहुत ही दिलचस्प और अनोखा काम है। मुझे एक महीने का समय दीजिए, मैं पूरे राज्य में घूमकर आपके लिए सबसे बड़े मूर्ख को ढूँढकर आपके सामने पेश कर दूंगा।" अकबर ने बीरबल को इसकी अनुमति दे दी।</p>
+            
+            <p>इसके बाद बीरबल रोज घोड़े पर सवार होकर राज्य की गलियों, बाजारों और गाँवों में घूमने लगे। वे लोगों के तौर-तरीके और उनकी हरकतें गौर से देखते थे। एक दिन वे शहर से दूर एक संकरे रास्ते से गुजर रहे थे, जहाँ खेतों के बीच एक रास्ता जाता था। वहाँ उन्होंने एक अजीब नज़ारा देखा।</p>
+            
+            <p>उन्होंने देखा कि एक व्यक्ति अपने सिर पर घास का एक भारी गट्ठर रखे हुए है और खुद एक घोड़े पर बैठा हुआ है। यह अजीब बात देखकर बीरबल को बहुत हैरानी हुई। उन्होंने अपना घोड़ा रोका और उस व्यक्ति के पास जाकर पूछा, "भाई, तुम घोड़े पर बैठे हो, फिर भी इस घास के गट्ठर को अपने सिर पर क्यों लाद रखा है? इसे घोड़े की पीठ पर या उसके साथ भी तो बाँधा जा सकता था।"</p>
+            
+            <p>उस व्यक्ति ने बड़े भोलेपन से जवाब दिया, "हुज़ूर, मेरा घोड़ा पहले से ही बूढ़ा और कमज़ोर है। अगर यह भारी गट्ठर भी उसकी पीठ पर लाद देता, तो बेचारा घोड़ा कैसे चल पाता? इसीलिए मैंने दया दिखाते हुए गट्ठर अपने सिर पर रख लिया ताकि घोड़े पर बोझ कम पड़े।"</p>
+            
+            <p>बीरबल ने जब यह मूर्खतापूर्ण जवाब सुना, तो वे समझ गए कि उन्हें उनका पहला नमूना मिल गया है। बीरबल ने मुस्कुराते हुए उससे कहा, "चलो, मेरे साथ बादशाह अकबर के दरबार में चलो। वे तुमसे मिलना चाहते हैं।"</p>
+            
+            <p>कुछ दिन बीतने के बाद, बीरबल एक और अजीब व्यक्ति को ढूँढकर लाए। वह व्यक्ति एक अंधेरे कमरे में दीया जलाने के बाद झाड़ू से कमरे का अंधेरा बाहर फेंकने की पूरी कोशिश कर रहा था! जब बीरबल ने उससे पूछा कि वह क्या कर रहा है, तो उसने गर्व से कहा कि वह कमरे से अंधेरा साफ कर रहा है। बीरबल ने उसे भी अपने साथ दरबार चलने के लिए कह दिया।</p>
+            
+            <p>एक महीने का समय पूरा होने पर बीरबल बादशाह अकबर के दरबार में हाजिर हुए। अकबर ने सिंहासन पर बैठते ही पूछा, "क्यों भाई बीरबल, मिला तुम्हें राज्य का सबसे बड़ा मूर्ख?"</p>
+            
+            <p>बीरबल ने उन दोनों आदमियों को दरबार में पेश किया और घास वाले तथा अंधेरा साफ करने वाले की पूरी कहानी विस्तार से सुनाई।</p>
+            
+            <p>अकबर ने उन दोनों को देखकर मुस्कुराया और बीरबल से पूछा, "चलो मान लिया कि ये दोनों अपनी हरकतों से बड़े मूर्ख हैं, लेकिन इनमें से भी सबसे बड़ा मूर्ख कौन है?"</p>
+            
+            <p>यह सुनकर बीरबल ने हाथ जोड़कर बड़े अदब से सिर झुकाया और कहा, "जहाँपनाह, इन दोनों में से सबसे बड़ा मूर्ख तो वह व्यक्ति है जो खुद एक समझदार, प्रतापी और ज्ञानी राजा होकर, राज्य के जरूरी और गंभीर कामों को छोड़कर, मुझ जैसे मंत्री को 'सबसे बड़े मूर्ख' को ढूँढने के इस फालतू काम पर भेज दिया और अपना पूरा एक महीना बर्बाद कर दिया!"</p>
+            
+            <p>यह बात सुनते ही अकबर पहले तो सन्न रह गए, लेकिन अगले ही पल बीरबल की इस हाजिरजवाबी और तीखे व्यंग्य पर वे जोरों से हंस पड़े। वे समझ गए कि बीरबल ने बिना किसी अपमान के कितनी खूबसूरती से उन्हें ही सबसे बड़ा मूर्ख साबित कर दिया था। अकबर ने खुश होकर बीरबल की चतुराई की जमकर तारीफ की और उन्हें कीमती उपहार दिए।</p>
+        </div>
 
-        <button class="btn-restart" onclick="startGame()">Restart Game</button>
-    </div>
-
-    <!-- Win Modal -->
-    <div class="modal" id="winModal">
-        <div class="modal-content">
-            <h2>You Won! 🎉</h2>
-            <p id="finalStats">Aapne 0 moves me game jeet liya.</p>
-            <button class="btn-restart" onclick="startGame()">Play Again</button>
+        <div class="story-footer">
+            <span class="moral">शिक्षा: बिना सोचे-समझे दूसरों के कामों में उलझना भी मूर्खता है।</span>
+            <button class="btn" onclick="alert('अकबर-बीरबल की यह कहानी आपको कैसी लगी?')">पसंद आई?</button>
         </div>
     </div>
 
-    <script>
-        const emojis = ['🍎', '🍌', '🍇', '🍉', '🍓', '🍒', '🍍', '🥝'];
-        let cards = [];
-        let flippedCards = [];
-        let matchedPairs = 0;
-        let moves = 0;
-        let timer = 0;
-        let timerInterval = null;
-        let isPlaying = false;
-
-        const grid = document.getElementById('gameGrid');
-        const movesDisplay = document.getElementById('moves');
-        const timerDisplay = document.getElementById('timer');
-        const winModal = document.getElementById('winModal');
-        const finalStats = document.getElementById('finalStats');
-
-        function startGame() {
-            // Reset variables
-            grid.innerHTML = '';
-            flippedCards = [];
-            matchedPairs = 0;
-            moves = 0;
-            timer = 0;
-            isPlaying = false;
-            movesDisplay.innerText = `Moves: ${moves}`;
-            timerDisplay.innerText = `Time: 0s`;
-            winModal.style.display = 'none';
-            clearInterval(timerInterval);
-
-            // Duplicate emojis for pairs and shuffle
-            cards = [...emojis, ...emojis]
-                .sort(() => Math.random() - 0.5)
-                .map((emoji, index) => ({ id: index, emoji, isFlipped: false, isMatched: false }));
-
-            // Render cards
-            cards.forEach(card => {
-                const cardElement = document.createElement('div');
-                cardElement.classList.add('card');
-                cardElement.dataset.id = card.id;
-
-                cardElement.innerHTML = `
-                    <div class="card-face card-front">❓</div>
-                    <div class="card-face card-back">${card.emoji}</div>
-                `;
-
-                cardElement.addEventListener('click', () => flipCard(card.id, cardElement));
-                grid.appendChild(cardElement);
-            });
-        }
-
-        function flipCard(id, element) {
-            if (!isPlaying) {
-                isPlaying = true;
-                startTimer();
-            }
-
-            const clickedCard = cards.find(c => c.id === id);
-
-            if (clickedCard.isFlipped || clickedCard.isMatched || flippedCards.length >= 2) return;
-
-            clickedCard.isFlipped = true;
-            element.classList.add('flipped');
-            flippedCards.push({ id, emoji: clickedCard.emoji, element });
-
-            if (flippedCards.length === 2) {
-                moves++;
-                movesDisplay.innerText = `Moves: ${moves}`;
-                checkMatch();
-            }
-        }
-
-        function checkMatch() {
-            const [card1, card2] = flippedCards;
-
-            if (card1.emoji === card2.emoji) {
-                cards.find(c => c.id === card1.id).isMatched = true;
-                cards.find(c => c.id === card2.id).isMatched = true;
-                flippedCards = [];
-                matchedPairs++;
-
-                if (matchedPairs === emojis.length) {
-                    clearInterval(timerInterval);
-                    finalStats.innerText = `Aapne ${moves} moves aur ${timer} seconds me game complete kiya!`;
-                    winModal.style.display = 'flex';
-                }
-            } else {
-                setTimeout(() => {
-                    cards.find(c => c.id === card1.id).isFlipped = false;
-                    cards.find(c => c.id === card2.id).isFlipped = false;
-                    card1.element.classList.remove('flipped');
-                    card2.element.classList.remove('flipped');
-                    flippedCards = [];
-                }, 700);
-            }
-        }
-
-        function startTimer() {
-            timerInterval = setInterval(() => {
-                timer++;
-                timerDisplay.innerText = `Time: ${timer}s`;
-            }, 1000);
-        }
-
-        // Initialize game on load
-        startGame();
-    </script>
 </body>
 </html>

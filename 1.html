@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Profile Card</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Main Card Container */
+        .card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 380px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Card Header / Banner */
+        .card-header {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            padding: 40px 20px 20px;
+            position: relative;
+        }
+
+        /* Profile Image */
+        .profile-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid #ffffff;
+            object-fit: cover;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        /* Card Body Content */
+        .card-body {
+            padding: 30px 20px;
+        }
+
+        .card-body h2 {
+            color: #333333;
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+
+        .card-body .tagline {
+            color: #667eea;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-body p {
+            color: #666666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* Action Buttons */
+        .btn-container {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 10px 22px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fe6;
+            transform: scale(1.05);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-outline:hover {
+            background: #f0f4ff;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="card-header">
+            <!-- Aap yahan apni koi bhi image ka URL ya asset de sakte hain -->
+            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80" alt="Profile" class="profile-img">
+        </div>
+        <div class="card-body">
+            <h2>Rahul Kumar</h2>
+            <div class="tagline">Android & Web Developer</div>
+            <p>Ye ek modern responsive HTML/CSS design hai. Ise aap apne web pages, landing pages ya Android WebView me asani se use kar sakte hain.</p>
+            <div class="btn-container">
+                <button class="btn btn-primary">Connect</button>
+                <button class="btn btn-outline">Message</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

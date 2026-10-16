@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Profile Card</title>
+    <title>Memory Card Match Game</title>
     <style>
-        /* Global Styles */
         * {
             margin: 0;
             padding: 0;
@@ -14,131 +13,273 @@
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1f4068, #162447);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
+            color: #fff;
             padding: 20px;
         }
 
-        /* Main Card Container */
-        .card {
-            background: #ffffff;
-            width: 100%;
-            max-width: 380px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
+        .container {
             text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            max-width: 400px;
+            width: 100%;
         }
 
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        h1 {
+            font-size: 26px;
+            margin-bottom: 5px;
+            color: #e43f5a;
         }
 
-        /* Card Header / Banner */
-        .card-header {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
-            padding: 40px 20px 20px;
-            position: relative;
-        }
-
-        /* Profile Image */
-        .profile-img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 4px solid #ffffff;
-            object-fit: cover;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-        }
-
-        /* Card Body Content */
-        .card-body {
-            padding: 30px 20px;
-        }
-
-        .card-body h2 {
-            color: #333333;
-            margin-bottom: 8px;
-            font-size: 24px;
-        }
-
-        .card-body .tagline {
-            color: #667eea;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .card-body p {
-            color: #666666;
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        /* Action Buttons */
-        .btn-container {
+        .stats {
             display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 10px;
+        }
+
+        /* Game Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 12px;
-            justify-content: center;
+            perspective: 1000px;
+            margin-bottom: 20px;
         }
 
-        .btn {
-            padding: 10px 22px;
-            border: none;
-            border-radius: 30px;
+        /* Card Styling */
+        .card {
+            aspect-ratio: 1;
+            background-color: #0f3460;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            transition: background 0.3s, transform 0.2s;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.4s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
 
-        .btn-primary {
-            background: #667eea;
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            border-radius: 10px;
+        }
+
+        .card-front {
+            background: #e43f5a;
             color: white;
         }
 
-        .btn-primary:hover {
-            background: #5a6fe6;
+        .card-back {
+            background: #ffffff;
+            transform: rotateY(180deg);
+        }
+
+        /* Restart Button */
+        .btn-restart {
+            background: #e43f5a;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 10px rgba(228, 63, 90, 0.4);
+        }
+
+        .btn-restart:hover {
+            background: #d6304f;
             transform: scale(1.05);
         }
 
-        .btn-outline {
-            background: transparent;
-            color: #667eea;
-            border: 2px solid #667eea;
+        /* Win Modal Popup */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
         }
 
-        .btn-outline:hover {
-            background: #f0f4ff;
-            transform: scale(1.05);
+        .modal-content {
+            background: #ffffff;
+            color: #333;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 320px;
+            width: 90%;
+            animation: popUp 0.3s ease;
+        }
+
+        .modal-content h2 {
+            color: #e43f5a;
+            margin-bottom: 10px;
+        }
+
+        .modal-content p {
+            margin-bottom: 20px;
+            font-size: 15px;
+            color: #666;
+        }
+
+        @keyframes popUp {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <div class="card-header">
-            <!-- Aap yahan apni koi bhi image ka URL ya asset de sakte hain -->
-            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80" alt="Profile" class="profile-img">
+    <div class="container">
+        <h1>Memory Match</h1>
+        <div class="stats">
+            <span id="moves">Moves: 0</span>
+            <span id="timer">Time: 0s</span>
         </div>
-        <div class="card-body">
-            <h2>Rahul Kumar</h2>
-            <div class="tagline">Android & Web Developer</div>
-            <p>Ye ek modern responsive HTML/CSS design hai. Ise aap apne web pages, landing pages ya Android WebView me asani se use kar sakte hain.</p>
-            <div class="btn-container">
-                <button class="btn btn-primary">Connect</button>
-                <button class="btn btn-outline">Message</button>
-            </div>
+
+        <div class="grid" id="gameGrid"></div>
+
+        <button class="btn-restart" onclick="startGame()">Restart Game</button>
+    </div>
+
+    <!-- Win Modal -->
+    <div class="modal" id="winModal">
+        <div class="modal-content">
+            <h2>You Won! 🎉</h2>
+            <p id="finalStats">Aapne 0 moves me game jeet liya.</p>
+            <button class="btn-restart" onclick="startGame()">Play Again</button>
         </div>
     </div>
 
+    <script>
+        const emojis = ['🍎', '🍌', '🍇', '🍉', '🍓', '🍒', '🍍', '🥝'];
+        let cards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let moves = 0;
+        let timer = 0;
+        let timerInterval = null;
+        let isPlaying = false;
+
+        const grid = document.getElementById('gameGrid');
+        const movesDisplay = document.getElementById('moves');
+        const timerDisplay = document.getElementById('timer');
+        const winModal = document.getElementById('winModal');
+        const finalStats = document.getElementById('finalStats');
+
+        function startGame() {
+            // Reset variables
+            grid.innerHTML = '';
+            flippedCards = [];
+            matchedPairs = 0;
+            moves = 0;
+            timer = 0;
+            isPlaying = false;
+            movesDisplay.innerText = `Moves: ${moves}`;
+            timerDisplay.innerText = `Time: 0s`;
+            winModal.style.display = 'none';
+            clearInterval(timerInterval);
+
+            // Duplicate emojis for pairs and shuffle
+            cards = [...emojis, ...emojis]
+                .sort(() => Math.random() - 0.5)
+                .map((emoji, index) => ({ id: index, emoji, isFlipped: false, isMatched: false }));
+
+            // Render cards
+            cards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('card');
+                cardElement.dataset.id = card.id;
+
+                cardElement.innerHTML = `
+                    <div class="card-face card-front">❓</div>
+                    <div class="card-face card-back">${card.emoji}</div>
+                `;
+
+                cardElement.addEventListener('click', () => flipCard(card.id, cardElement));
+                grid.appendChild(cardElement);
+            });
+        }
+
+        function flipCard(id, element) {
+            if (!isPlaying) {
+                isPlaying = true;
+                startTimer();
+            }
+
+            const clickedCard = cards.find(c => c.id === id);
+
+            if (clickedCard.isFlipped || clickedCard.isMatched || flippedCards.length >= 2) return;
+
+            clickedCard.isFlipped = true;
+            element.classList.add('flipped');
+            flippedCards.push({ id, emoji: clickedCard.emoji, element });
+
+            if (flippedCards.length === 2) {
+                moves++;
+                movesDisplay.innerText = `Moves: ${moves}`;
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+
+            if (card1.emoji === card2.emoji) {
+                cards.find(c => c.id === card1.id).isMatched = true;
+                cards.find(c => c.id === card2.id).isMatched = true;
+                flippedCards = [];
+                matchedPairs++;
+
+                if (matchedPairs === emojis.length) {
+                    clearInterval(timerInterval);
+                    finalStats.innerText = `Aapne ${moves} moves aur ${timer} seconds me game complete kiya!`;
+                    winModal.style.display = 'flex';
+                }
+            } else {
+                setTimeout(() => {
+                    cards.find(c => c.id === card1.id).isFlipped = false;
+                    cards.find(c => c.id === card2.id).isFlipped = false;
+                    card1.element.classList.remove('flipped');
+                    card2.element.classList.remove('flipped');
+                    flippedCards = [];
+                }, 700);
+            }
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timer++;
+                timerDisplay.innerText = `Time: ${timer}s`;
+            }, 1000);
+        }
+
+        // Initialize game on load
+        startGame();
+    </script>
 </body>
 </html>

@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>बादल सफेद क्यों दिखते हैं?</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400;600;700;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a1428;
+    --card: rgba(255,255,255,0.05);
+    --sky-blue: #6fb1ff;
+    --sky-light: #a8d0ff;
+    --cloud: #f0f4ff;
+    --cloud-shadow: #b0c4e8;
+    --accent: #a8d0ff;
+    --accent2: #ffd97a;
+    --accent3: #ffb3d1;
+    --text: #eef2fa;
+    --muted: #8fa4c8;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.9;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ===== Sky Background ===== */
+  #sky-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    background: linear-gradient(180deg, #1a2a4a 0%, #0f1e3a 40%, #0a1428 100%);
+  }
+
+  /* Sun glow */
+  .sun-glow {
+    position: fixed;
+    top: -200px;
+    right: -150px;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,217,122,0.3) 0%, rgba(255,155,74,0.1) 40%, transparent 70%);
+    filter: blur(50px);
+    z-index: -2;
+    pointer-events: none;
+    animation: sunPulse 6s ease-in-out infinite;
+  }
+  @keyframes sunPulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.08); }
+  }
+
+  /* Cloud glow */
+  .cloud-glow {
+    position: fixed;
+    bottom: 10%;
+    left: 30%;
+    width: 500px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(168,208,255,0.15) 0%, transparent 70%);
+    filter: blur(60px);
+    z-index: -2;
+    pointer-events: none;
+  }
+
+  /* ===== Reading progress ===== */
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 4px;
+    width: 0%;
+    background: linear-gradient(90deg, #a8d0ff, #ffd97a, #ffb3d1);
+    z-index: 999;
+    box-shadow: 0 0 12px rgba(168,208,255,0.6);
+    transition: width 0.1s linear;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Floating clouds in background */
+  .hero-cloud {
+    position: absolute;
+    background: rgba(240,244,255,0.15);
+    border-radius: 100px;
+    filter: blur(8px);
+    pointer-events: none;
+  }
+  .hero-cloud::before,
+  .hero-cloud::after {
+    content: '';
+    position: absolute;
+    background: inherit;
+    border-radius: 50%;
+  }
+  .hero-cloud.hc1 {
+    width: 180px; height: 45px;
+    top: 15%; left: -200px;
+    animation: cloudDrift 40s linear infinite;
+  }
+  .hero-cloud.hc1::before { width: 70px; height: 70px; top: -30px; left: 25px; }
+  .hero-cloud.hc1::after { width: 55px; height: 55px; top: -22px; left: 90px; }
+  .hero-cloud.hc2 {
+    width: 140px; height: 35px;
+    top: 35%; right: -160px;
+    animation: cloudDriftRight 50s linear infinite;
+    background: rgba(168,208,255,0.12);
+  }
+  .hero-cloud.hc2::before { width: 55px; height: 55px; top: -25px; left: 20px; }
+  .hero-cloud.hc2::after { width: 45px; height: 45px; top: -18px; left: 70px; }
+  .hero-cloud.hc3 {
+    width: 200px; height: 50px;
+    top: 70%; left: -220px;
+    animation: cloudDrift 60s linear infinite;
+    animation-delay: -20s;
+    background: rgba(240,244,255,0.1);
+  }
+  .hero-cloud.hc3::before { width: 80px; height: 80px; top: -35px; left: 30px; }
+  .hero-cloud.hc3::after { width: 60px; height: 60px; top: -25px; left: 105px; }
+  @keyframes cloudDrift {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(100vw + 250px)); }
+  }
+  @keyframes cloudDriftRight {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(-100vw - 200px)); }
+  }
+
+  /* Main cloud visual */
+  .cloud-visual {
+    position: relative;
+    width: 280px;
+    height: 180px;
+    margin-bottom: 40px;
+    display: grid;
+    place-items: center;
+  }
+  .big-cloud {
+    position: relative;
+    width: 200px;
+    height: 80px;
+    background: radial-gradient(ellipse at 50% 40%, #ffffff 0%, #f0f4ff 40%, #d8e4f8 100%);
+    border-radius: 100px;
+    box-shadow: 
+      0 0 50px rgba(240,244,255,0.6),
+      0 0 100px rgba(168,208,255,0.3),
+      0 20px 40px rgba(10,20,40,0.4);
+    animation: cloudFloat 6s ease-in-out infinite;
+  }
+  .big-cloud::before {
+    content: '';
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, #ffffff 0%, #f0f4ff 60%, #d8e4f8 100%);
+    border-radius: 50%;
+    top: -50px;
+    left: 30px;
+    box-shadow: inset 0 0 20px rgba(168,208,255,0.3);
+  }
+  .big-cloud::after {
+    content: '';
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, #ffffff 0%, #f0f4ff 60%, #d8e4f8 100%);
+    border-radius: 50%;
+    top: -35px;
+    left: 100px;
+    box-shadow: inset 0 0 20px rgba(168,208,255,0.3);
+  }
+  @keyframes cloudFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+
+  /* Sun behind cloud */
+  .sun-behind {
+    position: absolute;
+    top: 20%;
+    right: 15%;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffe8a3 0%, #ffd97a 50%, #ffb84d 100%);
+    box-shadow: 
+      0 0 40px rgba(255,217,122,0.8),
+      0 0 80px rgba(255,217,122,0.4);
+    animation: sunBehindPulse 3s ease-in-out infinite;
+    z-index: -1;
+  }
+  @keyframes sunBehindPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+
+  /* Light rays */
+  .light-ray {
+    position: absolute;
+    background: linear-gradient(to bottom, rgba(255,217,122,0.6), transparent);
+    width: 2px;
+    transform-origin: top;
+    animation: rayFlow 3s ease-in-out infinite;
+    border-radius: 2px;
+    z-index: -1;
+  }
+  .light-ray.lr1 { height: 100px; top: 30%; right: 20%; transform: rotate(20deg); animation-delay: 0s; }
+  .light-ray.lr2 { height: 90px; top: 35%; right: 25%; transform: rotate(15deg); animation-delay: 0.5s; }
+  .light-ray.lr3 { height: 110px; top: 25%; right: 28%; transform: rotate(25deg); animation-delay: 1s; }
+  @keyframes rayFlow {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.9; }
+  }
+
+  .hero h1 {
+    font-family: 'Baloo Bhai 2', cursive;
+    font-size: clamp(1.8rem, 5.5vw, 3.8rem);
+    font-weight: 800;
+    line-height: 1.3;
+    background: linear-gradient(135deg, #ffffff 0%, #a8d0ff 50%, #ffd97a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+    animation: fadeUp 1s ease both;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero p {
+    color: var(--muted);
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    max-width: 640px;
+    animation: fadeUp 1s 0.3s ease both;
+    position: relative;
+    z-index: 2;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 30px;
+    font-size: 28px;
+    color: var(--accent);
+    animation: bounce 2s infinite;
+    z-index: 2;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(12px); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== Container ===== */
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 40px 24px 100px;
+  }
+
+  .section {
+    margin-bottom: 70px;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .section.visible { opacity: 1; transform: translateY(0); }
+
+  .section h2 {
+    font-family: 'Baloo Bhai 2', cursive;
+    font-size: clamp(1.5rem, 4vw, 2.1rem);
+    color: var(--accent);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    line-height: 1.4;
+  }
+
+  .section h2 .num {
+    font-size: 0.9rem;
+    width: 40px; height: 40px;
+    min-width: 40px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    color: #0a1428;
+    background: linear-gradient(135deg, #a8d0ff, #ffd97a);
+    box-shadow: 0 6px 20px rgba(168,208,255,0.35);
+  }
+
+  .section p {
+    font-size: 1.08rem;
+    color: #c8d8e8;
+    margin-bottom: 18px;
+    text-align: justify;
+  }
+  .section p strong { color: var(--accent2); font-weight: 600; }
+  .section p .blue { color: var(--accent); font-weight: 600; }
+  .section p .white { color: #ffffff; font-weight: 600; }
+
+  /* Highlight */
+  .highlight {
+    background: var(--card);
+    border-left: 4px solid var(--accent);
+    border-radius: 14px;
+    padding: 22px 26px;
+    margin: 26px 0;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .highlight::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(168,208,255,0.08), transparent);
+    pointer-events: none;
+  }
+  .highlight p { margin: 0; color: var(--text); font-size: 1.02rem; }
+
+  /* Scattering demo */
+  .scatter-card {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 30px 26px;
+    margin: 30px 0;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.45);
+  }
+  .scatter-title {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.82rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .scatter-stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .sun-source {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffe8a3, #ffd97a, #ffb84d);
+    box-shadow: 0 0 30px rgba(255,217,122,0.8);
+    position: relative;
+    animation: sunPulseSmall 2s ease-in-out infinite;
+  }
+  @keyframes sunPulseSmall {
+    0%, 100% { box-shadow: 0 0 30px rgba(255,217,122,0.8); }
+    50% { box-shadow: 0 0 50px rgba(255,217,122,1); }
+  }
+  .arrow-flow {
+    color: var(--accent2);
+    font-size: 24px;
+    animation: arrowPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes arrowPulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+  .cloud-target {
+    position: relative;
+    width: 100px;
+    height: 50px;
+    background: radial-gradient(ellipse at 50% 40%, #ffffff 0%, #f0f4ff 60%, #d8e4f8 100%);
+    border-radius: 50px;
+    box-shadow: 0 0 30px rgba(240,244,255,0.6);
+  }
+  .cloud-target::before {
+    content: '';
+    position: absolute;
+    width: 50px; height: 50px;
+    background: radial-gradient(circle, #ffffff 0%, #f0f4ff 60%, #d8e4f8 100%);
+    border-radius: 50%;
+    top: -25px; left: 15px;
+  }
+  .cloud-target::after {
+    content: '';
+    position: absolute;
+    width: 40px; height: 40px;
+    background: radial-gradient(circle, #ffffff 0%, #f0f4ff 60%, #d8e4f8 100%);
+    border-radius: 50%;
+    top: -18px; left: 50px;
+  }
+  .scatter-caption {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-top: 15px;
+  }
+  .scatter-caption strong { color: var(--accent2); }
+
+  /* Steps */
+  .steps {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 26px 22px;
+    margin: 30px 0;
+    backdrop-filter: blur(10px);
+  }
+  .steps-title {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.82rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .step-item {
+    display: flex;
+    gap: 14px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid transparent;
+    transition: all 0.3s;
+  }
+  .step-item:hover {
+    background: rgba(168,208,255,0.06);
+    border-color: rgba(168,208,255,0.15);
+    transform: translateX(5px);
+  }
+  .step-icon {
+    width: 36px; height: 36px;
+    min-width: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(168,208,255,0.2), rgba(255,217,122,0.15));
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .step-body h4 {
+    font-family: 'Baloo Bhai 2', cursive;
+    font-size: 1.02rem;
+    color: var(--accent);
+    margin-bottom: 3px;
+  }
+  .step-body p {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--muted);
+    text-align: left;
+  }
+
+  /* Stats */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin: 30px 0;
+  }
+  .stat {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 22px 16px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .stat:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(168,208,255,0.15);
+  }
+  .stat .val {
+    font-family: 'Baloo Bhai 2', cursive;
+    font-size: 1.4rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #a8d0ff, #ffd97a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .stat .lbl { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+
+  /* Compare */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin: 30px 0;
+  }
+  .compare-card {
+    border-radius: 18px;
+    padding: 24px 20px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .compare-card:hover { transform: translateY(-6px); }
+  .compare-card.white {
+    background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(168,208,255,0.05));
+    box-shadow: 0 10px 30px rgba(240,244,255,0.1);
+  }
+  .compare-card.dark {
+    background: linear-gradient(180deg, rgba(50,60,90,0.4), rgba(20,30,60,0.2));
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  }
+  .compare-card .icon { font-size: 44px; margin-bottom: 10px; }
+  .compare-card h3 {
+    font-family: 'Baloo Bhai 2', cursive;
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+    color: var(--accent);
+  }
+  .compare-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
+  /* Cloud types */
+  .cloud-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+    margin: 30px 0;
+  }
+  .cloud-type {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 18px 12px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .cloud-type:hover {
+    transform: translateY(-4px);
+    border-color: rgba(168,208,255,0.2);
+    background: rgba(168,208,255,0.05);
+  }
+  .cloud-type .emoji {
+    font-size: 28px;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .cloud-type h5 {
+    font-family: 'Baloo Bhai 2', cursive;
+    font-size: 0.95rem;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .cloud-type p {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* Fun fact */
+  .funfact {
+    background: linear-gradient(135deg, rgba(168,208,255,0.08), rgba(255,217,122,0.08));
+    border: 1px solid rgba(168,208,255,0.2);
+    border-radius: 18px;
+    padding: 26px;
+    margin: 30px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .funfact::before {
+    content: '☁️';
+    position: absolute;
+    top: -10px; right: -5px;
+    font-size: 80px;
+    opacity: 0.1;
+  }
+  .funfact h4 {
+    font-family: 'Baloo Bhai 2', cursive;
+    color: var(--accent);
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+  }
+  .funfact p { margin: 0; font-size: 0.98rem; color: var(--text); text-align: left; }
+
+  /* Quote */
+  .quote {
+    text-align: center;
+    padding: 40px 20px;
+    font-family: 'Baloo Bhai 2', cursive;
+    font-size: clamp(1.2rem, 3vw, 1.7rem);
+    background: linear-gradient(135deg, #ffffff, #a8d0ff, #ffd97a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.6;
+    position: relative;
+  }
+  .quote::before {
+    content: '"';
+    position: absolute;
+    top: -10px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 5rem;
+    color: rgba(168,208,255,0.15);
+    font-family: serif;
+  }
+
+  /* Back to top */
+  #topBtn {
+    position: fixed;
+    bottom: 30px; right: 30px;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #a8d0ff, #ffd97a);
+    color: #0a1428;
+    font-size: 22px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s;
+    box-shadow: 0 8px 24px rgba(168,208,255,0.4);
+    z-index: 998;
+  }
+  #topBtn.show { opacity: 1; pointer-events: auto; }
+  #topBtn:hover { transform: translateY(-5px) scale(1.05); }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  footer span {
+    background: linear-gradient(135deg, #a8d0ff, #ffd97a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 600;
+  }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .section p { text-align: left; }
+    .compare { grid-template-columns: 1fr; }
+    .cloud-visual { width: 240px; height: 160px; }
+    .big-cloud { width: 160px; height: 65px; }
+    .big-cloud::before { width: 80px; height: 80px; top: -40px; left: 25px; }
+    .big-cloud::after { width: 65px; height: 65px; top: -28px; left: 80px; }
+    .sun-behind { width: 55px; height: 55px; }
+    .scatter-stage { gap: 12px; }
+    .sun-source { width: 50px; height: 50px; }
+    .cloud-target { width: 80px; height: 40px; }
+    #topBtn { bottom: 20px; right: 20px; width: 46px; height: 46px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Background -->
+<div id="sky-bg"></div>
+<div class="sun-glow"></div>
+<div class="cloud-glow"></div>
+
+<!-- Reading progress -->
+<div id="progress-bar"></div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-cloud hc1"></div>
+  <div class="hero-cloud hc2"></div>
+  <div class="hero-cloud hc3"></div>
+  <div class="cloud-visual">
+    <div class="sun-behind"></div>
+    <div class="light-ray lr1"></div>
+    <div class="light-ray lr2"></div>
+    <div class="light-ray lr3"></div>
+    <div class="big-cloud"></div>
+  </div>
+  <h1>बादल सफेद<br>क्यों दिखते हैं?</h1>
+  <p>आसमान में तैरते सफेद बादल बहुत सुंदर लगते हैं। लेकिन क्या आपने कभी सोचा है — बादल असल में पानी की बूँदों और बर्फ़ के कणों से बने होते हैं, फिर वे सफेद क्यों दिखते हैं? आखिर उनका रंग कहाँ से आता है?</p>
+  <div class="scroll-hint">↓</div>
+</header>
+
+<!-- ARTICLE -->
+<main class="container">
+
+  <section class="section">
+    <h2><span class="num">1</span> बादल असल में क्या हैं?</h2>
+    <p>सबसे पहले यह समझें — <strong>बादल पानी की बूँदों और बर्फ़ के छोटे-छोटे कणों से बने होते हैं</strong>। ये कण इतने छोटे होते हैं कि उन्हें नंगी आँखों से देखा नहीं जा सकता।</p>
+    <p>जब हवा में मौजूद जलवाष्प ठंडी होकर पानी की बूँदों में बदल जाती है, तो वे मिलकर बादल बनाती हैं। लेकिन पानी और बर्फ़ तो पारदर्शी होते हैं — फिर बादल सफेद कैसे दिखते हैं?</p>
+  </section>
+
+  <section class="section">
+    <h2><span class="num">2</span> सफेदी का राज़ — प्रकाश का बिखरना</h2>
+    <p>बादलों का सफेद रंग उनके अंदर मौजूद पानी की बूँदों और बर्फ़ के कणों के कारण होता है। जब <strong>सूरज की सफ़ेद रोशनी</strong> इन कणों से टकराती है, तो वह हर दिशा में बिखर जाती है।</p>
+    <p>यह घटना <span class="blue">"प्रकाश का प्रकीर्णन (Scattering of Light)"</span> कहलाती है। बादल के अंदर लाखों-करोड़ों छोटी बूँदें होती हैं, और सूरज की रोशनी इनसे टकराकर हर दिशा में फैल जाती है।</p>
+
+    <div class="scatter-card">
+      <div class="scatter-title">बादल में प्रकाश का बिखरना</div>
+      <div class="scatter-stage">
+        <div class="sun-source"></div>
+        <div class="arrow-flow">→</div>
+        <div class="cloud-target"></div>
+      </div>
+      <p class="scatter-caption">सूरज की <strong>सफ़ेद रोशनी</strong> बादल के कणों से टकराकर हर दिशा में बिखर जाती है — और हमें सफेद दिखती है।</p>
+    </div>
+
+    <div class="highlight">
+      <p>💡 <strong>आसान उदाहरण:</strong> अगर आप काँच के छोटे टुकड़ों को एक जार में भरें, तो वे सफेद दिखते हैं — भले ही हर टुकड़ा पारदर्शी है। बादल के साथ भी यही होता है — पानी की बूँदें पारदर्शी हैं, लेकिन उनका समूह सफेद दिखता है।</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2><span class="num">3</span> सूरज की रोशनी कैसे बिखरती है?</h2>
+    <p>सूरज की सफ़ेद रोशनी में सातों रंग शामिल होते हैं — बैंगनी से लेकर लाल तक। जब यह रोशनी किसी बादल के कणों से टकराती है, तो सभी रंग <strong>समान रूप से बिखरते हैं</strong>।</p>
+    <p>यही कारण है कि बादल सफेद दिखते हैं — क्योंकि सभी रंग मिलकर फिर से सफ़ेद बन जाते हैं। अगर कोई एक रंग ज़्यादा बिखरता, तो बादल का रंग बदल जाता।</p>
+
+    <div class="steps">
+      <div class="steps-title">बादल सफेद क्यों दिखते हैं — पूरी प्रक्रिया</div>
+      <div class="step-item">
+        <div class="step-icon">☀️</div>
+        <div class="step-body">
+          <h4>1. सूरज की सफेद रोशनी</h4>
+          <p>सूरज से सफ़ेद रोशनी निकलती है, जिसमें सातों रंग होते हैं।</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-icon">💧</div>
+        <div class="step-body">
+          <h4>2. बादल के कणों से टकराव</h4>
+          <p>यह रोशनी बादल की लाखों पानी की बूँदों से टकराती है।</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-icon">✨</div>
+        <div class="step-body">
+          <h4>3. हर दिशा में बिखरना</h4>
+          <p>सभी रंग समान रूप से हर दिशा में बिखर जाते हैं।</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-icon">🤍</div>
+        <div class="step-body">
+          <h4>4. सफेद रंग दिखना</h4>
+          <p>ये सारे रंग मिलकर हमारी आँखों तक पहुँचते हैं — और हमें सफेद दिखते हैं!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2><span class="num">4</span> कुछ बादल भूरे या कालों क्यों दिखते हैं?</h2>
+    <p>यह एक बहुत दिलचस्प सवाल है! अगर बादल असल में सफेद होते हैं, तो बारिश वाले बादल काले क्यों दिखते हैं?</p>
+    <p>इसका कारण है — <strong>मोटाई और घनत्व</strong>। जब बादल बहुत मोटे हो जाते हैं, तो सूरज की रोशनी उनके ऊपरी हिस्से में ही अवशोषित हो जाती है और नीचे तक नहीं पहुँच पाती।</p>
+    <p>इसीलिए उनका निचला हिस्सा <strong>अंधकारमय या भूरा</strong> दिखने लगता है। यानी काले बादल सिर्फ़ मोटे और घने बादल होते हैं — जो बारिश का संकेत देते हैं।</p>
+
+    <div class="compare">
+      <div class="compare-card white">
+        <div class="icon">☁️</div>
+        <h3>सफेद बादल</h3>
+        <p>पतले और हल्के बादल — सूरज की रोशनी आसानी से सब जगह पहुँचती है</p>
+      </div>
+      <div class="compare-card dark">
+        <div class="icon">🌧️</div>
+        <h3>काले बादल</h3>
+        <p>मोटे और भारी बादल — रोशनी ऊपर ही अवशोषित हो जाती है, नीचे अंधेरा</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2><span class="num">5</span> बादलों के अलग-अलग रंग क्यों?</h2>
+    <p>बादल हमेशा सिर्फ़ सफेद या काले नहीं दिखते — कभी-कभी वे <span class="blue">गुलाबी, सुनहरे, नारंगी, यहाँ तक कि हरे-नीले</span> भी दिख सकते हैं। इसके कारण हैं:</p>
+
+    <div class="steps">
+      <div class="steps-title">बादलों के अलग रंगों के कारण</div>
+      <div class="step-item">
+        <div class="step-icon">🌅</div>
+        <div class="step-body">
+          <h4>सूर्यास्त और सूर्योदय</h4>
+          <p>सूरज क्षितिज के पास होता है, लाल-नारंगी रोशनी बादलों को रंग देती है।</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-icon">🌫️</div>
+        <div class="step-body">
+          <h4>प्रदूषण और धूल</h4>
+          <p>हवा में मौजूद कण बादलों को भूरा या धुँधला रंग दे सकते हैं।</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-icon">⛈️</div>
+        <div class="step-body">
+          <h4>तूफ़ानी बादल</h4>
+          <p>भारी तूफ़ानी बादलों में कभी-कभी हरे-नीले रंग की झलक दिखती है।</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-icon">🌙</div>
+        <div class="step-body">
+          <h4>रात का समय</h4>
+          <p>रात में चाँद की रोशनी बादलों को चांदी जैसा सफेद या नीला रंग दे देती है।</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2><span class="num">6</span> बादलों के प्रकार</h2>
+    <p>हर बादल एक जैसा नहीं होता। उनकी ऊँचाई, घनत्व और बनावट के आधार पर उन्हें कई श्रेणियों में बाँटा गया है।</p>
+
+    <div class="cloud-types">
+      <div class="cloud-type">
+        <span class="emoji">☁️</span>
+        <h5>क्यूमुलस</h5>
+        <p>रुई जैसे सफेद बादल</p>
+      </div>
+      <div class="cloud-type">
+        <span class="emoji">🌥️</span>
+        <h5>स्ट्रैटस</h5>
+        <p>परत जैसे फैले बादल</p>
+      </div>
+      <div class="cloud-type">
+        <span class="emoji">🌤️</span>
+        <h5>सिरस</h5>
+        <p>पतले, ऊँचे बादल</p>
+      </div>
+      <div class="cloud-type">
+        <span class="emoji">⛈️</span>
+        <h5>क्यूमुलोनिम्बस</h5>
+        <p>तूफ़ानी, भारी बादल</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2><span class="num">7</span> कुछ आँकड़े</h2>
+    <div class="stats">
+      <div class="stat"><div class="val">~10 µm</div><div class="lbl">पानी की बूँद का आकार</div></div>
+      <div class="stat"><div class="val">~67%</div><div class="lbl">धरती पर बादलों का औसत ढकाव</div></div>
+      <div class="stat"><div class="val">~5 लाख kg</div><div class="lbl">एक औसत बादल का वज़न</div></div>
+      <div class="stat"><div class="val">~2 km</div><div class="lbl">औसत बादल की ऊँचाई</div></div>
+    </div>
+
+    <p>ये आँकड़े बताते हैं कि बादल कितने विशाल होते हैं — कभी-कभी एक बादल का वज़न हवाई जहाज़ से भी ज़्यादा होता है। फिर भी वे आसमान में तैरते रहते हैं!</p>
+  </section>
+
+  <section class="section">
+    <h2><span class="num">8</span> क्या अंतरिक्ष से बादल दिखते हैं?</h2>
+    <p>हाँ! अंतरिक्ष यात्रियों को धरती के बादल बहुत सुंदर दिखते हैं — वे सफ़ेद रुई के टुकड़ों की तरह लगते हैं। लेकिन अंतरिक्ष से देखने पर बादलों का सफेद रंग और भी <strong>चमकीला और गहरा</strong> दिखता है।</p>
+    <p>क्योंकि अंतरिक्ष से देखने पर वायुमंडल की कोई परत बीच में नहीं होती — जो रोशनी को बिखेर सके। तो बादलों का असली सफेद रंग और साफ़ दिखता है।</p>
+
+    <div class="funfact">
+      <h4>☁️ एक रोचक तथ्य</h4>
+      <p>क्या आप जानते हैं कि बादलों का सफेद रंग उन्हें <strong>ठंडा</strong> भी रखता है? सफेद रंग सूरज की गर्मी को परावर्तित कर देता है — इसीलिए बादलों वाले दिन थोड़ी ठंडक महसूस होती है। यही कारण है कि बादल धरती को ठंडा रखने में भी मदद करते हैं!</p>
+    </div>
+  </section>
+
+  <div class="quote">
+    "बादलों का सफेद रंग उनकी सुंदरता नहीं —<br>वह सूरज और पानी के बीच का एक खूबसूरत संवाद है।"
+  </div>
+
+  <section class="section">
+    <h2><span class="num">9</span> निष्कर्ष</h2>
+    <p>तो अब आप जान गए कि बादल सफेद इसलिए दिखते हैं, क्योंकि <strong>सूरज की सफ़ेद रोशनी उनके अंदर मौजूद पानी की बूँदों और बर्फ़ के कणों से टकराकर हर दिशा में बिखर जाती है</strong>।</p>
+    <p>यह सिर्फ़ रंग की बात नहीं — यह प्रकाश और पानी के बीच का एक खूबसूरत खेल है। अगली बार जब आप आसमान में सफेद बादलों को देखें, तो याद रखें — वे सिर्फ़ पानी नहीं, <span class="blue">प्रकाश का एक जादू</span> हैं। ☁️✨</p>
+  </section>
+
+</main>
+
+<footer>
+  ☁️ <span>विज्ञान की दुनिया</span> — बादलों के सफेद रंग की कहानी
+</footer>
+
+<button id="topBtn" aria-label="ऊपर जाएँ">↑</button>
+
+<script>
+/* ===== Reading progress + back to top ===== */
+const progressBar = document.getElementById('progress-bar');
+const topBtn = document.getElementById('topBtn');
+
+function updateScroll() {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const percent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = percent + '%';
+
+  if (scrollTop > 500) topBtn.classList.add('show');
+  else topBtn.classList.remove('show');
+}
+
+window.addEventListener('scroll', updateScroll, { passive: true });
+topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+/* ===== Scroll reveal ===== */
+const sections = document.querySelectorAll('.section');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.12 });
+sections.forEach(sec => observer.observe(sec));
+
+/* ===== Init ===== */
+updateScroll();
+
+/* ===== Mouse parallax on hero cloud ===== */
+const cloudVisual = document.querySelector('.cloud-visual');
+if (cloudVisual) {
+  document.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 15;
+    const y = (e.clientY / window.innerHeight - 0.5) * 15;
+    cloudVisual.style.transform = `translate(${x}px, ${y}px)`;
+  });
+}
+</script>
+
+</body>
+</html>

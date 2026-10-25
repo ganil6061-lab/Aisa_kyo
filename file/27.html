@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ओस की बूँदें सुबह क्यों दिखती हैं?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@500;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   1. CSS VARIABLES — भोर थीम (गुलाबी + ठंडा नीला + घास हरा)
+   ============================================================ */
+:root{
+  --bg-deep:#0a0612;
+  --bg-mid:#1a0f2e;
+  --bg-dawn:#2d1a3a;
+  --bg-rose:#5a2a4a;
+
+  --rose-100:#ffe4f0;
+  --rose-200:#ffc8e0;
+  --rose-300:#ff9dc4;
+  --rose-400:#f472b6;
+  --rose-500:#ec4899;
+
+  --dawn-100:#e0f2fe;
+  --dawn-200:#bae6fd;
+  --dawn-300:#7dd3fc;
+  --dawn-400:#38bdf8;
+
+  --dew-100:#f0fdff;
+  --dew-200:#d6f7ff;
+  --dew-300:#a6ecfa;
+  --dew-400:#62d9f0;
+
+  --grass-200:#bbf7d0;
+  --grass-300:#86efac;
+  --grass-400:#4ade80;
+  --grass-500:#22c55e;
+
+  --gold-sun:#fde68a;
+  --gold-warm:#fbbf24;
+
+  --text:#fff5fb;
+  --text-soft:#e0c8dd;
+  --muted:#a888a2;
+
+  --card:rgba(255,200,230,0.055);
+  --card-border:rgba(244,114,182,0.24);
+  --radius:20px;
+
+  --grad-dawn:linear-gradient(135deg,#ffc8e0,#f472b6);
+  --grad-dew:linear-gradient(135deg,#d6f7ff,#62d9f0);
+  --grad-grass:linear-gradient(135deg,#bbf7d0,#22c55e);
+
+  --shadow:0 18px 44px rgba(30,0,20,0.55);
+  --maxw:860px;
+}
+
+/* ============================================================
+   2. RESET + BASE
+   ============================================================ */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+
+body{
+  font-family:'Poppins',system-ui,sans-serif;
+  color:var(--text);
+  line-height:1.85;
+  background:var(--bg-deep);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- Fixed background ---------- */
+.bg-fixed{
+  position:fixed;
+  inset:0;
+  z-index:-7;
+  background:
+    radial-gradient(900px 620px at 50% -10%, rgba(244,114,182,0.22), transparent 70%),
+    radial-gradient(700px 500px at 88% 82%, rgba(98,217,240,0.12), transparent 72%),
+    linear-gradient(180deg,#0a0612 0%,#1a0f2e 26%,#2d1a3a 52%,#3a1e3a 76%,#4a2342 100%);
+}
+
+/* ---------- Glowing blobs ---------- */
+.blob{
+  position:fixed;
+  border-radius:50%;
+  filter:blur(100px);
+  pointer-events:none;
+  z-index:-5;
+  opacity:.34;
+  animation:blobFloat 22s ease-in-out infinite alternate;
+}
+.blob-1{width:470px;height:470px;background:#ec4899;top:-160px;left:-120px;}
+.blob-2{width:430px;height:430px;background:#38bdf8;bottom:-170px;right:-140px;animation-delay:-8s;opacity:.3;}
+.blob-3{width:330px;height:330px;background:#fbbf24;opacity:.14;top:48%;right:-130px;animation-delay:-14s;}
+
+@keyframes blobFloat{
+  from{transform:translate3d(0,0,0) scale(1);}
+  to{transform:translate3d(42px,-52px,0) scale(1.13);}
+}
+
+/* ---------- Dew drop particles ---------- */
+#particles{
+  position:fixed;
+  inset:0;
+  z-index:-4;
+  overflow:hidden;
+  pointer-events:none;
+}
+.particle{
+  position:absolute;
+  border-radius:50% 50% 50% 50% / 65% 65% 35% 35%;
+  background:radial-gradient(circle at 32% 28%,#ffffff,#d6f7ff 55%,rgba(98,217,240,0.1) 100%);
+  box-shadow:0 0 10px rgba(214,247,255,0.75);
+  animation-name:dewFloat;
+  animation-timing-function:ease-in-out;
+  animation-iteration-count:infinite;
+  will-change:transform,opacity;
+}
+@keyframes dewFloat{
+  0%{transform:translate3d(0,110vh,0) scale(.7);opacity:0;}
+  20%{opacity:.9;}
+  50%{transform:translate3d(var(--drift,20px),45vh,0) scale(1);}
+  100%{transform:translate3d(calc(var(--drift,20px) * -1),-10vh,0) scale(1.05);opacity:0;}
+}
+
+/* ---------- Reading progress ---------- */
+#progressBar{
+  position:fixed;
+  top:0;left:0;
+  height:4px;
+  width:0%;
+  z-index:100;
+  border-radius:0 4px 4px 0;
+  background:linear-gradient(90deg,#ffe4f0,#ff9dc4,#38bdf8,#86efac);
+  box-shadow:0 0 14px rgba(244,114,182,0.8);
+  transition:width .09s linear;
+}
+
+/* ============================================================
+   3. HERO
+   ============================================================ */
+.hero{
+  min-height:100vh;
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:96px 20px 78px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ---------- Hero visual: पत्ते पर ओस ---------- */
+.hero-visual{
+  position:relative;
+  width:290px;
+  height:280px;
+  margin-bottom:20px;
+  transition:transform .35s ease-out;
+  will-change:transform;
+}
+
+/* सुबह की रोशनी */
+.dawn-glow{
+  position:absolute;
+  top:50%;left:50%;
+  width:260px;height:260px;
+  margin:-130px 0 0 -130px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(244,114,182,0.4),rgba(56,189,248,0) 70%);
+  animation:dawnPulse 4.5s ease-in-out infinite;
+}
+@keyframes dawnPulse{
+  0%,100%{transform:scale(1);opacity:.75;}
+  50%{transform:scale(1.15);opacity:.5;}
+}
+
+/* घास के पत्ते */
+.leaf{
+  position:absolute;
+  top:50%;left:50%;
+  width:220px;height:150px;
+  margin:-75px 0 0 -110px;
+  z-index:2;
+}
+.leaf-body{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(160deg,#22c55e 0%,#4ade80 30%,#15803d 70%,#0a4a1e 100%);
+  border-radius:50% 5% 50% 5% / 60% 5% 60% 5%;
+  clip-path:polygon(0% 100%, 20% 40%, 50% 5%, 80% 40%, 100% 100%);
+  filter:drop-shadow(0 6px 16px rgba(0,30,0,0.5));
+  transform:rotate(-6deg);
+  animation:leafSway 6s ease-in-out infinite;
+}
+@keyframes leafSway{
+  0%,100%{transform:rotate(-6deg);}
+  50%{transform:rotate(-3deg);}
+}
+
+/* पत्ते की नसें */
+.leaf::after{
+  content:'';
+  position:absolute;
+  top:50%;left:50%;
+  width:180px;height:2px;
+  margin:-1px 0 0 -90px;
+  background:linear-gradient(90deg,transparent,rgba(187,247,208,0.7),transparent);
+  border-radius:2px;
+  transform:rotate(-6deg);
+  z-index:3;
+}
+
+/* ओस की बूँदें */
+.dewdrop{
+  position:absolute;
+  border-radius:50% 50% 50% 50% / 65% 65% 35% 35%;
+  background:radial-gradient(circle at 32% 28%,#ffffff 0%,#d6f7ff 40%,#62d9f0 80%,#0e7490 100%);
+  box-shadow:
+    0 0 12px rgba(214,247,255,0.85),
+    inset -2px -3px 6px rgba(14,116,144,0.5),
+    inset 2px 2px 5px rgba(255,255,255,0.9);
+  z-index:4;
+  animation:dropGlow 3.5s ease-in-out infinite;
+}
+.dewdrop:nth-child(1){width:22px;height:26px;top:44px;left:70px;animation-delay:0s;}
+.dewdrop:nth-child(2){width:16px;height:20px;top:58px;left:120px;animation-delay:-1s;}
+.dewdrop:nth-child(3){width:26px;height:30px;top:70px;right:78px;animation-delay:-2s;}
+.dewdrop:nth-child(4){width:14px;height:17px;top:36px;right:112px;animation-delay:-3s;}
+.dewdrop:nth-child(5){width:12px;height:14px;top:82px;left:96px;animation-delay:-0.5s;}
+@keyframes dropGlow{
+  0%,100%{opacity:.92;transform:scale(1);}
+  50%{opacity:1;transform:scale(1.06);}
+}
+
+/* बूँद पर चमक */
+.dewdrop::before{
+  content:'';
+  position:absolute;
+  top:18%;left:22%;
+  width:30%;height:32%;
+  background:radial-gradient(ellipse,rgba(255,255,255,0.95),rgba(255,255,255,0) 70%);
+  border-radius:50%;
+}
+
+/* उड़ती भाप */
+.mist{
+  position:absolute;
+  width:40px;height:8px;
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(255,255,255,0.4),rgba(255,255,255,0) 70%);
+  filter:blur(3px);
+  animation:mistDrift 6s ease-in-out infinite;
+  z-index:1;
+}
+.mist:nth-child(1){top:32px;left:24px;animation-delay:0s;}
+.mist:nth-child(2){top:52px;right:16px;animation-delay:-2s;width:50px;}
+.mist:nth-child(3){bottom:22px;left:50px;animation-delay:-4s;width:60px;}
+@keyframes mistDrift{
+  0%,100%{transform:translateX(0);opacity:.5;}
+  50%{transform:translateX(14px);opacity:.85;}
+}
+
+/* सूर्य की किरण */
+.sun-ray{
+  position:absolute;
+  top:-10px;right:-20px;
+  width:80px;height:80px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(253,230,138,0.9),rgba(251,191,36,0) 70%);
+  filter:blur(4px);
+  animation:rayGlow 5s ease-in-out infinite;
+}
+@keyframes rayGlow{
+  0%,100%{transform:scale(1);opacity:.7;}
+  50%{transform:scale(1.2);opacity:.9;}
+}
+
+/* ---------- Hero text ---------- */
+.hero h1{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:clamp(1.85rem,7.1vw,4.3rem);
+  line-height:1.22;
+  letter-spacing:-.5px;
+  background:linear-gradient(120deg,#ffffff 6%,#ffe4f0 30%,#ff9dc4 50%,#bae6fd 72%,#bbf7d0 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  max-width:17ch;
+  margin-bottom:18px;
+  filter:drop-shadow(0 8px 26px rgba(244,114,182,0.35));
+}
+
+.hero p{
+  max-width:620px;
+  font-size:clamp(.92rem,2.4vw,1.06rem);
+  color:var(--text-soft);
+  font-weight:300;
+  text-align:center;
+}
+
+/* ---------- Scroll hint ---------- */
+.scroll-hint{
+  position:absolute;
+  bottom:26px;left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  color:var(--rose-300);
+  font-size:.74rem;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+  opacity:.85;
+}
+.scroll-hint span{
+  font-size:1.5rem;
+  line-height:1;
+  animation:bounce 1.9s ease-in-out infinite;
+}
+@keyframes bounce{
+  0%,100%{transform:translateY(0);opacity:.65;}
+  50%{transform:translateY(9px);opacity:1;}
+}
+
+/* ============================================================
+   4. ARTICLE LAYOUT
+   ============================================================ */
+.article{
+  width:100%;
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:0 20px 40px;
+  position:relative;
+}
+
+.section{margin-bottom:clamp(56px,8vw,92px);}
+
+.section-head{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.badge{
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  width:52px;height:52px;
+  border-radius:16px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:1.28rem;
+  color:#2a0a1a;
+  background:linear-gradient(135deg,#ff9dc4,#ec4899);
+  box-shadow:0 10px 26px rgba(244,114,182,0.45);
+}
+
+h2{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:clamp(1.32rem,4vw,2rem);
+  line-height:1.35;
+  color:#fff5fb;
+}
+
+.article p{
+  text-align:justify;
+  text-justify:inter-word;
+  color:var(--text-soft);
+  font-size:clamp(.9rem,2.3vw,1rem);
+  font-weight:300;
+  margin-bottom:18px;
+}
+
+.hl{color:var(--rose-300);font-weight:600;}
+.hl-dew{color:var(--dew-300);font-weight:600;}
+.hl-grass{color:var(--grass-300);font-weight:600;}
+.hl-warm{color:#fde68a;font-weight:600;}
+
+/* ---------- Callouts ---------- */
+.callout{
+  border-radius:18px;
+  padding:18px 22px;
+  margin:24px 0;
+  font-size:clamp(.85rem,2.2vw,.95rem);
+  line-height:1.8;
+  border:1px solid rgba(244,114,182,0.28);
+  background:linear-gradient(135deg,rgba(244,114,182,0.15),rgba(236,72,153,0.06));
+  border-left:4px solid var(--rose-400);
+  color:#ffe8f2;
+}
+.callout.fact{
+  border-color:rgba(253,230,138,0.32);
+  background:linear-gradient(135deg,rgba(253,230,138,0.14),rgba(251,191,36,0.05));
+  border-left-color:var(--gold-sun);
+}
+.callout.dew{
+  border-color:rgba(166,236,250,0.32);
+  background:linear-gradient(135deg,rgba(166,236,250,0.14),rgba(56,189,248,0.05));
+  border-left-color:var(--dew-300);
+}
+
+/* ---------- Stats ---------- */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(152px,1fr));
+  gap:16px;
+  margin:30px 0;
+}
+.stat{
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  padding:22px 16px;
+  text-align:center;
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;
+}
+.stat:hover{
+  transform:translateY(-9px);
+  box-shadow:var(--shadow);
+  border-color:rgba(244,114,182,0.55);
+}
+.stat .num{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:clamp(1.35rem,4.2vw,1.85rem);
+  line-height:1.15;
+  background:var(--grad-dawn);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.stat .label{
+  display:block;
+  margin-top:8px;
+  font-size:.78rem;
+  line-height:1.55;
+  color:var(--muted);
+}
+
+/* ---------- Composition cards ---------- */
+.composition{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:14px;
+  margin:28px 0;
+}
+.comp-item{
+  padding:20px 16px;
+  border-radius:18px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  text-align:center;
+  transition:transform .3s ease,border-color .3s ease;
+}
+.comp-item:hover{
+  transform:translateY(-6px);
+  border-color:rgba(244,114,182,0.55);
+}
+.comp-item .icon{
+  font-size:1.9rem;
+  display:block;
+  margin-bottom:8px;
+  line-height:1;
+}
+.comp-item .name{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:var(--rose-200);
+  display:block;
+  margin-bottom:4px;
+}
+.comp-item .val{
+  font-size:.78rem;
+  line-height:1.5;
+  color:var(--muted);
+}
+
+/* ---------- Progress bars ---------- */
+.bars{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  margin:28px 0;
+  padding:22px 20px;
+  border-radius:var(--radius);
+  background:rgba(255,200,230,0.045);
+  border:1px solid var(--card-border);
+}
+.bar-row{
+  display:grid;
+  grid-template-columns:126px 1fr 84px;
+  align-items:center;
+  gap:12px;
+  font-size:.82rem;
+  color:var(--text-soft);
+}
+.bar-row .name{font-weight:500;}
+.bar-row .val{text-align:right;color:var(--muted);font-size:.76rem;}
+.bar-track{
+  height:12px;
+  border-radius:99px;
+  background:rgba(255,255,255,0.08);
+  overflow:hidden;
+}
+.bar-fill{
+  height:100%;
+  width:0;
+  border-radius:99px;
+  transition:width 1.35s cubic-bezier(.22,1,.36,1);
+}
+.bar-fill.d1{background:linear-gradient(90deg,#ec4899,#ff9dc4);}
+.bar-fill.d2{background:linear-gradient(90deg,#38bdf8,#7dd3fc);}
+.bar-fill.d3{background:linear-gradient(90deg,#62d9f0,#a6ecfa);}
+.bar-fill.d4{background:linear-gradient(90deg,#86efac,#bbf7d0);}
+
+/* ---------- Compare ---------- */
+.compare{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin:28px 0;
+}
+.compare .card{
+  padding:22px 20px;
+  border-radius:var(--radius);
+  background:var(--card);
+  border:1px solid var(--card-border);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;
+}
+.compare .card:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow);
+}
+.compare .card.rose{border-color:rgba(244,114,182,0.5);}
+.compare .card.dew{border-color:rgba(166,236,250,0.5);}
+.compare h3{
+  font-family:'Baloo Bhai 2',cursive;
+  font-size:1.12rem;
+  font-weight:700;
+  margin-bottom:10px;
+}
+.compare .card.rose h3{color:var(--rose-200);}
+.compare .card.dew h3{color:var(--dew-300);}
+.compare ul{
+  list-style:none;
+  font-size:.86rem;
+  color:var(--text-soft);
+  line-height:1.9;
+}
+.compare li::before{
+  content:'•';
+  color:var(--rose-300);
+  margin-right:8px;
+  font-weight:700;
+}
+
+/* ---------- Steps ---------- */
+.steps{
+  display:grid;
+  gap:14px;
+  margin:28px 0;
+}
+.step{
+  display:flex;
+  align-items:flex-start;
+  gap:16px;
+  padding:18px 20px;
+  border-radius:18px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  font-size:.9rem;
+  color:var(--text-soft);
+  transition:transform .3s ease,border-color .3s ease;
+}
+.step:hover{
+  transform:translateX(6px);
+  border-color:rgba(244,114,182,0.55);
+}
+.step .n{
+  flex:0 0 38px;
+  width:38px;height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:1rem;
+  color:#2a0a1a;
+  background:var(--grad-dew);
+}
+.step .txt strong{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:#fff5fb;
+  margin-bottom:2px;
+}
+
+/* ---------- Diagram ---------- */
+.diagram{
+  margin:30px 0;
+  padding:18px;
+  border-radius:var(--radius);
+  background:rgba(255,200,230,0.035);
+  border:1px solid var(--card-border);
+}
+.diagram svg{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.svg-label{
+  font-family:'Poppins',sans-serif;
+  font-size:12px;
+  fill:#c4a8bc;
+}
+.svg-label-bright{
+  font-family:'Poppins',sans-serif;
+  font-size:12.5px;
+  font-weight:600;
+  fill:#ffe4f0;
+}
+
+/* ---------- Timeline ---------- */
+.timeline{
+  position:relative;
+  margin:32px 0;
+  padding-left:34px;
+}
+.timeline::before{
+  content:'';
+  position:absolute;
+  top:8px;bottom:8px;left:11px;
+  width:3px;
+  border-radius:99px;
+  background:linear-gradient(180deg,#ffe4f0,#f472b6,#38bdf8);
+  opacity:.6;
+}
+.tl-item{
+  position:relative;
+  margin-bottom:22px;
+  padding:16px 18px;
+  border-radius:16px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  font-size:.88rem;
+  color:var(--text-soft);
+  transition:transform .3s ease,border-color .3s ease;
+}
+.tl-item:hover{
+  transform:translateX(4px);
+  border-color:rgba(244,114,182,0.55);
+}
+.tl-item::before{
+  content:'';
+  position:absolute;
+  left:-31px;top:22px;
+  width:14px;height:14px;
+  border-radius:50%;
+  background:var(--rose-300);
+  box-shadow:0 0 0 4px rgba(244,114,182,0.2),0 0 12px rgba(244,114,182,0.75);
+}
+.tl-item strong{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:#fff5fb;
+  margin-bottom:3px;
+}
+
+/* ---------- Quote ---------- */
+.quote{
+  max-width:720px;
+  margin:clamp(56px,8vw,86px) auto;
+  text-align:center;
+  padding:38px 26px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:600;
+  font-size:clamp(1.1rem,3.1vw,1.55rem);
+  line-height:1.72;
+  color:#fff5fb;
+  border-top:1px solid rgba(244,114,182,0.3);
+  border-bottom:1px solid rgba(244,114,182,0.3);
+  background:radial-gradient(circle at 50% 0%,rgba(244,114,182,0.16),transparent 72%);
+}
+.quote .mark{
+  display:block;
+  font-size:2.4rem;
+  line-height:1;
+  margin-bottom:12px;
+  color:var(--gold-sun);
+}
+
+/* ---------- Footer ---------- */
+footer{
+  text-align:center;
+  padding:46px 22px 84px;
+  font-size:.85rem;
+  color:var(--muted);
+  border-top:1px solid rgba(244,114,182,0.14);
+  max-width:var(--maxw);
+  margin:0 auto;
+}
+
+/* ---------- Back to top ---------- */
+#backToTop{
+  position:fixed;
+  right:20px;bottom:22px;
+  width:52px;height:52px;
+  border:none;
+  border-radius:50%;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  font-size:1.35rem;
+  font-weight:700;
+  color:#2a0a1a;
+  background:linear-gradient(135deg,#ff9dc4,#ec4899);
+  box-shadow:0 12px 30px rgba(244,114,182,0.45);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(18px) scale(.88);
+  transition:opacity .35s ease,transform .35s ease,box-shadow .35s ease;
+  z-index:99;
+}
+#backToTop.show{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0) scale(1);
+}
+#backToTop:hover{box-shadow:0 16px 38px rgba(244,114,182,0.65);}
+
+/* ---------- Scroll reveal ---------- */
+.reveal{
+  opacity:0;
+  transform:translateY(38px);
+  transition:opacity .85s ease,transform .85s cubic-bezier(.22,1,.36,1);
+}
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ============================================================
+   5. RESPONSIVE
+   ============================================================ */
+@media (max-width:600px){
+  .hero{padding:80px 18px 64px;}
+  .hero-visual{width:226px;height:218px;margin-bottom:16px;}
+  .leaf{width:174px;height:118px;margin:-59px 0 0 -87px;}
+  .leaf::after{width:140px;margin-left:-70px;}
+  .dawn-glow{width:200px;height:200px;margin:-100px 0 0 -100px;}
+  .dewdrop:nth-child(1){top:32px;left:54px;width:18px;height:22px;}
+  .dewdrop:nth-child(2){top:48px;left:94px;width:13px;height:16px;}
+  .dewdrop:nth-child(3){top:56px;right:60px;width:20px;height:24px;}
+  .dewdrop:nth-child(4){top:28px;right:86px;width:11px;height:14px;}
+  .dewdrop:nth-child(5){top:66px;left:74px;width:10px;height:12px;}
+  .sun-ray{width:60px;height:60px;}
+
+  .article{padding:0 16px 30px;}
+
+  .section-head{gap:12px;margin-bottom:16px;}
+  .badge{width:44px;height:44px;border-radius:13px;font-size:1.1rem;}
+
+  .stats{grid-template-columns:1fr;}
+  .compare{grid-template-columns:1fr;}
+  .bar-row{grid-template-columns:98px 1fr 66px;font-size:.76rem;}
+  .bar-row .val{font-size:.7rem;}
+
+  .step{flex-direction:row;padding:16px;}
+  .step:hover{transform:none;}
+
+  .callout{padding:16px 18px;}
+  .quote{padding:30px 18px;}
+
+  .timeline{padding-left:30px;}
+  .tl-item::before{left:-27px;}
+
+  #backToTop{width:46px;height:46px;right:14px;bottom:16px;font-size:1.2rem;}
+}
+
+@media (min-width:601px) and (max-width:900px){
+  .stats{grid-template-columns:repeat(2,1fr);}
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,
+  *::before,
+  *::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+  .reveal{opacity:1;transform:none;}
+  html{scroll-behavior:auto;}
+  .leaf-body{animation:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Fixed background ===== -->
+<div class="bg-fixed" aria-hidden="true"></div>
+<div class="blob blob-1" aria-hidden="true"></div>
+<div class="blob blob-2" aria-hidden="true"></div>
+<div class="blob blob-3" aria-hidden="true"></div>
+<div id="particles" aria-hidden="true"></div>
+
+<!-- ===== Reading progress ===== -->
+<div id="progressBar" aria-hidden="true"></div>
+
+<main>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="hero-visual" id="heroVisual" aria-hidden="true">
+      <div class="dawn-glow"></div>
+      <div class="sun-ray"></div>
+      <div class="mist"></div>
+      <div class="mist"></div>
+      <div class="mist"></div>
+      <div class="leaf">
+        <div class="leaf-body"></div>
+      </div>
+      <span class="dewdrop"></span>
+      <span class="dewdrop"></span>
+      <span class="dewdrop"></span>
+      <span class="dewdrop"></span>
+      <span class="dewdrop"></span>
+    </div>
+
+    <h1>ओस की बूँदें सुबह क्यों दिखती हैं?</h1>
+    <p>भोर होते ही घास के पत्तों पर चमकती बूँदें — जैसे प्रकृति ने रात भर मोती बिखेर दिए हों। यह जादू नहीं, बल्कि हवा में छिपी भाप और तापमान का खेल है। आइए जानते हैं ओस बनने की पूरी कहानी।</p>
+
+    <div class="scroll-hint">
+      <span>↓</span>
+      सुबह में उतरें
+    </div>
+  </section>
+
+  <!-- ================= ARTICLE ================= -->
+  <div class="article">
+
+    <!-- ---------- 01 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">01</span>
+        <h2>हर सुबह का एक छोटा-सा चमत्कार</h2>
+      </div>
+      <p>सुबह की सैर पर निकलें, तो घास के पत्तों पर चमकती बूँदें ज़रूर दिखेंगी। वे बूँदें पारदर्शी, गोल और बिल्कुल साफ़ होती हैं — जैसे किसी ने रात में चुपचाप पत्तों पर मोती बिखेर दिए हों। यही ओस है।</p>
+      <p>लेकिन सवाल उठता है — यह पानी आया कहाँ से? रात में बारिश तो नहीं हुई, फिर पत्तों पर पानी कैसे पहुँचा? क्या यह पेड़ों से टपका? क्या यह आसमान से गिरा?</p>
+      <p>असल में ओस आसमान से नहीं गिरती। वह <span class="hl">हवा में मौजूद भाप से बनती है</span>, जो ठंडी सतहों से मिलकर पानी की बूँदों में बदल जाती है। यह एक बहुत ही सुंदर प्राकृतिक प्रक्रिया है — जिसे हम रोज़ देखते हैं, लेकिन शायद ही कभी सोचते हैं।</p>
+
+      <div class="callout fact">🌟 <strong>रोचक तथ्य:</strong> ओस सिर्फ़ घास पर नहीं, बल्कि कार की छत, मकड़ी के जाले, पत्तों और फूलों पर भी बनती है — जहाँ भी रात में सतह ठंडी हो जाती है।</div>
+    </section>
+
+    <!-- ---------- 02 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">02</span>
+        <h2>ओस असल में क्या है?</h2>
+      </div>
+      <p>ओस पानी की वे बूँदें हैं जो <span class="hl-dew">हवा की भाप</span> से बनती हैं और ठंडी सतहों पर जमा हो जाती हैं। यह बारिश नहीं है, न ही यह पेड़ों से टपकता पानी है — बल्कि यह हवा में मौजूद नमी का पानी में बदल जाना है।</p>
+      <p>इसे समझने के लिए एक सरल उदाहरण लीजिए — ठंडे पानी की बोतल को गरम कमरे में रखें। बोतल की सतह पर पानी की बूँदें जमा होने लगती हैं। वह पानी बोतल के अंदर से नहीं आया, बल्कि हवा में मौजूद भाप से बना। ओस भी ठीक इसी तरह बनती है।</p>
+      <p>फ़र्क़ बस इतना है — बोतल ठंडी होती है क्योंकि हमने उसे फ्रिज में रखा। लेकिन रात में घास के पत्ते अपने आप ठंडे हो जाते हैं, क्योंकि वे आसमान की ओर खुली गर्मी छोड़ते हैं।</p>
+
+      <div class="composition">
+        <div class="comp-item">
+          <span class="icon">🌫️</span>
+          <span class="name">हवा की भाप</span>
+          <span class="val">ओस का असली स्रोत</span>
+        </div>
+        <div class="comp-item">
+          <span class="icon">🌡️</span>
+          <span class="name">ठंडी सतह</span>
+          <span class="val">जहाँ भाप पानी बनती है</span>
+        </div>
+        <div class="comp-item">
+          <span class="icon">💧</span>
+          <span class="name">पानी की बूँदें</span>
+          <span class="val">जो हमें सुबह दिखती हैं</span>
+        </div>
+        <div class="comp-item">
+          <span class="icon">🌿</span>
+          <span class="name">पत्ते और घास</span>
+          <span class="val">ओस की पसंदीदा जगह</span>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="num">~5°C</span>
+          <span class="label">ओस बनने के लिए ज़रूरी ठंडक</span>
+        </div>
+        <div class="stat">
+          <span class="num">~70-100%</span>
+          <span class="label">आदर्श नमी (humidity)</span>
+        </div>
+        <div class="stat">
+          <span class="num">~0.1 mm</span>
+          <span class="label">एक ओस की बूँद का आकार</span>
+        </div>
+        <div class="stat">
+          <span class="num">~2-3 mm</span>
+          <span class="label">सबसे बड़ी बूँद का व्यास</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 03 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">03</span>
+        <h2>रात में पत्ते ठंडे कैसे होते हैं?</h2>
+      </div>
+      <p>अगर हवा गरम है, तो पत्ते ठंडे कैसे हो जाते हैं? जवाब छिपा है एक बहुत ही सरल प्रक्रिया में — <span class="hl">विकिरण शीतलन</span>। रात में सूरज ढल जाता है, और ज़मीन अपनी गर्मी आसमान की ओर छोड़ने लगती है।</p>
+      <p>घास, पत्ते और पत्थर जैसी पतली चीज़ें जल्दी ठंडी हो जाती हैं, क्योंकि उनका द्रव्यमान कम होता है और गर्मी जल्दी छूट जाती है। इसलिए रात के अंत तक उनकी सतह हवा से भी ठंडी हो जाती है।</p>
+      <p>हवा जब इन ठंडी सतहों के संपर्क में आती है, तो उसकी भाप ठंडी होकर पानी बन जाती है और सतह पर बूँदों के रूप में जमा हो जाती है। यह ठीक वैसा ही है जैसे ठंडे गिलास पर पानी की बूँदें बनती हैं।</p>
+
+      <div class="steps">
+        <div class="step">
+          <span class="n">1</span>
+          <span class="txt"><strong>रात में सूरज ढलता है</strong>ज़मीन अपनी गर्मी आसमान की ओर छोड़ती है।</span>
+        </div>
+        <div class="step">
+          <span class="n">2</span>
+          <span class="txt"><strong>पत्ते जल्दी ठंडे होते हैं</strong>पतली सतह, कम द्रव्यमान, तेज़ शीतलन।</span>
+        </div>
+        <div class="step">
+          <span class="n">3</span>
+          <span class="txt"><strong>हवा की भाप संघनित होती है</strong>ठंडी सतह के संपर्क से भाप पानी बनती है।</span>
+        </div>
+        <div class="step">
+          <span class="n">4</span>
+          <span class="txt"><strong>सुबह ओस दिखती है</strong>पत्तों पर चमकती बूँदों के रूप में।</span>
+        </div>
+      </div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 660 300" role="img" aria-label="ओस बनने की प्रक्रिया — रात में पत्ते ठंडे होते हैं और हवा की भाप उन पर बूँदों में बदल जाती है">
+          <defs>
+            <linearGradient id="nightSky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0a0612"/>
+              <stop offset="70%" stop-color="#2d1a3a"/>
+              <stop offset="100%" stop-color="#4a2342"/>
+            </linearGradient>
+            <linearGradient id="leafGreen" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#22c55e"/>
+              <stop offset="100%" stop-color="#15803d"/>
+            </linearGradient>
+            <radialGradient id="dewShine">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="55%" stop-color="#d6f7ff"/>
+              <stop offset="100%" stop-color="#62d9f0"/>
+            </radialGradient>
+            <marker id="dArrow" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#ff9dc4"/>
+            </marker>
+          </defs>
+
+          <!-- रात का आकाश -->
+          <rect x="0" y="0" width="660" height="200" fill="url(#nightSky)"/>
+          <!-- तारे -->
+          <g fill="#ffffff" opacity="0.85">
+            <circle cx="60" cy="40" r="1.5"/>
+            <circle cx="120" cy="70" r="1"/>
+            <circle cx="200" cy="30" r="1.5"/>
+            <circle cx="280" cy="60" r="1"/>
+            <circle cx="360" cy="40" r="1.5"/>
+            <circle cx="440" cy="70" r="1"/>
+            <circle cx="520" cy="30" r="1.5"/>
+            <circle cx="600" cy="60" r="1"/>
+          </g>
+          <!-- चाँद -->
+          <circle cx="580" cy="50" r="20" fill="#fff8e1"/>
+          <circle cx="592" cy="44" r="20" fill="url(#nightSky)"/>
+          <text x="580" y="90" text-anchor="middle" class="svg-label-bright">रात</text>
+
+          <!-- ज़मीन/घास -->
+          <rect x="0" y="200" width="660" height="100" fill="#0a2a14"/>
+
+          <!-- पत्ता -->
+          <path d="M120 290 Q180 220 240 240 Q260 260 230 290 Q200 300 120 290 Z" fill="url(#leafGreen)"/>
+          <path d="M120 290 Q180 240 240 240" fill="none" stroke="#bbf7d0" stroke-width="1.5" opacity="0.7"/>
+          <text x="180" y="278" text-anchor="middle" class="svg-label-bright">पत्ता</text>
+
+          <!-- ओस की बूँदें -->
+          <ellipse cx="160" cy="242" rx="6" ry="7" fill="url(#dewShine)"/>
+          <ellipse cx="195" cy="252" rx="5" ry="6" fill="url(#dewShine)"/>
+          <ellipse cx="220" cy="248" rx="4" ry="5" fill="url(#dewShine)"/>
+
+          <!-- भाप के तीर (हवा → पत्ता) -->
+          <path d="M320 140 Q300 180 260 230" fill="none" stroke="#ff9dc4" stroke-width="2" marker-end="url(#dArrow)" opacity="0.85"/>
+          <path d="M360 150 Q340 190 280 235" fill="none" stroke="#ff9dc4" stroke-width="2" marker-end="url(#dArrow)" opacity="0.75"/>
+          <path d="M400 160 Q360 200 300 240" fill="none" stroke="#ff9dc4" stroke-width="2" marker-end="url(#dArrow)" opacity="0.65"/>
+
+          <text x="370" y="120" text-anchor="middle" class="svg-label-bright">हवा में भाप</text>
+          <text x="370" y="140" text-anchor="middle" class="svg-label">ठंडी सतह से मिलती है</text>
+
+          <!-- दाईं ओर स्पष्टीकरण -->
+          <g transform="translate(460,180)">
+            <rect x="0" y="0" width="170" height="80" rx="12" fill="rgba(214,247,255,0.1)" stroke="rgba(214,247,255,0.35)"/>
+            <text x="85" y="26" text-anchor="middle" class="svg-label-bright">ठंडी सतह</text>
+            <text x="85" y="48" text-anchor="middle" class="svg-label">+ हवा की भाप</text>
+            <text x="85" y="68" text-anchor="middle" class="svg-label-bright">= ओस की बूँदें</text>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ---------- 04 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">04</span>
+        <h2>संघनन: भाप से पानी बनने का विज्ञान</h2>
+      </div>
+      <p>हवा में हमेशा कुछ न कुछ भाप मौजूद रहती है। जब यह भाप ठंडी सतह के संपर्क में आती है, तो वह <span class="hl">संघनन (condensation)</span> की प्रक्रिया से पानी की बूँदों में बदल जाती है।</p>
+      <p>संघनन के लिए एक खास तापमान ज़रूरी होता है, जिसे <span class="hl-warm">ओस बिंदु (dew point)</span> कहते हैं। जब हवा का तापमान उस बिंदु तक पहुँच जाता है, तो भाप पानी बनने लगती है। रात में सतहें इसी तापमान तक ठंडी हो जाती हैं।</p>
+      <p>यही प्रक्रिया सुबह की कोहरे में, ठंडे पेय गिलास पर पानी की बूँदों में, और बादलों के बनने में भी काम करती है। संघनन प्रकृति की सबसे आम और सबसे सुंदर प्रक्रियाओं में से एक है।</p>
+
+      <div class="bars">
+        <div class="bar-row">
+          <span class="name">सुबह 5 बजे</span>
+          <span class="bar-track"><span class="bar-fill d3" data-width="95"></span></span>
+          <span class="val">सबसे ज़्यादा ओस</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">सुबह 6 बजे</span>
+          <span class="bar-track"><span class="bar-fill d2" data-width="80"></span></span>
+          <span class="val">अभी भी घनी</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">सुबह 7 बजे</span>
+          <span class="bar-track"><span class="bar-fill d1" data-width="55"></span></span>
+          <span class="val">धीरे-धीरे सूखती</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">सुबह 9 बजे</span>
+          <span class="bar-track"><span class="bar-fill d4" data-width="15"></span></span>
+          <span class="val">लगभग गायब</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 05 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">05</span>
+        <h2>ओस कब सबसे ज़्यादा बनती है?</h2>
+      </div>
+      <p>ओस हर रात नहीं बनती। उसके लिए कुछ खास परिस्थितियाँ ज़रूरी होती हैं — <span class="hl">साफ़ आसमान</span>, <span class="hl-dew">हल्की हवा</span>, <span class="hl-grass">पर्याप्त नमी</span> और <span class="hl-warm">ठंडी रातें</span>।</p>
+      <p>अगर आसमान बादलों से ढका हो, तो ज़मीन की गर्मी बाहर नहीं जा पाती और सतहें उतनी ठंडी नहीं होतीं। इसीलिए बादल वाली रातों में ओस कम बनती है।</p>
+      <p>हवा बहुत तेज़ हो, तो भी ओस नहीं बनती — क्योंकि तेज़ हवा सतह को गरम कर देती है। सबसे अच्छी ओस वह होती है जो <span class="hl">शांत, साफ़ और ठंडी रात</span> के बाद बनती है। इसीलिए सर्दियों में ओस सबसे ज़्यादा दिखती है।</p>
+
+      <div class="compare">
+        <div class="card rose">
+          <h3>ओस बनने की स्थिति</h3>
+          <ul>
+            <li>साफ़ आसमान</li>
+            <li>हल्की हवा</li>
+            <li>अधिक नमी</li>
+            <li>ठंडी रात</li>
+          </ul>
+        </div>
+        <div class="card dew">
+          <h3>ओस न बनने की स्थिति</h3>
+          <ul>
+            <li>बादलों से ढका आसमान</li>
+            <li>तेज़ हवा</li>
+            <li>कम नमी</li>
+            <li>गरम रात</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- QUOTE ---------- -->
+    <div class="quote reveal">
+      <span class="mark">❝</span>
+      ओस वह चुपचाप आने वाला मेहमान है, जो बिना शोर किए हर सुबह पत्तों पर मोती बिखेर देता है और सूरज उगते ही गायब हो जाता है।
+    </div>
+
+    <!-- ---------- 06 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">06</span>
+        <h2>सूरज उगते ही ओस क्यों गायब हो जाती है?</h2>
+      </div>
+      <p>सुबह सूरज उगते ही ओस की बूँदें धीरे-धीरे गायब होने लगती हैं। इसका कारण है — <span class="hl">वाष्पीकरण</span>। जैसे ही सूरज की गर्मी बढ़ती है, बूँदें फिर से भाप में बदल जाती हैं।</p>
+      <p>यह प्रक्रिया बहुत ही सुंदर है — एक पल पत्ते मोतियों से भरे दिखते हैं, और अगले ही पल वे सूखे लगते हैं। सूरज की पहली किरण ओस को जगाती है और उसे आसमान में वापस भेज देती है।</p>
+      <p>यही जल-चक्र का एक छोटा-सा हिस्सा है — पानी भाप बनता है, बादल बनता है, बारिश होती है, फिर ओस बनती है। यह चक्र बिना रुके चलता रहता है और पृथ्वी पर जीवन को बनाए रखता है।</p>
+    </section>
+
+    <!-- ---------- 07 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">07</span>
+        <h2>ओस का पौधों और जीवों के लिए महत्व</h2>
+      </div>
+      <p>ओस सिर्फ़ सुंदर नहीं होती — वह पौधों और जीवों के लिए बहुत ज़रूरी भी है। सूखे इलाकों में कई छोटे पौधे रात भर की ओस से पानी लेते हैं। घास, काई और छोटे कीट अपनी ज़रूरत का पानी ओस से पूरा करते हैं।</p>
+      <p>रेगिस्तानी इलाकों में ओस का महत्व और भी बढ़ जाता है, जहाँ बारिश कम होती है। कुछ पौधों के पत्ते ओस को सोखने में मदद करते हैं और उसे जड़ों तक पहुँचाते हैं।</p>
+      <p>पक्षी और कीड़े भी सुबह ओस के पानी से अपनी प्यास बुझाते हैं। यह दिखाता है कि प्रकृति की हर छोटी-सी चीज़ का कोई न कोई बड़ा महत्व ज़रूर होता है।</p>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <strong>पौधों के लिए</strong>
+          सूखे इलाकों में ओस पानी का ज़रिया बनती है।
+        </div>
+        <div class="tl-item">
+          <strong>छोटे जीवों के लिए</strong>
+          कीड़े, काई और घास ओस से पानी लेते हैं।
+        </div>
+        <div class="tl-item">
+          <strong>पक्षियों के लिए</strong>
+          सुबह प्यास बुझाने का सहज स्रोत।
+        </div>
+        <div class="tl-item">
+          <strong>मिट्टी के लिए</strong>
+          ओस मिट्टी की ऊपरी सतह को नम रखती है।
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 08 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">08</span>
+        <h2>ओस और हमारी संस्कृति</h2>
+      </div>
+      <p>ओस को लेकर हमारी संस्कृति में भी कई सुंदर बातें हैं। कवियों ने ओस को मोती, आँसू और प्रेम का प्रतीक माना है। हिंदी साहित्य में भी ओस की बूँदें कई कविताओं का विषय रही हैं।</p>
+      <p>पुराने ज़माने में लोग सुबह जल्दी उठकर ओस में चलना शुभ मानते थे, क्योंकि इससे शरीर को ठंडक और ताज़गी मिलती थी। कुछ इलाकों में ओस को औषधि की तरह भी देखा जाता था।</p>
+      <p>आज भी सुबह की सैर पर ओस भरे घास पर चलना एक अलग ही आनंद देता है — पैरों की तली में ठंडक, हवा में ताज़गी और आँखों में चमकती बूँदें। यह अनुभव ही ओस की सुंदरता है।</p>
+
+      <div class="callout dew">💡 <strong>जानिए:</strong> ओस को अंग्रेज़ी में <em>dew</em> कहते हैं, और "dew point" (ओस बिंदु) वह तापमान है जिस पर हवा की भाप पानी बन जाती है।</div>
+    </section>
+
+    <!-- ---------- 09 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">09</span>
+        <h2>ओस से जुड़े कुछ रोचक तथ्य</h2>
+      </div>
+      <p>ओस के बारे में कई दिलचस्प बातें हैं। जैसे — ओस सबसे ज़्यादा <span class="hl">पतली और खुरदरी सतहों</span> पर बनती है। घास, पत्ते और जाले इसके पसंदीदा स्थान हैं, क्योंकि इनकी सतह हवा के संपर्क में ज़्यादा रहती है और जल्दी ठंडी होती है।</p>
+      <p>ओस साफ़ पानी की होती है — इसमें नमक या खनिज नहीं होते। इसीलिए कुछ इलाकों में लोग ओस जमा करके उसका उपयोग पीने के लिए भी करते थे।</p>
+      <p>दिलचस्प बात यह भी है कि ओस का असर सूखे से लड़ने में मदद कर सकता है। कुछ देशों में वैज्ञानिक कृत्रिम ओस बनाकर पौधों को पानी पहुँचाने के तरीक़े पर शोध कर रहे हैं — यह भविष्य में पानी की कमी का एक समाधान बन सकता है।</p>
+
+      <div class="callout fact">🌟 <strong>रोचक तथ्य:</strong> एक बड़े घास के मैदान पर एक रात में <strong>लगभग 1.5 लीटर तक ओस</strong> जमा हो सकती है — इतना पानी कई छोटे पौधों की प्यास बुझाने के लिए काफ़ी है।</div>
+    </section>
+
+    <!-- ---------- 10 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">10</span>
+        <h2>निष्कर्ष</h2>
+      </div>
+      <p>तो सवाल का जवाब यह है — ओस की बूँदें सुबह इसलिए दिखती हैं क्योंकि <span class="hl">रात में सतहें ठंडी हो जाती हैं और हवा की भाप उन पर पानी बन जाती है</span>। यह संघनन की सुंदर प्रक्रिया है, जो रोज़ सुबह घास और पत्तों पर जादू की तरह दिखती है।</p>
+      <p>ओस सिर्फ़ नज़ारा नहीं — वह जल-चक्र का हिस्सा है, पौधों और जीवों के लिए पानी का ज़रिया है, और हमारी संस्कृति में सुंदरता का प्रतीक भी।</p>
+      <p>अगली बार सुबह जब आप ओस भरे पत्तों को देखें, तो याद रखें — वे बूँदें रात भर की ठंडक और हवा की भाप का मिलन हैं, जो सुबह की पहली किरण के इंतज़ार में पत्तों पर बैठी होती हैं।</p>
+    </section>
+
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>🌅 ओस वह सुंदर जादू है, जो हर सुबह बिना शोर किए दुनिया को मोतियों से भर देता है।</footer>
+
+</main>
+
+<!-- ===== Back to top ===== -->
+<button id="backToTop" aria-label="ऊपर जाएँ">↑</button>
+
+<script>
+/* ============================================================
+   सारा JavaScript — शुद्ध वैनिला
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var docEl       = document.documentElement;
+  var progressBar = document.getElementById('progressBar');
+  var backToTop   = document.getElementById('backToTop');
+
+  /* 1. स्क्रॉल हैंडलर */
+  var ticking = false;
+  function handleScroll() {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(function () {
+      var scrollTop = window.pageYOffset || docEl.scrollTop || 0;
+      var maxScroll = docEl.scrollHeight - docEl.clientHeight;
+      var percent   = maxScroll > 0 ? (scrollTop / maxScroll) * 100 : 0;
+      progressBar.style.width = percent.toFixed(2) + '%';
+      if (scrollTop > 500) {
+        backToTop.classList.add('show');
+      } else {
+        backToTop.classList.remove('show');
+      }
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('resize', handleScroll, { passive: true });
+  handleScroll();
+
+  /* 2. स्मूद स्क्रॉल */
+  backToTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* 3. स्क्रॉल रिवील + बार एनिमेशन */
+  var revealItems = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('visible');
+        var fills = entry.target.querySelectorAll('.bar-fill');
+        fills.forEach(function (fill) {
+          var w = fill.getAttribute('data-width') || '0';
+          window.setTimeout(function () {
+            fill.style.width = w + '%';
+          }, 180);
+        });
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    revealItems.forEach(function (el) { observer.observe(el); });
+  } else {
+    revealItems.forEach(function (el) { el.classList.add('visible'); });
+    document.querySelectorAll('.bar-fill').forEach(function (fill) {
+      fill.style.width = (fill.getAttribute('data-width') || 0) + '%';
+    });
+  }
+
+  /* 4. ओस कण जनरेटर */
+  var particleLayer = document.getElementById('particles');
+  function buildParticles() {
+    if (!particleLayer) return;
+    particleLayer.innerHTML = '';
+    var isSmall = window.innerWidth < 600;
+    var count   = isSmall ? 22 : 44;
+    var frag    = document.createDocumentFragment();
+    for (var i = 0; i < count; i++) {
+      var p = document.createElement('span');
+      p.className = 'particle';
+      var size = (Math.random() * 5 + 1.8).toFixed(1);
+      p.style.left = (Math.random() * 100).toFixed(2) + '%';
+      p.style.width = size + 'px';
+      p.style.height = (size * 1.2).toFixed(1) + 'px';
+      p.style.animationDuration = (Math.random() * 18 + 14).toFixed(1) + 's';
+      p.style.animationDelay = (-Math.random() * 32).toFixed(1) + 's';
+      p.style.setProperty('--drift', (Math.random() * 80 - 40).toFixed(0) + 'px');
+      frag.appendChild(p);
+    }
+    particleLayer.appendChild(frag);
+  }
+  buildParticles();
+
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    if (resizeTimer) window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(buildParticles, 300);
+  }, { passive: true });
+
+  /* 5. हीरो पैरालैक्स */
+  var hero        = document.querySelector('.hero');
+  var heroVisual  = document.getElementById('heroVisual');
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (hero && heroVisual && finePointer) {
+    var parallaxFrame = null;
+    hero.addEventListener('mousemove', function (e) {
+      if (parallaxFrame) return;
+      parallaxFrame = window.requestAnimationFrame(function () {
+        var rect = hero.getBoundingClientRect();
+        var cx = rect.width / 2;
+        var cy = rect.height / 2;
+        var dx = (e.clientX - rect.left - cx) / cx;
+        var dy = (e.clientY - rect.top  - cy) / cy;
+        heroVisual.style.transform =
+          'translate3d(' + (dx * 16).toFixed(2) + 'px,' +
+                            (dy * 12).toFixed(2) + 'px, 0)';
+        parallaxFrame = null;
+      });
+    }, { passive: true });
+    hero.addEventListener('mouseleave', function () {
+      heroVisual.style.transform = 'translate3d(0,0,0)';
+    });
+  }
+
+})();
+</script>
+</body>
+</html>

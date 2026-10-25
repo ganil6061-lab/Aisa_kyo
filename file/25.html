@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>माचिस की तीली रगड़ने पर क्यों जलती है?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@500;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   1. CSS VARIABLES — अग्नि थीम (नारंगी + लाल + गहरा काला)
+   ============================================================ */
+:root{
+  --bg-deep:#0a0402;
+  --bg-mid:#1c0a04;
+  --bg-fire:#3a1405;
+  --bg-ember:#5a1f08;
+
+  --fire-100:#fff7ed;
+  --fire-200:#ffedd5;
+  --fire-300:#fed7aa;
+  --fire-400:#fb923c;
+  --fire-500:#f97316;
+  --fire-600:#ea580c;
+  --red-500:#ef4444;
+  --red-600:#dc2626;
+  --crimson:#991b1b;
+  --amber:#fbbf24;
+  --amber-soft:#fde68a;
+  --gold:#fcd34d;
+  --spark:#fef08a;
+
+  --wood-200:#c9b08a;
+  --wood-300:#a8855a;
+  --wood-400:#7a5a3a;
+  --wood-500:#5a3f26;
+
+  --text:#fff8f0;
+  --text-soft:#e8cfb8;
+  --muted:#a88a70;
+
+  --card:rgba(255,200,150,0.055);
+  --card-border:rgba(251,146,60,0.24);
+  --radius:20px;
+
+  --grad-fire:linear-gradient(135deg,#fde68a,#fb923c,#ef4444);
+  --grad-ember:linear-gradient(135deg,#fb923c,#dc2626);
+  --grad-spark:linear-gradient(135deg,#fef08a,#fbbf24);
+
+  --shadow:0 18px 44px rgba(40,10,0,0.55);
+  --maxw:860px;
+}
+
+/* ============================================================
+   2. RESET + BASE
+   ============================================================ */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+
+body{
+  font-family:'Poppins',system-ui,sans-serif;
+  color:var(--text);
+  line-height:1.85;
+  background:var(--bg-deep);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- Fixed background ---------- */
+.bg-fixed{
+  position:fixed;
+  inset:0;
+  z-index:-7;
+  background:
+    radial-gradient(900px 620px at 50% -10%, rgba(249,115,22,0.22), transparent 70%),
+    radial-gradient(700px 500px at 88% 82%, rgba(220,38,38,0.14), transparent 72%),
+    linear-gradient(180deg,#0a0402 0%,#1c0a04 26%,#3a1405 56%,#4a1a06 78%,#5a1f08 100%);
+}
+
+/* ---------- Glowing blobs ---------- */
+.blob{
+  position:fixed;
+  border-radius:50%;
+  filter:blur(100px);
+  pointer-events:none;
+  z-index:-5;
+  opacity:.36;
+  animation:blobFloat 22s ease-in-out infinite alternate;
+}
+.blob-1{width:470px;height:470px;background:#ea580c;top:-160px;left:-120px;}
+.blob-2{width:430px;height:430px;background:#dc2626;bottom:-170px;right:-140px;animation-delay:-8s;opacity:.3;}
+.blob-3{width:330px;height:330px;background:#fbbf24;opacity:.16;top:48%;right:-130px;animation-delay:-14s;}
+
+@keyframes blobFloat{
+  from{transform:translate3d(0,0,0) scale(1);}
+  to{transform:translate3d(42px,-52px,0) scale(1.13);}
+}
+
+/* ---------- Spark particle layer ---------- */
+#particles{
+  position:fixed;
+  inset:0;
+  z-index:-4;
+  overflow:hidden;
+  pointer-events:none;
+}
+.particle{
+  position:absolute;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fef08a,#fb923c 60%,rgba(239,68,68,0) 100%);
+  box-shadow:0 0 12px rgba(251,146,60,0.8);
+  animation-name:sparkRise;
+  animation-timing-function:ease-out;
+  animation-iteration-count:infinite;
+  will-change:transform,opacity;
+}
+@keyframes sparkRise{
+  0%{transform:translate3d(0,110vh,0) scale(.6);opacity:0;}
+  10%{opacity:1;}
+  60%{transform:translate3d(var(--drift,25px),45vh,0) scale(1);}
+  100%{transform:translate3d(calc(var(--drift,25px) * -1.2),-10vh,0) scale(.5);opacity:0;}
+}
+
+/* ---------- Reading progress ---------- */
+#progressBar{
+  position:fixed;
+  top:0;left:0;
+  height:4px;
+  width:0%;
+  z-index:100;
+  border-radius:0 4px 4px 0;
+  background:linear-gradient(90deg,#fef08a,#fb923c,#ef4444,#991b1b);
+  box-shadow:0 0 14px rgba(251,146,60,0.85);
+  transition:width .09s linear;
+}
+
+/* ============================================================
+   3. HERO
+   ============================================================ */
+.hero{
+  min-height:100vh;
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:96px 20px 78px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ---------- Hero visual: जलती माचिस ---------- */
+.hero-visual{
+  position:relative;
+  width:280px;
+  height:290px;
+  margin-bottom:20px;
+  transition:transform .35s ease-out;
+  will-change:transform;
+}
+
+/* चमकती लौ */
+.flame-glow{
+  position:absolute;
+  top:38%;left:50%;
+  width:240px;height:240px;
+  margin:-120px 0 0 -120px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(249,115,22,0.5),rgba(220,38,38,0) 70%);
+  animation:flamePulse 2.5s ease-in-out infinite;
+}
+@keyframes flamePulse{
+  0%,100%{transform:scale(1);opacity:.8;}
+  50%{transform:scale(1.16);opacity:.55;}
+}
+
+/* माचिस की तीली */
+.matchstick{
+  position:absolute;
+  top:32%;left:50%;
+  width:8px;height:150px;
+  margin-left:-4px;
+  background:linear-gradient(180deg,#d4a373,#a8855a 30%,#c9b08a 60%,#7a5a3a 100%);
+  border-radius:2px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.5);
+  transform:rotate(-8deg);
+  transform-origin:top center;
+  animation:stickWobble 4s ease-in-out infinite;
+  z-index:2;
+}
+@keyframes stickWobble{
+  0%,100%{transform:rotate(-8deg);}
+  50%{transform:rotate(-5deg);}
+}
+
+/* जला हुआ सिरा */
+.matchstick::before{
+  content:'';
+  position:absolute;
+  top:-14px;left:50%;
+  width:14px;height:20px;
+  margin-left:-7px;
+  background:radial-gradient(circle,#fef08a 0%,#fb923c 40%,#991b1b 100%);
+  border-radius:50%;
+  box-shadow:0 0 12px rgba(251,146,60,0.9);
+  z-index:3;
+}
+
+/* लौ */
+.flame{
+  position:absolute;
+  top:24%;left:50%;
+  width:44px;height:78px;
+  margin-left:-22px;
+  background:radial-gradient(ellipse at 50% 80%,#fef08a 0%,#fbbf24 20%,#fb923c 40%,#ea580c 70%,rgba(220,38,38,0.4) 100%);
+  border-radius:50% 50% 50% 50% / 70% 70% 30% 30%;
+  filter:blur(1px);
+  animation:flameDance 0.8s ease-in-out infinite alternate;
+  z-index:4;
+  box-shadow:0 0 30px rgba(251,146,60,0.7);
+}
+.flame::before{
+  content:'';
+  position:absolute;
+  top:18%;left:22%;
+  width:56%;height:56%;
+  background:radial-gradient(ellipse,#fff8e1,rgba(255,248,225,0) 70%);
+  border-radius:50%;
+  opacity:.9;
+}
+@keyframes flameDance{
+  0%{transform:scale(1,1) rotate(-2deg);}
+  50%{transform:scale(.95,1.08) rotate(2deg);}
+  100%{transform:scale(1.05,.95) rotate(-1deg);}
+}
+
+/* चिंगारियाँ */
+.spark{
+  position:absolute;
+  width:5px;height:5px;
+  border-radius:50%;
+  background:radial-gradient(circle,#fef08a,#fb923c 70%,rgba(239,68,68,0) 100%);
+  box-shadow:0 0 8px rgba(251,146,60,0.9);
+  animation:sparkFly 3s ease-out infinite;
+  z-index:5;
+}
+.spark:nth-child(1){top:20%;left:48%;animation-delay:0s;}
+.spark:nth-child(2){top:22%;left:52%;animation-delay:-0.6s;}
+.spark:nth-child(3){top:18%;left:46%;animation-delay:-1.2s;}
+.spark:nth-child(4){top:24%;left:54%;animation-delay:-1.8s;}
+.spark:nth-child(5){top:20%;left:50%;animation-delay:-2.4s;}
+@keyframes sparkFly{
+  0%{transform:translate(0,0) scale(1);opacity:1;}
+  50%{opacity:.9;}
+  100%{transform:translate(var(--dx,10px),-80px) scale(.2);opacity:0;}
+}
+
+/* धुआँ */
+.smoke{
+  position:absolute;
+  top:20%;left:50%;
+  width:20px;height:20px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(200,180,160,0.4),rgba(200,180,160,0) 70%);
+  filter:blur(3px);
+  animation:smokeRise 5s ease-out infinite;
+  z-index:1;
+}
+.smoke:nth-child(1){margin-left:-40px;animation-delay:0s;}
+.smoke:nth-child(2){margin-left:-20px;animation-delay:-1.6s;}
+.smoke:nth-child(3){margin-left:0px;animation-delay:-3.2s;}
+@keyframes smokeRise{
+  0%{transform:translate(0,0) scale(1);opacity:0;}
+  20%{opacity:.7;}
+  100%{transform:translate(var(--sdx,-20px),-180px) scale(2.5);opacity:0;}
+}
+
+/* माचिस की डिब्बी */
+.matchbox{
+  position:absolute;
+  bottom:20px;left:50%;
+  width:120px;height:56px;
+  margin-left:-60px;
+  border-radius:6px;
+  background:
+    linear-gradient(180deg,#7a2e0a 0%,#a8855a 10%,#c9b08a 15%,#7a2e0a 20%,#5a1f08 100%);
+  box-shadow:0 8px 20px rgba(0,0,0,0.6),inset 0 -4px 8px rgba(0,0,0,0.5);
+  z-index:1;
+}
+.matchbox::before{
+  content:'';
+  position:absolute;
+  top:4px;left:4px;right:4px;
+  height:22px;
+  background:linear-gradient(180deg,#991b1b,#5a0f0f);
+  border-radius:3px;
+  box-shadow:inset 0 0 8px rgba(0,0,0,0.7);
+}
+.matchbox::after{
+  content:'';
+  position:absolute;
+  top:12px;left:12px;right:12px;
+  height:2px;
+  background:linear-gradient(90deg,transparent,rgba(251,146,60,0.7),transparent);
+  border-radius:2px;
+  opacity:.8;
+}
+
+/* ---------- Hero text ---------- */
+.hero h1{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:clamp(1.85rem,7.1vw,4.3rem);
+  line-height:1.22;
+  letter-spacing:-.5px;
+  background:linear-gradient(120deg,#ffffff 6%,#fff7ed 28%,#fed7aa 46%,#fb923c 68%,#fef08a 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  max-width:18ch;
+  margin-bottom:18px;
+  filter:drop-shadow(0 8px 26px rgba(251,146,60,0.4));
+}
+
+.hero p{
+  max-width:620px;
+  font-size:clamp(.92rem,2.4vw,1.06rem);
+  color:var(--text-soft);
+  font-weight:300;
+  text-align:center;
+}
+
+/* ---------- Scroll hint ---------- */
+.scroll-hint{
+  position:absolute;
+  bottom:26px;left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  color:var(--fire-300);
+  font-size:.74rem;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+  opacity:.85;
+}
+.scroll-hint span{
+  font-size:1.5rem;
+  line-height:1;
+  animation:bounce 1.9s ease-in-out infinite;
+}
+@keyframes bounce{
+  0%,100%{transform:translateY(0);opacity:.65;}
+  50%{transform:translateY(9px);opacity:1;}
+}
+
+/* ============================================================
+   4. ARTICLE LAYOUT
+   ============================================================ */
+.article{
+  width:100%;
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:0 20px 40px;
+  position:relative;
+}
+
+.section{margin-bottom:clamp(56px,8vw,92px);}
+
+.section-head{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.badge{
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  width:52px;height:52px;
+  border-radius:16px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:1.28rem;
+  color:#2a0a00;
+  background:linear-gradient(135deg,#fde68a,#fb923c,#ef4444);
+  box-shadow:0 10px 26px rgba(251,146,60,0.45);
+}
+
+h2{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:clamp(1.32rem,4vw,2rem);
+  line-height:1.35;
+  color:#fff8f0;
+}
+
+.article p{
+  text-align:justify;
+  text-justify:inter-word;
+  color:var(--text-soft);
+  font-size:clamp(.9rem,2.3vw,1rem);
+  font-weight:300;
+  margin-bottom:18px;
+}
+
+.hl{color:var(--fire-400);font-weight:600;}
+.hl-warm{color:var(--amber-soft);font-weight:600;}
+.hl-hot{color:var(--red-500);font-weight:600;}
+.hl-wood{color:var(--wood-200);font-weight:600;}
+
+/* ---------- Callouts ---------- */
+.callout{
+  border-radius:18px;
+  padding:18px 22px;
+  margin:24px 0;
+  font-size:clamp(.85rem,2.2vw,.95rem);
+  line-height:1.8;
+  border:1px solid rgba(251,146,60,0.3);
+  background:linear-gradient(135deg,rgba(251,146,60,0.16),rgba(220,38,38,0.06));
+  border-left:4px solid var(--fire-400);
+  color:#ffedd5;
+}
+.callout.fact{
+  border-color:rgba(253,230,138,0.34);
+  background:linear-gradient(135deg,rgba(253,230,138,0.14),rgba(251,191,36,0.05));
+  border-left-color:var(--amber-soft);
+}
+.callout.safety{
+  border-color:rgba(239,68,68,0.36);
+  background:linear-gradient(135deg,rgba(239,68,68,0.14),rgba(153,27,27,0.05));
+  border-left-color:var(--red-500);
+}
+
+/* ---------- Stats ---------- */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(152px,1fr));
+  gap:16px;
+  margin:30px 0;
+}
+.stat{
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  padding:22px 16px;
+  text-align:center;
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;
+}
+.stat:hover{
+  transform:translateY(-9px);
+  box-shadow:var(--shadow);
+  border-color:rgba(251,146,60,0.55);
+}
+.stat .num{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:clamp(1.35rem,4.2vw,1.85rem);
+  line-height:1.15;
+  background:var(--grad-fire);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.stat .label{
+  display:block;
+  margin-top:8px;
+  font-size:.78rem;
+  line-height:1.55;
+  color:var(--muted);
+}
+
+/* ---------- Composition cards ---------- */
+.composition{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(155px,1fr));
+  gap:14px;
+  margin:28px 0;
+}
+.comp-item{
+  padding:20px 16px;
+  border-radius:18px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  text-align:center;
+  transition:transform .3s ease,border-color .3s ease;
+}
+.comp-item:hover{
+  transform:translateY(-6px);
+  border-color:rgba(251,146,60,0.55);
+}
+.comp-item .icon{
+  font-size:1.9rem;
+  display:block;
+  margin-bottom:8px;
+  line-height:1;
+}
+.comp-item .name{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:var(--fire-200);
+  display:block;
+  margin-bottom:4px;
+}
+.comp-item .val{
+  font-size:.78rem;
+  line-height:1.5;
+  color:var(--muted);
+}
+
+/* ---------- Progress bars ---------- */
+.bars{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  margin:28px 0;
+  padding:22px 20px;
+  border-radius:var(--radius);
+  background:rgba(255,200,150,0.045);
+  border:1px solid var(--card-border);
+}
+.bar-row{
+  display:grid;
+  grid-template-columns:126px 1fr 84px;
+  align-items:center;
+  gap:12px;
+  font-size:.82rem;
+  color:var(--text-soft);
+}
+.bar-row .name{font-weight:500;}
+.bar-row .val{text-align:right;color:var(--muted);font-size:.76rem;}
+.bar-track{
+  height:12px;
+  border-radius:99px;
+  background:rgba(255,255,255,0.08);
+  overflow:hidden;
+}
+.bar-fill{
+  height:100%;
+  width:0;
+  border-radius:99px;
+  transition:width 1.35s cubic-bezier(.22,1,.36,1);
+}
+.bar-fill.f1{background:linear-gradient(90deg,#991b1b,#ef4444);}
+.bar-fill.f2{background:linear-gradient(90deg,#ea580c,#fb923c);}
+.bar-fill.f3{background:linear-gradient(90deg,#fbbf24,#fde68a);}
+.bar-fill.f4{background:linear-gradient(90deg,#fef08a,#fbbf24);}
+
+/* ---------- Compare ---------- */
+.compare{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin:28px 0;
+}
+.compare .card{
+  padding:22px 20px;
+  border-radius:var(--radius);
+  background:var(--card);
+  border:1px solid var(--card-border);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;
+}
+.compare .card:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow);
+}
+.compare .card.fire{border-color:rgba(251,146,60,0.5);}
+.compare .card.wood{border-color:rgba(201,176,138,0.5);}
+.compare h3{
+  font-family:'Baloo Bhai 2',cursive;
+  font-size:1.12rem;
+  font-weight:700;
+  margin-bottom:10px;
+}
+.compare .card.fire h3{color:var(--fire-200);}
+.compare .card.wood h3{color:var(--wood-200);}
+.compare ul{
+  list-style:none;
+  font-size:.86rem;
+  color:var(--text-soft);
+  line-height:1.9;
+}
+.compare li::before{
+  content:'•';
+  color:var(--fire-400);
+  margin-right:8px;
+  font-weight:700;
+}
+
+/* ---------- Steps ---------- */
+.steps{
+  display:grid;
+  gap:14px;
+  margin:28px 0;
+}
+.step{
+  display:flex;
+  align-items:flex-start;
+  gap:16px;
+  padding:18px 20px;
+  border-radius:18px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  font-size:.9rem;
+  color:var(--text-soft);
+  transition:transform .3s ease,border-color .3s ease;
+}
+.step:hover{
+  transform:translateX(6px);
+  border-color:rgba(251,146,60,0.55);
+}
+.step .n{
+  flex:0 0 38px;
+  width:38px;height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:1rem;
+  color:#2a0a00;
+  background:var(--grad-fire);
+}
+.step .txt strong{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:#fff8f0;
+  margin-bottom:2px;
+}
+
+/* ---------- Diagram ---------- */
+.diagram{
+  margin:30px 0;
+  padding:18px;
+  border-radius:var(--radius);
+  background:rgba(255,200,150,0.035);
+  border:1px solid var(--card-border);
+}
+.diagram svg{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.svg-label{
+  font-family:'Poppins',sans-serif;
+  font-size:12px;
+  fill:#c9ae95;
+}
+.svg-label-bright{
+  font-family:'Poppins',sans-serif;
+  font-size:12.5px;
+  font-weight:600;
+  fill:#fff8e1;
+}
+
+/* ---------- Timeline ---------- */
+.timeline{
+  position:relative;
+  margin:32px 0;
+  padding-left:34px;
+}
+.timeline::before{
+  content:'';
+  position:absolute;
+  top:8px;bottom:8px;left:11px;
+  width:3px;
+  border-radius:99px;
+  background:linear-gradient(180deg,#fef08a,#fb923c,#991b1b);
+  opacity:.6;
+}
+.tl-item{
+  position:relative;
+  margin-bottom:22px;
+  padding:16px 18px;
+  border-radius:16px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  font-size:.88rem;
+  color:var(--text-soft);
+  transition:transform .3s ease,border-color .3s ease;
+}
+.tl-item:hover{
+  transform:translateX(4px);
+  border-color:rgba(251,146,60,0.55);
+}
+.tl-item::before{
+  content:'';
+  position:absolute;
+  left:-31px;top:22px;
+  width:14px;height:14px;
+  border-radius:50%;
+  background:var(--fire-400);
+  box-shadow:0 0 0 4px rgba(251,146,60,0.2),0 0 12px rgba(251,146,60,0.75);
+}
+.tl-item strong{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:#fff8f0;
+  margin-bottom:3px;
+}
+
+/* ---------- Quote ---------- */
+.quote{
+  max-width:720px;
+  margin:clamp(56px,8vw,86px) auto;
+  text-align:center;
+  padding:38px 26px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:600;
+  font-size:clamp(1.1rem,3.1vw,1.55rem);
+  line-height:1.72;
+  color:#fff8f0;
+  border-top:1px solid rgba(251,146,60,0.3);
+  border-bottom:1px solid rgba(251,146,60,0.3);
+  background:radial-gradient(circle at 50% 0%,rgba(251,146,60,0.16),transparent 72%);
+}
+.quote .mark{
+  display:block;
+  font-size:2.4rem;
+  line-height:1;
+  margin-bottom:12px;
+  color:var(--spark);
+}
+
+/* ---------- Footer ---------- */
+footer{
+  text-align:center;
+  padding:46px 22px 84px;
+  font-size:.85rem;
+  color:var(--muted);
+  border-top:1px solid rgba(251,146,60,0.14);
+  max-width:var(--maxw);
+  margin:0 auto;
+}
+
+/* ---------- Back to top ---------- */
+#backToTop{
+  position:fixed;
+  right:20px;bottom:22px;
+  width:52px;height:52px;
+  border:none;
+  border-radius:50%;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  font-size:1.35rem;
+  font-weight:700;
+  color:#2a0a00;
+  background:linear-gradient(135deg,#fde68a,#fb923c);
+  box-shadow:0 12px 30px rgba(251,146,60,0.5);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(18px) scale(.88);
+  transition:opacity .35s ease,transform .35s ease,box-shadow .35s ease;
+  z-index:99;
+}
+#backToTop.show{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0) scale(1);
+}
+#backToTop:hover{box-shadow:0 16px 38px rgba(251,146,60,0.7);}
+
+/* ---------- Scroll reveal ---------- */
+.reveal{
+  opacity:0;
+  transform:translateY(38px);
+  transition:opacity .85s ease,transform .85s cubic-bezier(.22,1,.36,1);
+}
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ============================================================
+   5. RESPONSIVE
+   ============================================================ */
+@media (max-width:600px){
+  .hero{padding:80px 18px 64px;}
+  .hero-visual{width:222px;height:238px;margin-bottom:16px;}
+  .matchstick{width:6px;height:120px;margin-left:-3px;}
+  .matchstick::before{width:11px;height:16px;margin-left:-5.5px;top:-11px;}
+  .flame{width:34px;height:60px;margin-left:-17px;}
+  .flame-glow{width:190px;height:190px;margin:-95px 0 0 -95px;}
+  .matchbox{width:96px;height:46px;margin-left:-48px;bottom:14px;}
+  .spark{width:4px;height:4px;}
+  .smoke{width:14px;height:14px;}
+
+  .article{padding:0 16px 30px;}
+
+  .section-head{gap:12px;margin-bottom:16px;}
+  .badge{width:44px;height:44px;border-radius:13px;font-size:1.1rem;}
+
+  .stats{grid-template-columns:1fr;}
+  .compare{grid-template-columns:1fr;}
+  .bar-row{grid-template-columns:98px 1fr 66px;font-size:.76rem;}
+  .bar-row .val{font-size:.7rem;}
+
+  .step{flex-direction:row;padding:16px;}
+  .step:hover{transform:none;}
+
+  .callout{padding:16px 18px;}
+  .quote{padding:30px 18px;}
+
+  .timeline{padding-left:30px;}
+  .tl-item::before{left:-27px;}
+
+  #backToTop{width:46px;height:46px;right:14px;bottom:16px;font-size:1.2rem;}
+}
+
+@media (min-width:601px) and (max-width:900px){
+  .stats{grid-template-columns:repeat(2,1fr);}
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,
+  *::before,
+  *::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+  .reveal{opacity:1;transform:none;}
+  html{scroll-behavior:auto;}
+  .flame,.matchstick{animation:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Fixed background ===== -->
+<div class="bg-fixed" aria-hidden="true"></div>
+<div class="blob blob-1" aria-hidden="true"></div>
+<div class="blob blob-2" aria-hidden="true"></div>
+<div class="blob blob-3" aria-hidden="true"></div>
+<div id="particles" aria-hidden="true"></div>
+
+<!-- ===== Reading progress ===== -->
+<div id="progressBar" aria-hidden="true"></div>
+
+<main>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="hero-visual" id="heroVisual" aria-hidden="true">
+      <div class="flame-glow"></div>
+      <div class="smoke" style="--sdx:-30px;"></div>
+      <div class="smoke" style="--sdx:-10px;"></div>
+      <div class="smoke" style="--sdx:10px;"></div>
+      <div class="flame"></div>
+      <span class="spark" style="--dx:-14px;"></span>
+      <span class="spark" style="--dx:18px;"></span>
+      <span class="spark" style="--dx:-8px;"></span>
+      <span class="spark" style="--dx:12px;"></span>
+      <span class="spark" style="--dx:0px;"></span>
+      <div class="matchstick"></div>
+      <div class="matchbox"></div>
+    </div>
+
+    <h1>माचिस की तीली रगड़ने पर क्यों जलती है?</h1>
+    <p>एक छोटी-सी लकड़ी, उसका लाल सिरा और डिब्बे पर एक झटका — और अचानक लौ जल उठती है। यह जादू नहीं, बल्कि घर्षण, ऊष्मा और रसायन का एक अद्भुत संगम है। आइए जानते हैं इस छोटी-सी तीली के पीछे का बड़ा विज्ञान।</p>
+
+    <div class="scroll-hint">
+      <span>↓</span>
+      आग में उतरें
+    </div>
+  </section>
+
+  <!-- ================= ARTICLE ================= -->
+  <div class="article">
+
+    <!-- ---------- 01 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">01</span>
+        <h2>एक झटका, और लौ जल उठती है</h2>
+      </div>
+      <p>हम सबने कभी न कभी माचिस जलाई है। डिब्बे पर तीली रगड़ी, थोड़ी-सी आवाज़ हुई और लौ प्रकट हो गई। यह क्रिया इतनी सहज लगती है कि हम उस पर कभी सोचते ही नहीं।</p>
+      <p>लेकिन सोचिए — बस रगड़ने से आग कैसे लग जाती है? रगड़ने में ऐसा क्या होता है कि ठंडी लकड़ी जल उठती है? यह सवाल बच्चों से लेकर वैज्ञानिकों तक सबको लुभाता रहा है।</p>
+      <p>असल में माचिस की तीली जलने की कहानी तीन चीज़ों पर टिकी है — <span class="hl">घर्षण</span>, <span class="hl-warm">ऊष्मा</span> और <span class="hl-hot">रासायनिक प्रतिक्रिया</span>। इन तीनों के मेल से ही वह छोटी-सी लौ पैदा होती है।</p>
+
+      <div class="callout fact">🌟 <strong>रोचक तथ्य:</strong> आधुनिक सेफ्टी माचिस का आविष्कार <strong>1844</strong> में गुस्ताफ एरिक पाश ने किया था। तब से लेकर आज तक इसका मूल सिद्धांत नहीं बदला।</div>
+    </section>
+
+    <!-- ---------- 02 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">02</span>
+        <h2>माचिस की तीली में क्या-क्या होता है?</h2>
+      </div>
+      <p>माचिस की तीली देखने में साधारण लकड़ी लगती है, लेकिन उसके सिरे पर कई रसायनों की एक पतली परत होती है। इन रसायनों में सबसे प्रमुख है <span class="hl">रेड फॉस्फोरस</span> और <span class="hl-warm">पोटैशियम क्लोरेट</span>।</p>
+      <p>माचिस की डिब्बी के किनारे पर भी एक खास रसायन लगा होता है — <span class="hl-hot">लाल फॉस्फोरस</span>, काँच का पाउडर और गोंद। जब तीली इस सतह पर रगड़ी जाती है, तो यह रसायन घर्षण से गर्म होकर प्रतिक्रिया शुरू कर देता है।</p>
+      <p>तीली के सिरे पर लगे रसायन में सल्फर, पोटैशियम क्लोरेट और अन्य पदार्थ होते हैं, जो गर्मी मिलते ही तेज़ी से जलने लगते हैं। यही कारण है कि थोड़ी-सी रगड़ से लौ पैदा हो जाती है।</p>
+
+      <div class="composition">
+        <div class="comp-item">
+          <span class="icon">🔴</span>
+          <span class="name">लाल फॉस्फोरस</span>
+          <span class="val">डिब्बे के किनारे पर</span>
+        </div>
+        <div class="comp-item">
+          <span class="icon">⚗️</span>
+          <span class="name">पोटैशियम क्लोरेट</span>
+          <span class="val">तीली के सिरे पर</span>
+        </div>
+        <div class="comp-item">
+          <span class="icon">🟡</span>
+          <span class="name">सल्फर</span>
+          <span class="val">जलने में मदद करता है</span>
+        </div>
+        <div class="comp-item">
+          <span class="icon">🪵</span>
+          <span class="name">लकड़ी</span>
+          <span class="val">आग को पकड़ती है</span>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="num">~250°C</span>
+          <span class="label">फॉस्फोरस के जलने का तापमान</span>
+        </div>
+        <div class="stat">
+          <span class="num">~0.1 s</span>
+          <span class="label">प्रतिक्रिया शुरू होने का समय</span>
+        </div>
+        <div class="stat">
+          <span class="num">~1000°C</span>
+          <span class="label">लौ का तापमान</span>
+        </div>
+        <div class="stat">
+          <span class="num">4-6 सेकंड</span>
+          <span class="label">तीली जलने का समय</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 03 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">03</span>
+        <h2>घर्षण: पहली चिंगारी</h2>
+      </div>
+      <p>जब हम माचिस की तीली को डिब्बे पर रगड़ते हैं, तो दोनों सतहों के बीच <span class="hl">घर्षण</span> पैदा होता है। घर्षण एक बल है जो गति का विरोध करता है — और यह विरोध <span class="hl-warm">गर्मी</span> पैदा करता है।</p>
+      <p>यह गर्मी बहुत ही कम समय में पैदा होती है, लेकिन स्थानीय रूप से तापमान इतना बढ़ जाता है कि फॉस्फोरस अपने जलने के तापमान तक पहुँच जाता है। यह पूरी प्रक्रिया बहुत सूक्ष्म होती है — एक सेकंड के दसवें हिस्से में।</p>
+      <p>यही कारण है कि माचिस को धीरे-धीरे नहीं, बल्कि तेज़ी से रगड़ना चाहिए। धीमी रगड़ से पर्याप्त ऊष्मा नहीं बनती और तीली नहीं जलती। तेज़ रगड़ से तापमान तुरंत बढ़ता है और लौ प्रकट होती है।</p>
+
+      <div class="steps">
+        <div class="step">
+          <span class="n">1</span>
+          <span class="txt"><strong>तीली को रगड़ना</strong>डिब्बे की खुरदरी सतह पर तीली रगड़ी जाती है।</span>
+        </div>
+        <div class="step">
+          <span class="n">2</span>
+          <span class="txt"><strong>घर्षण से गर्मी</strong>दो सतहों के बीच घर्षण से तापमान बढ़ता है।</span>
+        </div>
+        <div class="step">
+          <span class="n">3</span>
+          <span class="txt"><strong>फॉस्फोरस जलता है</strong>तापमान 250°C पार करते ही फॉस्फोरस सक्रिय हो जाता है।</span>
+        </div>
+        <div class="step">
+          <span class="n">4</span>
+          <span class="txt"><strong>लौ प्रकट होती है</strong>तीली का सिरा जल उठता है, फिर लकड़ी।</span>
+        </div>
+      </div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 660 300" role="img" aria-label="माचिस जलने की प्रक्रिया — घर्षण, ऊष्मा और रासायनिक प्रतिक्रिया">
+          <defs>
+            <linearGradient id="stickWood" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#d4a373"/>
+              <stop offset="50%" stop-color="#c9b08a"/>
+              <stop offset="100%" stop-color="#a8855a"/>
+            </linearGradient>
+            <radialGradient id="headRed">
+              <stop offset="0%" stop-color="#991b1b"/>
+              <stop offset="60%" stop-color="#dc2626"/>
+              <stop offset="100%" stop-color="#7a1a1a"/>
+            </radialGradient>
+            <radialGradient id="flameGrad">
+              <stop offset="0%" stop-color="#fef08a"/>
+              <stop offset="40%" stop-color="#fbbf24"/>
+              <stop offset="70%" stop-color="#fb923c"/>
+              <stop offset="100%" stop-color="#dc2626"/>
+            </radialGradient>
+            <radialGradient id="heatGlow">
+              <stop offset="0%" stop-color="#fbbf24"/>
+              <stop offset="60%" stop-color="#fb923c" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#dc2626" stop-opacity="0"/>
+            </radialGradient>
+            <marker id="heatArrow" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#fb923c"/>
+            </marker>
+          </defs>
+
+          <!-- बाईं ओर: रगड़ने की सतह -->
+          <rect x="40" y="200" width="240" height="60" rx="8" fill="#5a1f08"/>
+          <rect x="40" y="200" width="240" height="14" rx="6" fill="#991b1b"/>
+          <g fill="#7a1a1a">
+            <circle cx="70" cy="207" r="1.5"/>
+            <circle cx="110" cy="206" r="1.2"/>
+            <circle cx="150" cy="208" r="1.5"/>
+            <circle cx="190" cy="206" r="1.2"/>
+            <circle cx="230" cy="207" r="1.5"/>
+          </g>
+          <text x="160" y="285" text-anchor="middle" class="svg-label-bright">डिब्बे का किनारा</text>
+
+          <!-- तीली (तिरछी) -->
+          <g transform="rotate(-40 230 160)">
+            <rect x="150" y="150" width="160" height="10" rx="3" fill="url(#stickWood)"/>
+            <ellipse cx="315" cy="155" rx="14" ry="12" fill="url(#headRed)"/>
+          </g>
+
+          <!-- घर्षण की चिंगारियाँ -->
+          <circle cx="240" cy="185" r="10" fill="url(#heatGlow)"/>
+          <g stroke="#fbbf24" stroke-width="2" fill="none">
+            <path d="M240 175 L235 165"/>
+            <path d="M246 178 L250 168"/>
+            <path d="M234 180 L224 176"/>
+          </g>
+          <line x1="252" y1="200" x2="290" y2="200" stroke="#fb923c" stroke-width="2" marker-end="url(#heatArrow)"/>
+          <text x="320" y="196" class="svg-label-bright">घर्षण</text>
+          <text x="320" y="214" class="svg-label">से ऊष्मा</text>
+
+          <!-- तीली का सिरा जलता हुआ -->
+          <g transform="rotate(-40 230 160)">
+            <ellipse cx="330" cy="155" rx="14" ry="14" fill="url(#flameGrad)" opacity="0.9"/>
+            <ellipse cx="330" cy="155" rx="22" ry="22" fill="url(#heatGlow)" opacity="0.5"/>
+          </g>
+
+          <!-- लौ -->
+          <g transform="translate(400,100)">
+            <ellipse cx="60" cy="80" rx="26" ry="44" fill="url(#heatGlow)" opacity="0.55"/>
+            <path d="M60 30 Q80 60 78 90 Q78 118 60 120 Q42 118 42 90 Q40 60 60 30 Z" fill="url(#flameGrad)"/>
+            <ellipse cx="60" cy="92" rx="12" ry="18" fill="#fef08a" opacity="0.9"/>
+          </g>
+          <text x="460" y="240" text-anchor="middle" class="svg-label-bright">लौ</text>
+          <text x="460" y="258" text-anchor="middle" class="svg-label">रासायनिक प्रतिक्रिया</text>
+
+          <!-- ऊष्मा तीर -->
+          <line x1="380" y1="160" x2="430" y2="120" stroke="#fb923c" stroke-width="2" marker-end="url(#heatArrow)"/>
+          <text x="400" y="100" text-anchor="middle" class="svg-label-bright">~1000°C</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ---------- 04 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">04</span>
+        <h2>रासायनिक प्रतिक्रिया: असली कारण</h2>
+      </div>
+      <p>रगड़ने से सिर्फ़ पहली चिंगारी पैदा होती है। असली आग तो <span class="hl">रासायनिक प्रतिक्रिया</span> से बनती है। तीली के सिरे पर लगा पोटैशियम क्लोरेट एक बहुत शक्तिशाली ऑक्सीकरण करने वाला पदार्थ है।</p>
+      <p>जब फॉस्फोरस घर्षण से गरम होकर जलने लगता है, तो वह पोटैशियम क्लोरेट से ऑक्सीजन प्राप्त करता है। ऑक्सीजन की उपस्थिति में सल्फर और लकड़ी तेज़ी से जलने लगते हैं। यह पूरी प्रक्रिया बहुत तेज़ होती है।</p>
+      <p>रोचक बात यह है कि तीली को हवा से ऑक्सीजन की ज़रूरत नहीं होती — वह अपनी ऑक्सीजन खुद अपने सिरे में लिए बैठी होती है। इसीलिए तीली हवा के बिना भी जल सकती है।</p>
+
+      <div class="compare">
+        <div class="card fire">
+          <h3>रगड़ने से पहले</h3>
+          <ul>
+            <li>रसायन स्थिर</li>
+            <li>कोई प्रतिक्रिया नहीं</li>
+            <li>ठंडी तीली</li>
+            <li>आग नहीं</li>
+          </ul>
+        </div>
+        <div class="card wood">
+          <h3>रगड़ने के बाद</h3>
+          <ul>
+            <li>फॉस्फोरस सक्रिय</li>
+            <li>तेज़ रासायनिक प्रतिक्रिया</li>
+            <li>गरम तीली, लौ</li>
+            <li>ऑक्सीजन रिलीज़</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- QUOTE ---------- -->
+    <div class="quote reveal">
+      <span class="mark">❝</span>
+      माचिस की तीली वह छोटा-सा करिश्मा है, जो हमें सिखाती है — कभी-कभी सबसे छोटा झटका भी सबसे बड़ी आग जला सकता है।
+    </div>
+
+    <!-- ---------- 05 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">05</span>
+        <h2>सेफ्टी माचिस: सुरक्षा का डिज़ाइन</h2>
+      </div>
+      <p>आज जो माचिस हम इस्तेमाल करते हैं, उसे <span class="hl">सेफ्टी माचिस</span> कहते हैं। इसमें सबसे बड़ी खूबी यह है कि यह किसी भी खुरदरी सतह पर नहीं जलती — सिर्फ़ उस डिब्बे पर जलती है जिसके साथ वह आती है।</p>
+      <p>इसका कारण है — लाल फॉस्फोरस तीली पर नहीं, बल्कि डिब्बे के किनारे पर लगा होता है। तीली के सिरे पर सिर्फ़ पोटैशियम क्लोरेट और सल्फर होते हैं, जो अकेले जल नहीं सकते। जब तीली उस खास सतह पर रगड़ी जाती है, तो फॉस्फोरस तीली पर चढ़ता है और प्रतिक्रिया शुरू होती है।</p>
+      <p>यह डिज़ाइन बहुत सुरक्षित है — बच्चे गलती से भी तीली को दीवार या फर्श पर रगड़कर नहीं जला सकते। यह इंसानी समझदारी और विज्ञान का बेहतरीन मेल है।</p>
+
+      <div class="bars">
+        <div class="bar-row">
+          <span class="name">तीली की ज्वलनशीलता</span>
+          <span class="bar-track"><span class="bar-fill f1" data-width="85"></span></span>
+          <span class="val">बहुत ज़्यादा</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">सतह पर निर्भरता</span>
+          <span class="bar-track"><span class="bar-fill f2" data-width="95"></span></span>
+          <span class="val">अनिवार्य</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">सुरक्षा</span>
+          <span class="bar-track"><span class="bar-fill f3" data-width="75"></span></span>
+          <span class="val">उच्च</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">जलने का समय</span>
+          <span class="bar-track"><span class="bar-fill f4" data-width="40"></span></span>
+          <span class="val">4-6 सेकंड</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 06 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">06</span>
+        <h2>माचिस का इतिहास: एक दिलचस्प सफ़र</h2>
+      </div>
+      <p>माचिस की खोज एक लंबी यात्रा रही है। सबसे पहले 1826 में जॉन वॉकर ने "फ्रिक्शन माचिस" बनाई, लेकिन उसमें एक खतरनाक रसायन था जो जलते समय ज़हरीला धुआँ छोड़ता था।</p>
+      <p>फिर 1830 में चार्ल्स सोरिया ने फॉस्फोरस वाली माचिस बनाई, लेकिन वह भी सुरक्षित नहीं थी। कई हादसों और स्वास्थ्य समस्याओं के बाद 1844 में गुस्ताफ एरिक पाश ने सेफ्टी माचिस बनाई — जिसमें लाल फॉस्फोरस डिब्बे पर लगाया गया।</p>
+      <p>आज हम जो माचिस इस्तेमाल करते हैं, वह उसी सुरक्षित डिज़ाइन का विकसित रूप है। यह एक ऐसा आविष्कार है, जिसने इंसान की रोज़मर्रा की ज़िंदगी को बहुत आसान बनाया — रसोई जलाने से लेकर दीये जलाने तक।</p>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <strong>1826: जॉन वॉकर</strong>
+          पहली फ्रिक्शन माचिस — खतरनाक रसायन के साथ।
+        </div>
+        <div class="tl-item">
+          <strong>1830: चार्ल्स सोरिया</strong>
+          फॉस्फोरस माचिस — जल्दी जलती, लेकिन असुरक्षित।
+        </div>
+        <div class="tl-item">
+          <strong>1844: गुस्ताफ पाश</strong>
+          सेफ्टी माचिस — लाल फॉस्फोरस डिब्बे पर।
+        </div>
+        <div class="tl-item">
+          <strong>आज</strong>
+          सुरक्षित, सस्ती और हर घर में मौजूद।
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 07 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">07</span>
+        <h2>सावधानियाँ: आग के साथ खेल नहीं</h2>
+      </div>
+      <p>माचिस एक बहुत उपयोगी चीज़ है, लेकिन उससे सावधानी से ही बरताव करना चाहिए। तीली जलाते समय उसे चेहरे या कपड़ों से दूर रखें। जलती हुई तीली को कभी न फेंकें — उसे बुझाकर ही हटाएँ।</p>
+      <p>बच्चों को माचिस से दूर रखें, क्योंकि वे इसकी पूरी समझ नहीं रखते। माचिस को सूखी और सुरक्षित जगह पर रखें, गैस चूल्हे या गरम चीज़ों के पास नहीं।</p>
+      <p>अगर कभी कपड़े या कागज़ में आग लग जाए, तो उसे पानी या कंबल से बुझाएँ। आग से खेल कभी न करें — यह एक छोटी-सी लौ बहुत बड़ी आग बन सकती है।</p>
+
+      <div class="callout safety">⚠️ <strong>याद रखें:</strong> माचिस जलाना बच्चों का खेल नहीं है। बड़ों की निगरानी में ही इसका इस्तेमाल करें और जलती तीली को हमेशा बुझाएँ।</div>
+    </section>
+
+    <!-- ---------- 08 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">08</span>
+        <h2>माचिस के कुछ रोचक तथ्य</h2>
+      </div>
+      <p>माचिस के बारे में कई आश्चर्यजनक बातें हैं। जैसे — एक माचिस की डिब्बी में औसतन <span class="hl">40-50 तीलियाँ</span> होती हैं। हर तीली लगभग 4-6 सेकंड तक जलती है।</p>
+      <p>सबसे लंबी माचिस बनाने का रिकॉर्ड भी है — लगभग 1 मीटर लंबी! और कुछ देशों में माचिस को सजावट के लिए भी इस्तेमाल किया जाता है — उनके डिब्बों पर सुंदर चित्र छपे होते हैं।</p>
+      <p>दिलचस्प बात यह भी है कि माचिस की लकड़ी अक्सर एस्पेन या पाइन की होती है, क्योंकि ये लकड़ियाँ हल्की होती हैं और आसानी से जलती हैं। इससे माचिस बनाना आसान और सस्ता हो जाता है।</p>
+
+      <div class="callout fact">🌟 <strong>रोचक तथ्य:</strong> एक माचिस की तीली की लौ का तापमान लगभग <strong>1000°C</strong> तक हो सकता है — यह पानी के उबलने के तापमान से लगभग 5 गुना ज़्यादा है!</div>
+    </section>
+
+    <!-- ---------- 09 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">09</span>
+        <h2>माचिस से सीखें: विज्ञान की सुंदरता</h2>
+      </div>
+      <p>माचिस की तीली एक बहुत ही साधारण चीज़ है, लेकिन उसमें विज्ञान का पूरा खज़ाना छिपा है। घर्षण, ऊष्मा, रासायनिक प्रतिक्रिया, ऑक्सीकरण — सब कुछ एक साथ मिलकर लौ पैदा करते हैं।</p>
+      <p>यह हमें सिखाता है कि बड़ी चीज़ें हमेशा बड़ी नहीं होतीं। कभी-कभी सबसे छोटी चीज़ में सबसे बड़ा विज्ञान छिपा होता है। रोज़मर्रा की चीज़ों को ध्यान से देखें, तो हर जगह विज्ञान की सुंदरता नज़र आती है।</p>
+      <p>अगली बार जब आप माचिस जलाएँ, तो एक पल ठहरें और सोचें — इस छोटी-सी लौ के पीछे सदियों की खोज, अनेक वैज्ञानिकों की मेहनत और प्रकृति के कई नियम छिपे हैं।</p>
+
+      <div class="callout">💡 <strong>आसान उदाहरण:</strong> जब आप साइकिल के पहिये को तेज़ी से घुमाते हैं, तो उसका ब्रेक गरम हो जाता है। यही घर्षण से पैदा होने वाली गर्मी है — माचिस में भी यही होता है, बस बहुत छोटे पैमाने पर।</div>
+    </section>
+
+    <!-- ---------- 10 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">10</span>
+        <h2>निष्कर्ष</h2>
+      </div>
+      <p>तो सवाल का जवाब यह है — माचिस की तीली रगड़ने पर जलती है क्योंकि <span class="hl">घर्षण से पैदा हुई ऊष्मा फॉस्फोरस को सक्रिय कर देती है</span>, जो पोटैशियम क्लोरेट से ऑक्सीजन पाकर तेज़ी से जलने लगता है। यह पूरी रासायनिक प्रतिक्रिया एक सेकंड के दसवें हिस्से में होती है।</p>
+      <p>यह छोटी-सी तीली हमें दिखाती है कि घर्षण, ऊष्मा और रसायन मिलकर कैसे काम करते हैं। यह विज्ञान का सबसे आसान और सबसे सुंदर उदाहरण है, जो हर घर में मौजूद है।</p>
+      <p>अगली बार जब आप माचिस जलाएँ, तो उसे सिर्फ़ आग न समझें — उसे विज्ञान का एक छोटा-सा चमत्कार समझें, जो सदियों की खोज का नतीजा है।</p>
+    </section>
+
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>🔥 आग वह सबसे बड़ी खोज है, जिसने इंसान को अंधकार से प्रकाश तक पहुँचाया।</footer>
+
+</main>
+
+<!-- ===== Back to top ===== -->
+<button id="backToTop" aria-label="ऊपर जाएँ">↑</button>
+
+<script>
+/* ============================================================
+   सारा JavaScript — शुद्ध वैनिला
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var docEl       = document.documentElement;
+  var progressBar = document.getElementById('progressBar');
+  var backToTop   = document.getElementById('backToTop');
+
+  /* 1. स्क्रॉल हैंडलर */
+  var ticking = false;
+  function handleScroll() {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(function () {
+      var scrollTop = window.pageYOffset || docEl.scrollTop || 0;
+      var maxScroll = docEl.scrollHeight - docEl.clientHeight;
+      var percent   = maxScroll > 0 ? (scrollTop / maxScroll) * 100 : 0;
+      progressBar.style.width = percent.toFixed(2) + '%';
+      if (scrollTop > 500) {
+        backToTop.classList.add('show');
+      } else {
+        backToTop.classList.remove('show');
+      }
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('resize', handleScroll, { passive: true });
+  handleScroll();
+
+  /* 2. स्मूद स्क्रॉल */
+  backToTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* 3. स्क्रॉल रिवील + बार एनिमेशन */
+  var revealItems = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('visible');
+        var fills = entry.target.querySelectorAll('.bar-fill');
+        fills.forEach(function (fill) {
+          var w = fill.getAttribute('data-width') || '0';
+          window.setTimeout(function () {
+            fill.style.width = w + '%';
+          }, 180);
+        });
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    revealItems.forEach(function (el) { observer.observe(el); });
+  } else {
+    revealItems.forEach(function (el) { el.classList.add('visible'); });
+    document.querySelectorAll('.bar-fill').forEach(function (fill) {
+      fill.style.width = (fill.getAttribute('data-width') || 0) + '%';
+    });
+  }
+
+  /* 4. चिंगारी कण जनरेटर */
+  var particleLayer = document.getElementById('particles');
+  function buildParticles() {
+    if (!particleLayer) return;
+    particleLayer.innerHTML = '';
+    var isSmall = window.innerWidth < 600;
+    var count   = isSmall ? 22 : 44;
+    var frag    = document.createDocumentFragment();
+    for (var i = 0; i < count; i++) {
+      var p = document.createElement('span');
+      p.className = 'particle';
+      var size = (Math.random() * 4 + 1.5).toFixed(1);
+      p.style.left = (Math.random() * 100).toFixed(2) + '%';
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.animationDuration = (Math.random() * 6 + 4).toFixed(1) + 's';
+      p.style.animationDelay = (-Math.random() * 10).toFixed(1) + 's';
+      p.style.setProperty('--drift', (Math.random() * 60 - 30).toFixed(0) + 'px');
+      frag.appendChild(p);
+    }
+    particleLayer.appendChild(frag);
+  }
+  buildParticles();
+
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    if (resizeTimer) window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(buildParticles, 300);
+  }, { passive: true });
+
+  /* 5. हीरो पैरालैक्स */
+  var hero        = document.querySelector('.hero');
+  var heroVisual  = document.getElementById('heroVisual');
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (hero && heroVisual && finePointer) {
+    var parallaxFrame = null;
+    hero.addEventListener('mousemove', function (e) {
+      if (parallaxFrame) return;
+      parallaxFrame = window.requestAnimationFrame(function () {
+        var rect = hero.getBoundingClientRect();
+        var cx = rect.width / 2;
+        var cy = rect.height / 2;
+        var dx = (e.clientX - rect.left - cx) / cx;
+        var dy = (e.clientY - rect.top  - cy) / cy;
+        heroVisual.style.transform =
+          'translate3d(' + (dx * 16).toFixed(2) + 'px,' +
+                            (dy * 12).toFixed(2) + 'px, 0)';
+        parallaxFrame = null;
+      });
+    }, { passive: true });
+    hero.addEventListener('mouseleave', function () {
+      heroVisual.style.transform = 'translate3d(0,0,0)';
+    });
+  }
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>मोबाइल की बैटरी गर्म क्यों होती है?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@500;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   1. CSS VARIABLES — टेक + हीट थीम (काला + इलेक्ट्रिक नीला + नारंगी)
+   ============================================================ */
+:root{
+  --bg-deep:#05070d;
+  --bg-mid:#0a0f1e;
+  --bg-tech:#111a33;
+  --bg-warm:#2a130a;
+
+  --blue-100:#e0f2fe;
+  --blue-200:#bae6fd;
+  --blue-300:#7dd3fc;
+  --blue-400:#38bdf8;
+  --blue-500:#0ea5e9;
+  --electric:#3b82f6;
+
+  --orange-100:#ffedd5;
+  --orange-200:#fed7aa;
+  --orange-300:#fdba74;
+  --orange-400:#fb923c;
+  --orange-500:#f97316;
+  --heat:#ef4444;
+  --heat-soft:#fca5a5;
+
+  --green-ok:#22c55e;
+  --amber:#f59e0b;
+  --silver:#94a3b8;
+
+  --text:#eef6ff;
+  --text-soft:#c0d0e5;
+  --muted:#8496b0;
+
+  --card:rgba(200,230,255,0.055);
+  --card-border:rgba(120,180,255,0.2);
+  --radius:20px;
+
+  --grad-tech:linear-gradient(135deg,#7dd3fc,#3b82f6);
+  --grad-heat:linear-gradient(135deg,#fde68a,#fb923c,#ef4444);
+  --grad-cool:linear-gradient(135deg,#22c55e,#0ea5e9);
+
+  --shadow:0 18px 44px rgba(0,10,30,0.55);
+  --maxw:860px;
+}
+
+/* ============================================================
+   2. RESET + BASE
+   ============================================================ */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+
+body{
+  font-family:'Poppins',system-ui,sans-serif;
+  color:var(--text);
+  line-height:1.85;
+  background:var(--bg-deep);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- Fixed background ---------- */
+.bg-fixed{
+  position:fixed;
+  inset:0;
+  z-index:-7;
+  background:
+    radial-gradient(900px 620px at 50% -10%, rgba(59,130,246,0.2), transparent 70%),
+    radial-gradient(700px 520px at 88% 80%, rgba(249,115,22,0.14), transparent 72%),
+    linear-gradient(180deg,#05070d 0%,#0a0f1e 26%,#111a33 52%,#1e1830 76%,#2a130a 100%);
+}
+
+/* ---------- Glowing blobs ---------- */
+.blob{
+  position:fixed;
+  border-radius:50%;
+  filter:blur(100px);
+  pointer-events:none;
+  z-index:-5;
+  opacity:.36;
+  animation:blobFloat 22s ease-in-out infinite alternate;
+}
+.blob-1{width:460px;height:460px;background:#3b82f6;top:-150px;left:-120px;}
+.blob-2{width:430px;height:430px;background:#ea580c;bottom:-170px;right:-140px;animation-delay:-8s;opacity:.28;}
+.blob-3{width:330px;height:330px;background:#0ea5e9;opacity:.16;top:46%;right:-130px;animation-delay:-14s;}
+
+@keyframes blobFloat{
+  from{transform:translate3d(0,0,0) scale(1);}
+  to{transform:translate3d(42px,-52px,0) scale(1.13);}
+}
+
+/* ---------- Particle layer (data + heat) ---------- */
+#particles{
+  position:fixed;
+  inset:0;
+  z-index:-4;
+  overflow:hidden;
+  pointer-events:none;
+}
+.particle{
+  position:absolute;
+  border-radius:50%;
+  animation-name:floatUp;
+  animation-timing-function:linear;
+  animation-iteration-count:infinite;
+  will-change:transform,opacity;
+}
+.particle.cool{
+  background:radial-gradient(circle at 35% 30%,#ffffff,#7dd3fc 60%,rgba(125,211,252,0) 100%);
+  box-shadow:0 0 10px rgba(125,211,252,0.65);
+}
+.particle.hot{
+  background:radial-gradient(circle at 35% 30%,#fef3c7,#fb923c 55%,rgba(239,68,68,0) 100%);
+  box-shadow:0 0 10px rgba(251,146,60,0.75);
+}
+@keyframes floatUp{
+  0%{transform:translate3d(0,110vh,0) scale(.7);opacity:0;}
+  12%{opacity:.9;}
+  55%{transform:translate3d(var(--drift,20px),45vh,0) scale(1);}
+  100%{transform:translate3d(calc(var(--drift,20px) * -1),-14vh,0) scale(1.06);opacity:0;}
+}
+
+/* ---------- Reading progress ---------- */
+#progressBar{
+  position:fixed;
+  top:0;left:0;
+  height:4px;
+  width:0%;
+  z-index:100;
+  border-radius:0 4px 4px 0;
+  background:linear-gradient(90deg,#38bdf8,#3b82f6,#fb923c,#ef4444);
+  box-shadow:0 0 14px rgba(59,130,246,0.8);
+  transition:width .09s linear;
+}
+
+/* ============================================================
+   3. HERO
+   ============================================================ */
+.hero{
+  min-height:100vh;
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:96px 20px 78px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ---------- Hero visual: चार्ज होती फोन बैटरी + गर्मी ---------- */
+.hero-visual{
+  position:relative;
+  width:280px;
+  height:280px;
+  margin-bottom:20px;
+  transition:transform .35s ease-out;
+  will-change:transform;
+}
+
+/* गर्मी की लहरें */
+.heat-ring{
+  position:absolute;
+  top:50%;left:50%;
+  width:230px;height:230px;
+  margin:-115px 0 0 -115px;
+  border-radius:50%;
+  border:2px solid rgba(251,146,60,0.35);
+  animation:heatWave 3s ease-out infinite;
+}
+.heat-ring:nth-child(2){animation-delay:-1s;}
+.heat-ring:nth-child(3){animation-delay:-2s;}
+@keyframes heatWave{
+  0%{transform:scale(.75);opacity:0;}
+  25%{opacity:.8;}
+  100%{transform:scale(1.5);opacity:0;}
+}
+
+/* फोन */
+.phone{
+  position:absolute;
+  top:50%;left:50%;
+  width:120px;height:210px;
+  margin:-105px 0 0 -60px;
+  border-radius:22px;
+  background:linear-gradient(160deg,#1e293b,#0f172a 70%);
+  border:3px solid #334155;
+  box-shadow:
+    0 20px 40px rgba(0,0,0,0.6),
+    0 0 40px rgba(59,130,246,0.35),
+    inset 0 0 30px rgba(59,130,246,0.2);
+  overflow:hidden;
+}
+.phone::before{
+  content:'';
+  position:absolute;
+  top:8px;left:50%;
+  width:36px;height:5px;
+  margin-left:-18px;
+  border-radius:99px;
+  background:#0a0f1e;
+}
+
+/* स्क्रीन */
+.screen{
+  position:absolute;
+  inset:20px 8px 20px 8px;
+  border-radius:14px;
+  background:linear-gradient(160deg,#0b1220,#1e293b);
+  overflow:hidden;
+}
+
+/* चार्जिंग प्रतीक */
+.bolt{
+  position:absolute;
+  top:50%;left:50%;
+  width:44px;height:60px;
+  margin:-30px 0 0 -22px;
+  background:linear-gradient(180deg,#fde68a,#fb923c,#f97316);
+  clip-path:polygon(58% 0, 18% 58%, 45% 58%, 30% 100%, 82% 40%, 52% 40%);
+  filter:drop-shadow(0 0 12px rgba(251,146,60,0.9));
+  animation:boltPulse 1.8s ease-in-out infinite;
+}
+@keyframes boltPulse{
+  0%,100%{transform:scale(1);opacity:.95;}
+  50%{transform:scale(1.1);opacity:1;}
+}
+
+/* बैटरी का प्रतीक */
+.battery-icon{
+  position:absolute;
+  bottom:14px;left:50%;
+  width:44px;height:16px;
+  margin-left:-22px;
+  border:2px solid #7dd3fc;
+  border-radius:4px;
+  box-shadow:0 0 10px rgba(125,211,252,0.55);
+}
+.battery-icon::after{
+  content:'';
+  position:absolute;
+  top:4px;right:-6px;
+  width:4px;height:6px;
+  border-radius:2px;
+  background:#7dd3fc;
+}
+.battery-fill{
+  position:absolute;
+  top:2px;left:2px;
+  height:8px;
+  width:0;
+  border-radius:2px;
+  background:linear-gradient(90deg,#7dd3fc,#38bdf8);
+  box-shadow:0 0 8px rgba(125,211,252,0.8);
+  animation:fillUp 3s ease-in-out infinite;
+}
+@keyframes fillUp{
+  0%{width:4px;}
+  80%{width:30px;}
+  100%{width:4px;}
+}
+
+/* फोन के कोनों से निकलती गर्मी */
+.hot-corner{
+  position:absolute;
+  width:18px;height:18px;
+  border-radius:50%;
+  background:radial-gradient(circle,#fb923c,rgba(251,146,60,0));
+  filter:blur(2px);
+  opacity:.85;
+  animation:cornerPulse 2.2s ease-in-out infinite;
+}
+.hot-corner:nth-child(1){top:-6px;left:-6px;}
+.hot-corner:nth-child(2){top:-6px;right:-6px;animation-delay:-0.7s;}
+.hot-corner:nth-child(3){bottom:-6px;left:-6px;animation-delay:-1.4s;}
+.hot-corner:nth-child(4){bottom:-6px;right:-6px;animation-delay:-2s;}
+@keyframes cornerPulse{
+  0%,100%{transform:scale(1);opacity:.6;}
+  50%{transform:scale(1.3);opacity:1;}
+}
+
+/* ---------- Hero text ---------- */
+.hero h1{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:clamp(1.85rem,7.1vw,4.3rem);
+  line-height:1.22;
+  letter-spacing:-.5px;
+  background:linear-gradient(120deg,#ffffff 6%,#bae6fd 34%,#7dd3fc 52%,#fb923c 78%,#fef3c7 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  max-width:16ch;
+  margin-bottom:18px;
+  filter:drop-shadow(0 8px 26px rgba(59,130,246,0.35));
+}
+
+.hero p{
+  max-width:620px;
+  font-size:clamp(.92rem,2.4vw,1.06rem);
+  color:var(--text-soft);
+  font-weight:300;
+  text-align:center;
+}
+
+/* ---------- Scroll hint ---------- */
+.scroll-hint{
+  position:absolute;
+  bottom:26px;left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  color:var(--blue-300);
+  font-size:.74rem;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+  opacity:.85;
+}
+.scroll-hint span{
+  font-size:1.5rem;
+  line-height:1;
+  animation:bounce 1.9s ease-in-out infinite;
+}
+@keyframes bounce{
+  0%,100%{transform:translateY(0);opacity:.65;}
+  50%{transform:translateY(9px);opacity:1;}
+}
+
+/* ============================================================
+   4. ARTICLE LAYOUT
+   ============================================================ */
+.article{
+  width:100%;
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:0 20px 40px;
+  position:relative;
+}
+
+.section{margin-bottom:clamp(56px,8vw,92px);}
+
+.section-head{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.badge{
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  width:52px;height:52px;
+  border-radius:16px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:1.28rem;
+  color:#031024;
+  background:linear-gradient(135deg,#7dd3fc,#3b82f6);
+  box-shadow:0 10px 26px rgba(59,130,246,0.42);
+}
+
+h2{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:clamp(1.32rem,4vw,2rem);
+  line-height:1.35;
+  color:#f2f8ff;
+}
+
+.article p{
+  text-align:justify;
+  text-justify:inter-word;
+  color:var(--text-soft);
+  font-size:clamp(.9rem,2.3vw,1rem);
+  font-weight:300;
+  margin-bottom:18px;
+}
+
+.hl{color:var(--blue-300);font-weight:600;}
+.hl-warm{color:var(--orange-300);font-weight:600;}
+.hl-hot{color:var(--heat-soft);font-weight:600;}
+.hl-cool{color:#86efac;font-weight:600;}
+
+/* ---------- Callouts ---------- */
+.callout{
+  border-radius:18px;
+  padding:18px 22px;
+  margin:24px 0;
+  font-size:clamp(.85rem,2.2vw,.95rem);
+  line-height:1.8;
+  border:1px solid rgba(125,211,252,0.28);
+  background:linear-gradient(135deg,rgba(59,130,246,0.15),rgba(14,165,233,0.06));
+  border-left:4px solid var(--blue-400);
+  color:#dff0ff;
+}
+.callout.fact{
+  border-color:rgba(251,191,36,0.32);
+  background:linear-gradient(135deg,rgba(251,191,36,0.14),rgba(245,158,11,0.05));
+  border-left-color:var(--amber);
+}
+.callout.warn{
+  border-color:rgba(239,68,68,0.32);
+  background:linear-gradient(135deg,rgba(239,68,68,0.13),rgba(220,38,38,0.05));
+  border-left-color:var(--heat);
+}
+.callout.good{
+  border-color:rgba(34,197,94,0.32);
+  background:linear-gradient(135deg,rgba(34,197,94,0.12),rgba(21,128,61,0.04));
+  border-left-color:var(--green-ok);
+}
+
+/* ---------- Stats ---------- */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(152px,1fr));
+  gap:16px;
+  margin:30px 0;
+}
+.stat{
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  padding:22px 16px;
+  text-align:center;
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;
+}
+.stat:hover{
+  transform:translateY(-9px);
+  box-shadow:var(--shadow);
+  border-color:rgba(125,211,252,0.55);
+}
+.stat .num{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:clamp(1.4rem,4.2vw,1.9rem);
+  line-height:1.15;
+  background:var(--grad-tech);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.stat .label{
+  display:block;
+  margin-top:8px;
+  font-size:.78rem;
+  line-height:1.55;
+  color:var(--muted);
+}
+
+/* ---------- Temperature scale bar ---------- */
+.temp-scale{
+  margin:30px 0;
+  padding:26px 20px;
+  border-radius:var(--radius);
+  background:rgba(200,230,255,0.04);
+  border:1px solid var(--card-border);
+}
+.temp-bar{
+  position:relative;
+  height:16px;
+  border-radius:99px;
+  background:linear-gradient(90deg,#22c55e,#7dd3fc,#fbbf24,#fb923c,#ef4444);
+  box-shadow:inset 0 0 8px rgba(0,0,0,0.35);
+  overflow:hidden;
+}
+.temp-marker{
+  position:absolute;
+  top:-8px;
+  width:4px;height:32px;
+  border-radius:2px;
+  background:#ffffff;
+  box-shadow:0 0 10px rgba(255,255,255,0.9);
+  animation:markerMove 5s ease-in-out infinite;
+}
+@keyframes markerMove{
+  0%,100%{left:22%;}
+  25%{left:42%;}
+  50%{left:64%;}
+  75%{left:82%;}
+}
+.temp-labels{
+  display:flex;
+  justify-content:space-between;
+  margin-top:14px;
+  font-size:.74rem;
+  color:var(--muted);
+}
+.temp-labels span{flex:1;text-align:center;}
+.temp-labels span:first-child{text-align:left;}
+.temp-labels span:last-child{text-align:right;}
+.temp-caption{
+  text-align:center;
+  font-size:.8rem;
+  color:var(--text-soft);
+  margin-top:14px;
+}
+
+/* ---------- Progress bars ---------- */
+.bars{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  margin:28px 0;
+  padding:22px 20px;
+  border-radius:var(--radius);
+  background:rgba(200,230,255,0.045);
+  border:1px solid var(--card-border);
+}
+.bar-row{
+  display:grid;
+  grid-template-columns:126px 1fr 80px;
+  align-items:center;
+  gap:12px;
+  font-size:.82rem;
+  color:var(--text-soft);
+}
+.bar-row .name{font-weight:500;}
+.bar-row .val{text-align:right;color:var(--muted);font-size:.76rem;}
+.bar-track{
+  height:12px;
+  border-radius:99px;
+  background:rgba(255,255,255,0.08);
+  overflow:hidden;
+}
+.bar-fill{
+  height:100%;
+  width:0;
+  border-radius:99px;
+  transition:width 1.35s cubic-bezier(.22,1,.36,1);
+}
+.bar-fill.b1{background:linear-gradient(90deg,#3b82f6,#7dd3fc);}
+.bar-fill.b2{background:linear-gradient(90deg,#f59e0b,#fbbf24);}
+.bar-fill.b3{background:linear-gradient(90deg,#fb923c,#fdba74);}
+.bar-fill.b4{background:linear-gradient(90deg,#ef4444,#fca5a5);}
+
+/* ---------- Comparison ---------- */
+.compare{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin:28px 0;
+}
+.compare .card{
+  padding:22px 20px;
+  border-radius:var(--radius);
+  background:var(--card);
+  border:1px solid var(--card-border);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;
+}
+.compare .card:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow);
+}
+.compare .card.cool{border-color:rgba(34,197,94,0.5);}
+.compare .card.hot{border-color:rgba(239,68,68,0.5);}
+.compare h3{
+  font-family:'Baloo Bhai 2',cursive;
+  font-size:1.12rem;
+  font-weight:700;
+  margin-bottom:10px;
+}
+.compare .card.cool h3{color:#86efac;}
+.compare .card.hot h3{color:var(--heat-soft);}
+.compare ul{
+  list-style:none;
+  font-size:.86rem;
+  color:var(--text-soft);
+  line-height:1.9;
+}
+.compare li::before{
+  content:'•';
+  color:var(--blue-300);
+  margin-right:8px;
+  font-weight:700;
+}
+
+/* ---------- Steps ---------- */
+.steps{
+  display:grid;
+  gap:14px;
+  margin:28px 0;
+}
+.step{
+  display:flex;
+  align-items:flex-start;
+  gap:16px;
+  padding:18px 20px;
+  border-radius:18px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  font-size:.9rem;
+  color:var(--text-soft);
+  transition:transform .3s ease,border-color .3s ease;
+}
+.step:hover{
+  transform:translateX(6px);
+  border-color:rgba(125,211,252,0.5);
+}
+.step .n{
+  flex:0 0 38px;
+  width:38px;height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:1rem;
+  color:#2a1100;
+  background:var(--grad-heat);
+}
+.step .txt strong{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:#eef6ff;
+  margin-bottom:2px;
+}
+
+/* ---------- Diagram ---------- */
+.diagram{
+  margin:30px 0;
+  padding:18px;
+  border-radius:var(--radius);
+  background:rgba(200,230,255,0.035);
+  border:1px solid var(--card-border);
+}
+.diagram svg{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.svg-label{
+  font-family:'Poppins',sans-serif;
+  font-size:12px;
+  fill:#a9bcd4;
+}
+.svg-label-bright{
+  font-family:'Poppins',sans-serif;
+  font-size:12.5px;
+  font-weight:600;
+  fill:#e0f2fe;
+}
+
+/* ---------- Timeline ---------- */
+.timeline{
+  position:relative;
+  margin:32px 0;
+  padding-left:34px;
+}
+.timeline::before{
+  content:'';
+  position:absolute;
+  top:8px;bottom:8px;left:11px;
+  width:3px;
+  border-radius:99px;
+  background:linear-gradient(180deg,#7dd3fc,#3b82f6,#fb923c,#ef4444);
+  opacity:.6;
+}
+.tl-item{
+  position:relative;
+  margin-bottom:22px;
+  padding:16px 18px;
+  border-radius:16px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  font-size:.88rem;
+  color:var(--text-soft);
+  transition:transform .3s ease,border-color .3s ease;
+}
+.tl-item:hover{
+  transform:translateX(4px);
+  border-color:rgba(125,211,252,0.5);
+}
+.tl-item::before{
+  content:'';
+  position:absolute;
+  left:-31px;top:22px;
+  width:14px;height:14px;
+  border-radius:50%;
+  background:var(--blue-300);
+  box-shadow:0 0 0 4px rgba(125,211,252,0.2),0 0 12px rgba(125,211,252,0.75);
+}
+.tl-item strong{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:#f0f8ff;
+  margin-bottom:3px;
+}
+
+/* ---------- Quote ---------- */
+.quote{
+  max-width:720px;
+  margin:clamp(56px,8vw,86px) auto;
+  text-align:center;
+  padding:38px 26px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:600;
+  font-size:clamp(1.1rem,3.1vw,1.55rem);
+  line-height:1.72;
+  color:#eef8ff;
+  border-top:1px solid rgba(125,211,252,0.3);
+  border-bottom:1px solid rgba(125,211,252,0.3);
+  background:radial-gradient(circle at 50% 0%,rgba(59,130,246,0.16),transparent 72%);
+}
+.quote .mark{
+  display:block;
+  font-size:2.4rem;
+  line-height:1;
+  margin-bottom:12px;
+  color:var(--orange-400);
+}
+
+/* ---------- Footer ---------- */
+footer{
+  text-align:center;
+  padding:46px 22px 84px;
+  font-size:.85rem;
+  color:var(--muted);
+  border-top:1px solid rgba(125,211,252,0.14);
+  max-width:var(--maxw);
+  margin:0 auto;
+}
+
+/* ---------- Back to top ---------- */
+#backToTop{
+  position:fixed;
+  right:20px;bottom:22px;
+  width:52px;height:52px;
+  border:none;
+  border-radius:50%;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  font-size:1.35rem;
+  font-weight:700;
+  color:#031024;
+  background:linear-gradient(135deg,#7dd3fc,#3b82f6);
+  box-shadow:0 12px 30px rgba(59,130,246,0.45);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(18px) scale(.88);
+  transition:opacity .35s ease,transform .35s ease,box-shadow .35s ease;
+  z-index:99;
+}
+#backToTop.show{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0) scale(1);
+}
+#backToTop:hover{box-shadow:0 16px 38px rgba(59,130,246,0.65);}
+
+/* ---------- Scroll reveal ---------- */
+.reveal{
+  opacity:0;
+  transform:translateY(38px);
+  transition:opacity .85s ease,transform .85s cubic-bezier(.22,1,.36,1);
+}
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ============================================================
+   5. RESPONSIVE
+   ============================================================ */
+@media (max-width:600px){
+  .hero{padding:80px 18px 64px;}
+  .hero-visual{width:222px;height:222px;margin-bottom:16px;}
+  .phone{width:96px;height:168px;margin:-84px 0 0 -48px;border-radius:18px;}
+  .screen{inset:16px 6px 16px 6px;border-radius:10px;}
+  .bolt{width:34px;height:48px;margin:-24px 0 0 -17px;}
+  .heat-ring{width:180px;height:180px;margin:-90px 0 0 -90px;}
+
+  .article{padding:0 16px 30px;}
+
+  .section-head{gap:12px;margin-bottom:16px;}
+  .badge{width:44px;height:44px;border-radius:13px;font-size:1.1rem;}
+
+  .stats{grid-template-columns:1fr;}
+  .compare{grid-template-columns:1fr;}
+  .bar-row{grid-template-columns:100px 1fr 64px;font-size:.76rem;}
+  .bar-row .val{font-size:.7rem;}
+
+  .step{flex-direction:row;padding:16px;}
+  .step:hover{transform:none;}
+
+  .callout{padding:16px 18px;}
+  .quote{padding:30px 18px;}
+
+  .timeline{padding-left:30px;}
+  .tl-item::before{left:-27px;}
+
+  .temp-labels{font-size:.66rem;}
+
+  #backToTop{width:46px;height:46px;right:14px;bottom:16px;font-size:1.2rem;}
+}
+
+@media (min-width:601px) and (max-width:900px){
+  .stats{grid-template-columns:repeat(2,1fr);}
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,
+  *::before,
+  *::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+  .reveal{opacity:1;transform:none;}
+  html{scroll-behavior:auto;}
+  .temp-marker{animation:none;left:50%;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Fixed background ===== -->
+<div class="bg-fixed" aria-hidden="true"></div>
+<div class="blob blob-1" aria-hidden="true"></div>
+<div class="blob blob-2" aria-hidden="true"></div>
+<div class="blob blob-3" aria-hidden="true"></div>
+<div id="particles" aria-hidden="true"></div>
+
+<!-- ===== Reading progress ===== -->
+<div id="progressBar" aria-hidden="true"></div>
+
+<main>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="hero-visual" id="heroVisual" aria-hidden="true">
+      <div class="heat-ring"></div>
+      <div class="heat-ring"></div>
+      <div class="heat-ring"></div>
+      <div class="phone">
+        <div class="screen">
+          <div class="bolt"></div>
+          <div class="battery-icon">
+            <div class="battery-fill"></div>
+          </div>
+        </div>
+        <span class="hot-corner"></span>
+        <span class="hot-corner"></span>
+        <span class="hot-corner"></span>
+        <span class="hot-corner"></span>
+      </div>
+    </div>
+
+    <h1>मोबाइल की बैटरी गर्म क्यों होती है?</h1>
+    <p>चार्जिंग के दौरान या लगातार इस्तेमाल करते समय फोन का गर्म होना आम बात है — लेकिन इसके पीछे छिपी है ऊर्जा की एक बड़ी कहानी। जानिए क्यों फोन गर्म होता है, कब यह खतरनाक हो सकता है, और इसे कैसे ठंडा रखा जाए।</p>
+
+    <div class="scroll-hint">
+      <span>↓</span>
+      तापमान जाँचें
+    </div>
+  </section>
+
+  <!-- ================= ARTICLE ================= -->
+  <div class="article">
+
+    <!-- ---------- 01 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">01</span>
+        <h2>एक आम अनुभव, एक गहरा सवाल</h2>
+      </div>
+      <p>हर स्मार्टफोन उपयोगकर्ता ने कभी न कभी यह महसूस किया है — लंबी बातचीत के बाद, गेम खेलते समय, या चार्जिंग के दौरान फोन का पिछला हिस्सा गर्म हो जाता है। कभी-कभी तो हाथ जलने जैसा महसूस होता है।</p>
+      <p>यह गर्मी कोई खराबी नहीं, बल्कि ऊर्जा के रूपांतरण का <span class="hl">स्वाभाविक परिणाम</span> है। जब भी बैटरी में केमिकल ऊर्जा बिजली में बदलती है या बिजली फिर केमिकल ऊर्जा में, तो कुछ ऊर्जा गर्मी के रूप में बाहर निकलती है।</p>
+      <p>लेकिन सवाल यह है — कितनी गर्मी सामान्य है और कितनी खतरनाक? और क्या इसे कम किया जा सकता है? इस लेख में हम इसी की पड़ताल करेंगे।</p>
+
+      <div class="callout fact">🌟 <strong>रोचक तथ्य:</strong> एक स्मार्टफोन चार्जिंग के दौरान लगभग <strong>10-15 वाट</strong> बिजली लेता है — और उसका एक बड़ा हिस्सा गर्मी में बदल जाता है, जिसे फोन को बाहर निकालना पड़ता है।</div>
+    </section>
+
+    <!-- ---------- 02 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">02</span>
+        <h2>बैटरी के अंदर क्या होता है?</h2>
+      </div>
+      <p>आधुनिक स्मार्टफोन में <span class="hl">लिथियम-आयन बैटरी</span> होती है। इस बैटरी के अंदर तीन मुख्य हिस्से होते हैं — कैथोड (धनात्मक इलेक्ट्रोड), एनोड (ऋणात्मक इलेक्ट्रोड) और इलेक्ट्रोलाइट (रासायनिक तरल)।</p>
+      <p>जब हम फोन चार्ज करते हैं, तो बिजली एनोड में लिथियम आयनों को जमा करती है। जब हम फोन का उपयोग करते हैं, तो ये आयन कैथोड की ओर बहते हैं और बिजली पैदा करते हैं। यह पूरी प्रक्रिया <span class="hl-warm">रासायनिक प्रतिक्रिया</span> है, और हर प्रतिक्रिया में कुछ ऊर्जा गर्मी के रूप में निकलती है।</p>
+      <p>यही कारण है कि बैटरी हमेशा थोड़ी गर्म रहती है — चाहे हम फोन का इस्तेमाल कर रहे हों या चार्ज कर रहे हों। लेकिन अगर यह गर्मी बहुत ज़्यादा हो जाए, तो यह बैटरी की सेहत के लिए हानिकारक हो सकती है।</p>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="num">3.7V</span>
+          <span class="label">सामान्य लिथियम-आयन बैटरी का वोल्टेज</span>
+        </div>
+        <div class="stat">
+          <span class="num">300-500</span>
+          <span class="label">पूर्ण चार्ज-डिस्चार्ज चक्र</span>
+        </div>
+        <div class="stat">
+          <span class="num">20-45°C</span>
+          <span class="label">बैटरी के लिए आदर्श तापमान</span>
+        </div>
+        <div class="stat">
+          <span class="num">60°C+</span>
+          <span class="label">यहाँ से बैटरी को नुकसान शुरू</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 03 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">03</span>
+        <h2>गर्मी के पाँच मुख्य कारण</h2>
+      </div>
+      <p>मोबाइल बैटरी के गर्म होने के पीछे कई कारण हो सकते हैं। कुछ सामान्य हैं, तो कुछ चिंता का विषय भी। आइए इन्हें एक-एक करके समझते हैं।</p>
+
+      <div class="steps">
+        <div class="step">
+          <span class="n">1</span>
+          <span class="txt"><strong>चार्जिंग के दौरान गर्मी</strong>बैटरी में बिजली भरते समय केमिकल प्रतिक्रिया होती है, जो गर्मी पैदा करती है।</span>
+        </div>
+        <div class="step">
+          <span class="n">2</span>
+          <span class="txt"><strong>भारी ऐप्स और गेमिंग</strong>प्रोसेसर को ज़्यादा काम करना पड़ता है, जिससे ज़्यादा बिजली खर्च होती है और गर्मी बनती है।</span>
+        </div>
+        <div class="step">
+          <span class="n">3</span>
+          <span class="txt"><strong>बैकग्राउंड ऐप्स</strong>चलते रहने वाले ऐप्स लगातार प्रोसेसर और नेटवर्क का इस्तेमाल करते हैं।</span>
+        </div>
+        <div class="step">
+          <span class="n">4</span>
+          <span class="txt"><strong>तेज़ नेटवर्क और GPS</strong>4G/5G, WiFi हॉटस्पॉट और GPS लगातार ऊर्जा खपत करते हैं।</span>
+        </div>
+        <div class="step">
+          <span class="n">5</span>
+          <span class="txt"><strong>बाहरी वातावरण</strong>गरमी में धूप में फोन रखना या मोटे कवर में इस्तेमाल करना गर्मी बढ़ाता है।</span>
+        </div>
+      </div>
+
+      <div class="temp-scale">
+        <div class="temp-bar">
+          <div class="temp-marker"></div>
+        </div>
+        <div class="temp-labels">
+          <span>20°C</span>
+          <span>30°C</span>
+          <span>40°C</span>
+          <span>50°C</span>
+          <span>60°C+</span>
+        </div>
+        <div class="temp-caption">🌡️ आदर्श सीमा 20–45°C · 60°C से ऊपर बैटरी को स्थायी नुकसान</div>
+      </div>
+    </section>
+
+    <!-- ---------- 04 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">04</span>
+        <h2>ऊर्जा का रूपांतरण: गर्मी की जड़</h2>
+      </div>
+      <p>हर बार जब ऊर्जा एक रूप से दूसरे रूप में बदलती है, तो उसका एक हिस्सा गर्मी में बदल जाता है। इसे भौतिकी में <span class="hl">ऊर्जा संरक्षण का नियम</span> कहते हैं।</p>
+      <p>जब बैटरी में केमिकल ऊर्जा बिजली में बदलती है, तो लगभग 5-10 प्रतिशत ऊर्जा गर्मी के रूप में निकलती है। जब प्रोसेसर काम करता है, तो भी बहुत गर्मी पैदा होती है। जितनी ज़्यादा मेहनत, उतनी ज़्यादा गर्मी।</p>
+      <p>यही कारण है कि तेज़ चार्जर (जैसे 65W या 120W) फोन को ज़्यादा गर्म करते हैं, क्योंकि वे बहुत तेज़ी से ऊर्जा भेजते हैं। लेकिन आधुनिक फोन में <span class="hl-cool">तापमान नियंत्रण प्रणाली</span> होती है, जो चार्जिंग की गति को कम कर देती है ताकि बैटरी सुरक्षित रहे।</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 660 300" role="img" aria-label="बैटरी में ऊर्जा रूपांतरण — बिजली का कुछ हिस्सा गर्मी में बदल जाता है">
+          <defs>
+            <linearGradient id="chargerGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#475569"/>
+              <stop offset="100%" stop-color="#1e293b"/>
+            </linearGradient>
+            <linearGradient id="batteryGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#3b82f6"/>
+              <stop offset="100%" stop-color="#7dd3fc"/>
+            </linearGradient>
+            <linearGradient id="heatGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#fbbf24"/>
+              <stop offset="100%" stop-color="#ef4444"/>
+            </linearGradient>
+            <marker id="tArrow" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#7dd3fc"/>
+            </marker>
+            <marker id="tArrowHot" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#fb923c"/>
+            </marker>
+          </defs>
+
+          <!-- चार्जर -->
+          <rect x="40" y="110" width="80" height="80" rx="14" fill="url(#chargerGrad)" stroke="#475569"/>
+          <rect x="60" y="128" width="40" height="12" rx="3" fill="#94a3b8"/>
+          <rect x="60" y="148" width="40" height="6" rx="3" fill="#64748b"/>
+          <rect x="60" y="160" width="26" height="6" rx="3" fill="#64748b"/>
+          <text x="80" y="215" text-anchor="middle" class="svg-label-bright">चार्जर</text>
+          <text x="80" y="234" text-anchor="middle" class="svg-label">बिजली की आपूर्ति</text>
+
+          <!-- बिजली का तीर -->
+          <line x1="130" y1="150" x2="255" y2="150" stroke="#7dd3fc" stroke-width="3" marker-end="url(#tArrow)"/>
+          <text x="194" y="140" text-anchor="middle" class="svg-label-bright">100% ऊर्जा</text>
+
+          <!-- बैटरी -->
+          <rect x="266" y="100" width="130" height="100" rx="14" fill="url(#batteryGrad)" opacity="0.9"/>
+          <rect x="396" y="130" width="10" height="40" rx="3" fill="#7dd3fc"/>
+          <text x="331" y="156" text-anchor="middle" font-family="Poppins,sans-serif" font-size="13" font-weight="700" fill="#031024">बैटरी</text>
+          <text x="331" y="234" text-anchor="middle" class="svg-label-bright">केमिकल ऊर्जा</text>
+          <text x="331" y="253" text-anchor="middle" class="svg-label">संग्रहित होती है</text>
+
+          <!-- गर्मी का तीर -->
+          <path d="M331 100 Q331 64 380 64 L540 64" fill="none" stroke="#fb923c" stroke-width="3" marker-end="url(#tArrowHot)"/>
+          <text x="452" y="52" text-anchor="middle" class="svg-label-bright">~5-10% गर्मी</text>
+          <text x="452" y="38" text-anchor="middle" class="svg-label">बाहर निकलती है</text>
+
+          <!-- गर्मी की लहरें -->
+          <g stroke="url(#heatGrad)" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.9">
+            <path d="M500 80 Q508 90 500 100"/>
+            <path d="M516 80 Q524 90 516 100"/>
+            <path d="M532 80 Q540 90 532 100"/>
+          </g>
+          <text x="510" y="128" text-anchor="middle" class="svg-label-bright">फोन गर्म</text>
+
+          <!-- तापमान -->
+          <rect x="430" y="160" width="180" height="70" rx="12" fill="rgba(251,146,60,0.12)" stroke="rgba(251,146,60,0.4)"/>
+          <text x="520" y="186" text-anchor="middle" class="svg-label-bright">🌡️ 35–45°C</text>
+          <text x="520" y="208" text-anchor="middle" class="svg-label">सामान्य है</text>
+          <text x="520" y="224" text-anchor="middle" class="svg-label">60°C से ऊपर खतरनाक</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ---------- 05 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">05</span>
+        <h2>कौन-सी गतिविधियाँ सबसे ज़्यादा गर्म करती हैं?</h2>
+      </div>
+      <p>सभी कामों में गर्मी नहीं बनती। कुछ गतिविधियाँ बहुत कम गर्मी पैदा करती हैं, तो कुछ बहुत ज़्यादा। नीचे दिए गए आंकड़े बताते हैं कि कौन-सा काम फोन को कितना गर्म करता है।</p>
+
+      <div class="bars">
+        <div class="bar-row">
+          <span class="name">वीडियो कॉल</span>
+          <span class="bar-track"><span class="bar-fill b4" data-width="90"></span></span>
+          <span class="val">सबसे ज़्यादा</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">भारी गेमिंग</span>
+          <span class="bar-track"><span class="bar-fill b3" data-width="85"></span></span>
+          <span class="val">बहुत ज़्यादा</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">तेज़ चार्जिंग</span>
+          <span class="bar-track"><span class="bar-fill b2" data-width="70"></span></span>
+          <span class="val">ज़्यादा</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">सामान्य ब्राउज़िंग</span>
+          <span class="bar-track"><span class="bar-fill b1" data-width="35"></span></span>
+          <span class="val">कम</span>
+        </div>
+      </div>
+
+      <div class="callout warn">⚠️ <strong>ध्यान दें:</strong> अगर फोन बहुत ज़्यादा गर्म हो जाए, तो वह अपने आप प्रोसेसर की गति कम कर देता है (थ्रॉटलिंग)। इससे फोन धीमा लगता है — यह असल में बैटरी और चिप की सुरक्षा का उपाय है।</div>
+    </section>
+
+    <!-- ---------- QUOTE ---------- -->
+    <div class="quote reveal">
+      <span class="mark">❝</span>
+      हर डिग्री गर्मी एक संकेत है — वह बताती है कि ऊर्जा कहीं खर्च हो रही है। समझदारी यही है कि हम उस संकेत को पढ़ें, न कि उसे नज़रअंदाज़ करें।
+    </div>
+
+    <!-- ---------- 06 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">06</span>
+        <h2>कब सामान्य है, कब चिंता की बात?</h2>
+      </div>
+      <p>सभी गर्मी खतरनाक नहीं होती। फोन का थोड़ा गर्म होना बिल्कुल सामान्य है और इससे बैटरी को कोई नुकसान नहीं होता। लेकिन जब तापमान एक सीमा से ऊपर चला जाए, तो सावधान होने की ज़रूरत है।</p>
+
+      <div class="compare">
+        <div class="card cool">
+          <h3>सामान्य (सुरक्षित)</h3>
+          <ul>
+            <li>तापमान 20–45°C</li>
+            <li>चार्जिंग के दौरान हल्की गर्मी</li>
+            <li>गेम खेलते समय थोड़ा गर्म</li>
+            <li>कुछ मिनट में ठंडा हो जाए</li>
+            <li>कोई चेतावनी संदेश नहीं</li>
+          </ul>
+        </div>
+        <div class="card hot">
+          <h3>असामान्य (खतरनाक)</h3>
+          <ul>
+            <li>तापमान 60°C से ऊपर</li>
+            <li>हाथ जलने जैसा महसूस हो</li>
+            <li>फोन अपने आप बंद हो जाए</li>
+            <li>बैटरी फूलने लगे</li>
+            <li>लगातार गर्मी, ठंडा न हो</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout warn">⚠️ <strong>चेतावनी:</strong> अगर बैटरी फूलने लगे, फोन से अजीब गंध आए या धुआँ निकले, तो तुरंत चार्जिंग बंद करें और सेवा केंद्र से संपर्क करें।</div>
+    </section>
+
+    <!-- ---------- 07 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">07</span>
+        <h2>फोन को ठंडा रखने के 7 उपाय</h2>
+      </div>
+      <p>अगर आपका फोन बार-बार गर्म होता है, तो कुछ सरल आदतें अपनाकर इसे ठंडा रखा जा सकता है। ये उपाय बैटरी की उम्र भी बढ़ाते हैं और फोन की परफ़ॉर्मेंस भी बेहतर रखते हैं।</p>
+
+      <div class="steps">
+        <div class="step">
+          <span class="n">1</span>
+          <span class="txt"><strong>मोटे कवर हटाएँ</strong>चार्जिंग के दौरान कवर हटा दें ताकि गर्मी बाहर निकले।</span>
+        </div>
+        <div class="step">
+          <span class="n">2</span>
+          <span class="txt"><strong>धूप से बचाएँ</strong>फोन को सीधी धूप या गरम जगह पर न रखें।</span>
+        </div>
+        <div class="step">
+          <span class="n">3</span>
+          <span class="txt"><strong>बैकग्राउंड ऐप्स बंद करें</strong>ज़रूरत न हो तो ऐप्स को बंद रखें।</span>
+        </div>
+        <div class="step">
+          <span class="n">4</span>
+          <span class="txt"><strong>चार्जिंग के दौरान भारी काम न करें</strong>चार्ज करते समय गेम या वीडियो न चलाएँ।</span>
+        </div>
+        <div class="step">
+          <span class="n">5</span>
+          <span class="txt"><strong>असली चार्जर इस्तेमाल करें</strong>सस्ते और नकली चार्जर गर्मी बढ़ाते हैं।</span>
+        </div>
+        <div class="step">
+          <span class="n">6</span>
+          <span class="txt"><strong>GPS और ब्लूटूथ बंद रखें</strong>जब ज़रूरत न हो, इन्हें बंद कर दें।</span>
+        </div>
+        <div class="step">
+          <span class="n">7</span>
+          <span class="txt"><strong>फोन को हवादार जगह रखें</strong>तकिया या बिस्तर पर चार्जिंग से बचें।</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 08 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">08</span>
+        <h2>असली और नकली चार्जर का फ़र्क़</h2>
+      </div>
+      <p>बाज़ार में मिलने वाले सस्ते और नकली चार्जर कई बार सही वोल्टेज नहीं देते। इससे बैटरी पर ज़्यादा दबाव पड़ता है और गर्मी बढ़ जाती है। लंबे समय तक ऐसे चार्जर इस्तेमाल करने से बैटरी जल्दी खराब हो सकती है।</p>
+      <p>असली चार्जर में कई सुरक्षा विशेषताएँ होती हैं — ओवर-वोल्टेज सुरक्षा, ओवर-हीट सुरक्षा और शॉर्ट-सर्किट सुरक्षा। ये सभी फोन को सुरक्षित रखने में मदद करती हैं।</p>
+      <p>इसीलिए विशेषज्ञ हमेशा कंपनी के मूल चार्जर या भरोसेमंद ब्रांड का चार्जर इस्तेमाल करने की सलाह देते हैं — भले ही वह थोड़ा महँगा हो।</p>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <strong>नकली चार्जर</strong>
+          अनियमित वोल्टेज, ज़्यादा गर्मी, बैटरी को नुकसान।
+        </div>
+        <div class="tl-item">
+          <strong>मूल चार्जर</strong>
+          सही वोल्टेज, तापमान नियंत्रण, सुरक्षित चार्जिंग।
+        </div>
+        <div class="tl-item">
+          <strong>तेज़ चार्जर</strong>
+          तेज़ी से चार्ज, लेकिन तापमान नियंत्रण ज़रूरी।
+        </div>
+        <div class="tl-item">
+          <strong>वायरलेस चार्जर</strong>
+          आरामदायक, लेकिन थोड़ा ज़्यादा गर्म हो सकता है।
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 09 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">09</span>
+        <h2>गर्मी से बैटरी की उम्र पर असर</h2>
+      </div>
+      <p>बैटरी की उम्र सीधे तापमान से जुड़ी होती है। जितनी ज़्यादा गर्मी, उतनी ही तेज़ी से बैटरी की केमिकल प्रतिक्रिया होती है और उसकी क्षमता घटती जाती है।</p>
+      <p>वैज्ञानिकों के अनुसार, अगर बैटरी को लंबे समय तक 40°C पर रखा जाए, तो उसकी उम्र लगभग आधी हो सकती है। 60°C पर तो नुकसान बहुत तेज़ होता है और कभी-कभी बैटरी स्थायी रूप से खराब भी हो सकती है।</p>
+      <p>इसीलिए आधुनिक फोन में <span class="hl-cool">थर्मल मैनेजमेंट</span> प्रणाली होती है, जो प्रोसेसर की गति कम करके या चार्जिंग धीमी करके तापमान को नियंत्रित रखती है। यह फोन की सुरक्षा का एक बहुत समझदार तरीका है।</p>
+
+      <div class="callout good">💡 <strong>अच्छी खबर:</strong> अगर हम सही आदतें अपनाएँ — सही चार्जर, सही तापमान और सही इस्तेमाल — तो बैटरी कई साल तक अच्छी स्थिति में रह सकती है।</div>
+    </section>
+
+    <!-- ---------- 10 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">10</span>
+        <h2>निष्कर्ष</h2>
+      </div>
+      <p>तो सवाल का जवाब यह है — मोबाइल की बैटरी गर्म होती है क्योंकि <span class="hl">ऊर्जा के रूपांतरण के दौरान कुछ ऊर्जा गर्मी में बदल जाती है</span>। चार्जिंग, गेमिंग, वीडियो कॉल या भारी ऐप्स — सभी में बैटरी और प्रोसेसर को काम करना पड़ता है, और हर काम में थोड़ी गर्मी पैदा होती है।</p>
+      <p>थोड़ी गर्मी सामान्य है, लेकिन बहुत ज़्यादा गर्मी बैटरी की उम्र घटा सकती है। इसलिए सही चार्जर, सही आदतें और सही तापमान — ये तीन चीज़ें फोन को स्वस्थ रखने के लिए बहुत ज़रूरी हैं।</p>
+      <p>अगली बार जब आपका फोन गर्म हो, तो घबराएँ नहीं — बल्कि सोचें कि कौन-सा काम ज़्यादा ऊर्जा ले रहा है और उसे कम करें। यही समझदारी है और यही आपके फोन की लंबी उम्र का राज़ है।</p>
+    </section>
+
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>📱 गर्मी एक संकेत है — समझदारी से उपयोग करें, तो फोन सालों तक साथ रहता है।</footer>
+
+</main>
+
+<!-- ===== Back to top ===== -->
+<button id="backToTop" aria-label="ऊपर जाएँ">↑</button>
+
+<script>
+/* ============================================================
+   सारा JavaScript — शुद्ध वैनिला
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var docEl       = document.documentElement;
+  var progressBar = document.getElementById('progressBar');
+  var backToTop   = document.getElementById('backToTop');
+
+  /* 1. स्क्रॉल हैंडलर */
+  var ticking = false;
+  function handleScroll() {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(function () {
+      var scrollTop = window.pageYOffset || docEl.scrollTop || 0;
+      var maxScroll = docEl.scrollHeight - docEl.clientHeight;
+      var percent   = maxScroll > 0 ? (scrollTop / maxScroll) * 100 : 0;
+      progressBar.style.width = percent.toFixed(2) + '%';
+      if (scrollTop > 500) {
+        backToTop.classList.add('show');
+      } else {
+        backToTop.classList.remove('show');
+      }
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('resize', handleScroll, { passive: true });
+  handleScroll();
+
+  /* 2. स्मूद स्क्रॉल */
+  backToTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* 3. स्क्रॉल रिवील + बार एनिमेशन */
+  var revealItems = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('visible');
+        var fills = entry.target.querySelectorAll('.bar-fill');
+        fills.forEach(function (fill) {
+          var w = fill.getAttribute('data-width') || '0';
+          window.setTimeout(function () {
+            fill.style.width = w + '%';
+          }, 180);
+        });
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    revealItems.forEach(function (el) { observer.observe(el); });
+  } else {
+    revealItems.forEach(function (el) { el.classList.add('visible'); });
+    document.querySelectorAll('.bar-fill').forEach(function (fill) {
+      fill.style.width = (fill.getAttribute('data-width') || 0) + '%';
+    });
+  }
+
+  /* 4. दो-रंग के पार्टिकल (नीला + नारंगी) */
+  var particleLayer = document.getElementById('particles');
+  function buildParticles() {
+    if (!particleLayer) return;
+    particleLayer.innerHTML = '';
+    var isSmall = window.innerWidth < 600;
+    var count   = isSmall ? 22 : 44;
+    var frag    = document.createDocumentFragment();
+    for (var i = 0; i < count; i++) {
+      var p = document.createElement('span');
+      p.className = 'particle ' + (i % 3 === 0 ? 'hot' : 'cool');
+      var size = (Math.random() * 5 + 1.5).toFixed(1);
+      p.style.left = (Math.random() * 100).toFixed(2) + '%';
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.animationDuration = (Math.random() * 20 + 16).toFixed(1) + 's';
+      p.style.animationDelay = (-Math.random() * 38).toFixed(1) + 's';
+      p.style.setProperty('--drift', (Math.random() * 80 - 40).toFixed(0) + 'px');
+      frag.appendChild(p);
+    }
+    particleLayer.appendChild(frag);
+  }
+  buildParticles();
+
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    if (resizeTimer) window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(buildParticles, 300);
+  }, { passive: true });
+
+  /* 5. हीरो पैरालैक्स */
+  var hero        = document.querySelector('.hero');
+  var heroVisual  = document.getElementById('heroVisual');
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (hero && heroVisual && finePointer) {
+    var parallaxFrame = null;
+    hero.addEventListener('mousemove', function (e) {
+      if (parallaxFrame) return;
+      parallaxFrame = window.requestAnimationFrame(function () {
+        var rect = hero.getBoundingClientRect();
+        var cx = rect.width / 2;
+        var cy = rect.height / 2;
+        var dx = (e.clientX - rect.left - cx) / cx;
+        var dy = (e.clientY - rect.top  - cy) / cy;
+        heroVisual.style.transform =
+          'translate3d(' + (dx * 16).toFixed(2) + 'px,' +
+                            (dy * 12).toFixed(2) + 'px, 0)';
+        parallaxFrame = null;
+      });
+    }, { passive: true });
+    hero.addEventListener('mouseleave', function () {
+      heroVisual.style.transform = 'translate3d(0,0,0)';
+    });
+  }
+
+})();
+</script>
+</body>
+</html>

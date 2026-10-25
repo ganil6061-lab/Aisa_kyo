@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>साँप बिना पैरों के कैसे चलता है?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@500;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   1. CSS VARIABLES — जंगल थीम (हरा + ज़हरीला पीला + भूरा)
+   ============================================================ */
+:root{
+  --bg-deep:#04120a;
+  --bg-mid:#0a2010;
+  --bg-jungle:#0f2e17;
+  --bg-earth:#1a2e0a;
+
+  --green-100:#e8ffd9;
+  --green-200:#c6f6a0;
+  --green-300:#8ee85a;
+  --green-400:#4ade80;
+  --green-500:#22c55e;
+  --green-600:#15803d;
+  --green-deep:#052e16;
+
+  --venom-100:#fef9c3;
+  --venom-200:#fef08a;
+  --venom-300:#fde047;
+  --venom-400:#eab308;
+  --venom-500:#ca8a04;
+
+  --earth-200:#c9b08a;
+  --earth-300:#a8855a;
+  --earth-400:#7a5a3a;
+
+  --text:#f0ffe6;
+  --text-soft:#c8e8b8;
+  --muted:#8fa880;
+
+  --card:rgba(200,255,150,0.055);
+  --card-border:rgba(140,230,90,0.22);
+  --radius:20px;
+
+  --grad-jungle:linear-gradient(135deg,#c6f6a0,#22c55e);
+  --grad-venom:linear-gradient(135deg,#fef08a,#ca8a04);
+  --grad-earth:linear-gradient(135deg,#c9b08a,#7a5a3a);
+
+  --shadow:0 18px 44px rgba(0,20,0,0.55);
+  --maxw:860px;
+}
+
+/* ============================================================
+   2. RESET + BASE
+   ============================================================ */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+
+body{
+  font-family:'Poppins',system-ui,sans-serif;
+  color:var(--text);
+  line-height:1.85;
+  background:var(--bg-deep);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- Fixed background ---------- */
+.bg-fixed{
+  position:fixed;
+  inset:0;
+  z-index:-7;
+  background:
+    radial-gradient(900px 620px at 50% -10%, rgba(34,197,94,0.2), transparent 70%),
+    radial-gradient(700px 500px at 88% 82%, rgba(234,179,8,0.1), transparent 72%),
+    linear-gradient(180deg,#04120a 0%,#0a2010 26%,#0f2e17 56%,#1a3a12 80%,#1a2e0a 100%);
+}
+
+/* ---------- Glowing blobs ---------- */
+.blob{
+  position:fixed;
+  border-radius:50%;
+  filter:blur(100px);
+  pointer-events:none;
+  z-index:-5;
+  opacity:.35;
+  animation:blobFloat 22s ease-in-out infinite alternate;
+}
+.blob-1{width:460px;height:460px;background:#15803d;top:-160px;left:-120px;}
+.blob-2{width:430px;height:430px;background:#65a30d;bottom:-170px;right:-140px;animation-delay:-8s;opacity:.3;}
+.blob-3{width:330px;height:330px;background:#eab308;opacity:.13;top:48%;right:-130px;animation-delay:-14s;}
+
+@keyframes blobFloat{
+  from{transform:translate3d(0,0,0) scale(1);}
+  to{transform:translate3d(42px,-52px,0) scale(1.13);}
+}
+
+/* ---------- Firefly particles ---------- */
+#particles{
+  position:fixed;
+  inset:0;
+  z-index:-4;
+  overflow:hidden;
+  pointer-events:none;
+}
+.particle{
+  position:absolute;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fef9c3,#fde047 55%,rgba(202,138,4,0) 100%);
+  box-shadow:0 0 12px rgba(253,224,71,0.75);
+  animation-name:floatUp;
+  animation-timing-function:linear;
+  animation-iteration-count:infinite;
+  will-change:transform,opacity;
+}
+@keyframes floatUp{
+  0%{transform:translate3d(0,110vh,0) scale(.7);opacity:0;}
+  12%{opacity:.9;}
+  55%{transform:translate3d(var(--drift,20px),45vh,0) scale(1);}
+  100%{transform:translate3d(calc(var(--drift,20px) * -1),-14vh,0) scale(1.06);opacity:0;}
+}
+
+/* ---------- Reading progress ---------- */
+#progressBar{
+  position:fixed;
+  top:0;left:0;
+  height:4px;
+  width:0%;
+  z-index:100;
+  border-radius:0 4px 4px 0;
+  background:linear-gradient(90deg,#c6f6a0,#4ade80,#22c55e,#fde047);
+  box-shadow:0 0 14px rgba(74,222,128,0.85);
+  transition:width .09s linear;
+}
+
+/* ============================================================
+   3. HERO
+   ============================================================ */
+.hero{
+  min-height:100vh;
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:96px 20px 78px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ---------- Hero visual: लहराता साँप ---------- */
+.hero-visual{
+  position:relative;
+  width:290px;
+  height:280px;
+  margin-bottom:20px;
+  transition:transform .35s ease-out;
+  will-change:transform;
+}
+
+/* जंगल की चमक */
+.jungle-glow{
+  position:absolute;
+  top:50%;left:50%;
+  width:260px;height:260px;
+  margin:-130px 0 0 -130px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(74,222,128,0.35),rgba(34,197,94,0) 70%);
+  animation:glowPulse 4s ease-in-out infinite;
+}
+@keyframes glowPulse{
+  0%,100%{transform:scale(1);opacity:.75;}
+  50%{transform:scale(1.15);opacity:.5;}
+}
+
+/* ज़मीन */
+.ground{
+  position:absolute;
+  bottom:30px;left:50%;
+  width:260px;height:26px;
+  margin-left:-130px;
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(122,90,58,0.8),rgba(122,90,58,0) 70%);
+  filter:blur(4px);
+}
+
+/* साँप की बॉडी */
+.snake{
+  position:absolute;
+  top:50%;left:50%;
+  width:240px;height:110px;
+  margin:-55px 0 0 -120px;
+  z-index:2;
+}
+.snake-body{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,#22c55e 0%,#15803d 30%,#0a4a1e 60%,#15803d 100%);
+  border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+  clip-path:path('M0,55 Q20,10 50,30 T100,55 T150,30 T200,55 T240,45 L240,65 T200,75 T150,50 T100,75 T50,50 T0,65 Z');
+  filter:drop-shadow(0 4px 10px rgba(0,30,0,0.6));
+  animation:snakeSway 4s ease-in-out infinite;
+}
+@keyframes snakeSway{
+  0%,100%{transform:translateX(0) scaleY(1);}
+  50%{transform:translateX(-6px) scaleY(1.05);}
+}
+
+/* साँप की पीठ की पट्टियाँ */
+.snake-pattern{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 15% 50%, #fde047 0 4px, transparent 5px),
+    radial-gradient(circle at 35% 45%, #fde047 0 4px, transparent 5px),
+    radial-gradient(circle at 55% 55%, #fde047 0 4px, transparent 5px),
+    radial-gradient(circle at 75% 50%, #fde047 0 4px, transparent 5px),
+    radial-gradient(circle at 92% 55%, #fde047 0 3px, transparent 4px);
+  opacity:.85;
+}
+
+/* साँप का सिर */
+.snake-head{
+  position:absolute;
+  top:50%;right:-14px;
+  width:48px;height:38px;
+  margin-top:-19px;
+  background:radial-gradient(circle at 65% 40%,#22c55e,#15803d 60%,#0a4a1e);
+  border-radius:50% 60% 60% 50% / 50% 60% 60% 50%;
+  box-shadow:inset -4px -4px 8px rgba(0,40,0,0.6),0 0 14px rgba(34,197,94,0.55);
+  z-index:3;
+}
+.snake-head::before{
+  content:'';
+  position:absolute;
+  top:9px;left:12px;
+  width:10px;height:10px;
+  border-radius:50%;
+  background:radial-gradient(circle,#fde047,#ca8a04);
+  box-shadow:0 0 8px rgba(253,224,71,0.8);
+}
+.snake-head::after{
+  content:'';
+  position:absolute;
+  top:9px;right:14px;
+  width:10px;height:10px;
+  border-radius:50%;
+  background:radial-gradient(circle,#fde047,#ca8a04);
+  box-shadow:0 0 8px rgba(253,224,71,0.8);
+}
+
+/* जीभ */
+.tongue{
+  position:absolute;
+  top:50%;right:-32px;
+  width:26px;height:5px;
+  margin-top:-1px;
+  background:linear-gradient(90deg,#ef4444,#f87171);
+  border-radius:2px;
+  z-index:4;
+  transform-origin:left center;
+  animation:tongueFlick 3s ease-in-out infinite;
+}
+.tongue::after{
+  content:'';
+  position:absolute;
+  right:0;top:-4px;
+  width:12px;height:4px;
+  background:#f87171;
+  border-radius:2px;
+  transform:rotate(-20deg);
+  box-shadow:0 8px 0 -2px #f87171;
+}
+@keyframes tongueFlick{
+  0%,50%,100%{transform:scaleX(0);opacity:0;}
+  30%{transform:scaleX(1);opacity:1;}
+  65%{transform:scaleX(1);opacity:1;}
+}
+
+/* लहराते निशान */
+.trail{
+  position:absolute;
+  bottom:36px;left:50%;
+  width:230px;height:20px;
+  margin-left:-115px;
+  border-radius:50%;
+  border:2px solid rgba(201,176,138,0.4);
+  border-top-color:transparent;
+  border-left-color:transparent;
+  border-right-color:transparent;
+  animation:trailWave 3s ease-in-out infinite;
+  z-index:1;
+}
+.trail:nth-child(2){bottom:26px;width:190px;margin-left:-95px;opacity:.65;animation-delay:-1s;}
+.trail:nth-child(3){bottom:16px;width:150px;margin-left:-75px;opacity:.4;animation-delay:-2s;}
+@keyframes trailWave{
+  0%,100%{transform:scaleX(1);}
+  50%{transform:scaleX(1.1);}
+}
+
+/* ---------- Hero text ---------- */
+.hero h1{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:clamp(1.85rem,7.1vw,4.3rem);
+  line-height:1.22;
+  letter-spacing:-.5px;
+  background:linear-gradient(120deg,#ffffff 6%,#e8ffd9 30%,#c6f6a0 50%,#4ade80 72%,#fde047 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  max-width:17ch;
+  margin-bottom:18px;
+  filter:drop-shadow(0 8px 26px rgba(34,197,94,0.35));
+}
+
+.hero p{
+  max-width:620px;
+  font-size:clamp(.92rem,2.4vw,1.06rem);
+  color:var(--text-soft);
+  font-weight:300;
+  text-align:center;
+}
+
+/* ---------- Scroll hint ---------- */
+.scroll-hint{
+  position:absolute;
+  bottom:26px;left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  color:var(--green-300);
+  font-size:.74rem;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+  opacity:.85;
+}
+.scroll-hint span{
+  font-size:1.5rem;
+  line-height:1;
+  animation:bounce 1.9s ease-in-out infinite;
+}
+@keyframes bounce{
+  0%,100%{transform:translateY(0);opacity:.65;}
+  50%{transform:translateY(9px);opacity:1;}
+}
+
+/* ============================================================
+   4. ARTICLE LAYOUT
+   ============================================================ */
+.article{
+  width:100%;
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:0 20px 40px;
+  position:relative;
+}
+
+.section{margin-bottom:clamp(56px,8vw,92px);}
+
+.section-head{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.badge{
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  width:52px;height:52px;
+  border-radius:16px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:1.28rem;
+  color:#04120a;
+  background:linear-gradient(135deg,#c6f6a0,#22c55e);
+  box-shadow:0 10px 26px rgba(34,197,94,0.42);
+}
+
+h2{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:clamp(1.32rem,4vw,2rem);
+  line-height:1.35;
+  color:#f0ffe6;
+}
+
+.article p{
+  text-align:justify;
+  text-justify:inter-word;
+  color:var(--text-soft);
+  font-size:clamp(.9rem,2.3vw,1rem);
+  font-weight:300;
+  margin-bottom:18px;
+}
+
+.hl{color:var(--green-300);font-weight:600;}
+.hl-warm{color:var(--venom-300);font-weight:600;}
+.hl-earth{color:var(--earth-200);font-weight:600;}
+.hl-deep{color:#86efac;font-weight:600;}
+
+/* ---------- Callouts ---------- */
+.callout{
+  border-radius:18px;
+  padding:18px 22px;
+  margin:24px 0;
+  font-size:clamp(.85rem,2.2vw,.95rem);
+  line-height:1.8;
+  border:1px solid rgba(140,230,90,0.28);
+  background:linear-gradient(135deg,rgba(34,197,94,0.15),rgba(21,128,61,0.06));
+  border-left:4px solid var(--green-400);
+  color:#e5ffd6;
+}
+.callout.fact{
+  border-color:rgba(253,224,71,0.32);
+  background:linear-gradient(135deg,rgba(253,224,71,0.14),rgba(234,179,8,0.05));
+  border-left-color:var(--venom-300);
+}
+.callout.earth{
+  border-color:rgba(201,176,138,0.32);
+  background:linear-gradient(135deg,rgba(201,176,138,0.13),rgba(122,90,58,0.05));
+  border-left-color:var(--earth-200);
+}
+
+/* ---------- Stats ---------- */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(152px,1fr));
+  gap:16px;
+  margin:30px 0;
+}
+.stat{
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  padding:22px 16px;
+  text-align:center;
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;
+}
+.stat:hover{
+  transform:translateY(-9px);
+  box-shadow:var(--shadow);
+  border-color:rgba(140,230,90,0.55);
+}
+.stat .num{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:clamp(1.4rem,4.2vw,1.9rem);
+  line-height:1.15;
+  background:var(--grad-jungle);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.stat .label{
+  display:block;
+  margin-top:8px;
+  font-size:.78rem;
+  line-height:1.55;
+  color:var(--muted);
+}
+
+/* ---------- Progress bars ---------- */
+.bars{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  margin:28px 0;
+  padding:22px 20px;
+  border-radius:var(--radius);
+  background:rgba(200,255,150,0.045);
+  border:1px solid var(--card-border);
+}
+.bar-row{
+  display:grid;
+  grid-template-columns:126px 1fr 84px;
+  align-items:center;
+  gap:12px;
+  font-size:.82rem;
+  color:var(--text-soft);
+}
+.bar-row .name{font-weight:500;}
+.bar-row .val{text-align:right;color:var(--muted);font-size:.76rem;}
+.bar-track{
+  height:12px;
+  border-radius:99px;
+  background:rgba(255,255,255,0.08);
+  overflow:hidden;
+}
+.bar-fill{
+  height:100%;
+  width:0;
+  border-radius:99px;
+  transition:width 1.35s cubic-bezier(.22,1,.36,1);
+}
+.bar-fill.g1{background:linear-gradient(90deg,#15803d,#22c55e);}
+.bar-fill.g2{background:linear-gradient(90deg,#22c55e,#86efac);}
+.bar-fill.g3{background:linear-gradient(90deg,#4ade80,#c6f6a0);}
+.bar-fill.g4{background:linear-gradient(90deg,#ca8a04,#fde047);}
+
+/* ---------- Composition cards ---------- */
+.composition{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:14px;
+  margin:28px 0;
+}
+.comp-item{
+  padding:20px 16px;
+  border-radius:18px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  text-align:center;
+  transition:transform .3s ease,border-color .3s ease;
+}
+.comp-item:hover{
+  transform:translateY(-6px);
+  border-color:rgba(140,230,90,0.55);
+}
+.comp-item .icon{
+  font-size:1.9rem;
+  display:block;
+  margin-bottom:8px;
+  line-height:1;
+}
+.comp-item .name{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:var(--green-200);
+  display:block;
+  margin-bottom:4px;
+}
+.comp-item .val{
+  font-size:.78rem;
+  line-height:1.5;
+  color:var(--muted);
+}
+
+/* ---------- Steps ---------- */
+.steps{
+  display:grid;
+  gap:14px;
+  margin:28px 0;
+}
+.step{
+  display:flex;
+  align-items:flex-start;
+  gap:16px;
+  padding:18px 20px;
+  border-radius:18px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  font-size:.9rem;
+  color:var(--text-soft);
+  transition:transform .3s ease,border-color .3s ease;
+}
+.step:hover{
+  transform:translateX(6px);
+  border-color:rgba(140,230,90,0.55);
+}
+.step .n{
+  flex:0 0 38px;
+  width:38px;height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:1rem;
+  color:#1a0f00;
+  background:var(--grad-venom);
+}
+.step .txt strong{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:#f0ffe6;
+  margin-bottom:2px;
+}
+
+/* ---------- Diagram ---------- */
+.diagram{
+  margin:30px 0;
+  padding:18px;
+  border-radius:var(--radius);
+  background:rgba(200,255,150,0.035);
+  border:1px solid var(--card-border);
+}
+.diagram svg{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.svg-label{
+  font-family:'Poppins',sans-serif;
+  font-size:12px;
+  fill:#b0c9a3;
+}
+.svg-label-bright{
+  font-family:'Poppins',sans-serif;
+  font-size:12.5px;
+  font-weight:600;
+  fill:#e8ffd9;
+}
+
+/* ---------- Timeline ---------- */
+.timeline{
+  position:relative;
+  margin:32px 0;
+  padding-left:34px;
+}
+.timeline::before{
+  content:'';
+  position:absolute;
+  top:8px;bottom:8px;left:11px;
+  width:3px;
+  border-radius:99px;
+  background:linear-gradient(180deg,#c6f6a0,#22c55e,#ca8a04);
+  opacity:.6;
+}
+.tl-item{
+  position:relative;
+  margin-bottom:22px;
+  padding:16px 18px;
+  border-radius:16px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  font-size:.88rem;
+  color:var(--text-soft);
+  transition:transform .3s ease,border-color .3s ease;
+}
+.tl-item:hover{
+  transform:translateX(4px);
+  border-color:rgba(140,230,90,0.55);
+}
+.tl-item::before{
+  content:'';
+  position:absolute;
+  left:-31px;top:22px;
+  width:14px;height:14px;
+  border-radius:50%;
+  background:var(--green-300);
+  box-shadow:0 0 0 4px rgba(140,230,90,0.2),0 0 12px rgba(140,230,90,0.75);
+}
+.tl-item strong{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:#f0ffe6;
+  margin-bottom:3px;
+}
+
+/* ---------- Compare ---------- */
+.compare{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin:28px 0;
+}
+.compare .card{
+  padding:22px 20px;
+  border-radius:var(--radius);
+  background:var(--card);
+  border:1px solid var(--card-border);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;
+}
+.compare .card:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow);
+}
+.compare .card.jungle{border-color:rgba(140,230,90,0.5);}
+.compare .card.venom{border-color:rgba(253,224,71,0.5);}
+.compare h3{
+  font-family:'Baloo Bhai 2',cursive;
+  font-size:1.12rem;
+  font-weight:700;
+  margin-bottom:10px;
+}
+.compare .card.jungle h3{color:var(--green-200);}
+.compare .card.venom h3{color:var(--venom-200);}
+.compare ul{
+  list-style:none;
+  font-size:.86rem;
+  color:var(--text-soft);
+  line-height:1.9;
+}
+.compare li::before{
+  content:'•';
+  color:var(--green-300);
+  margin-right:8px;
+  font-weight:700;
+}
+
+/* ---------- Quote ---------- */
+.quote{
+  max-width:720px;
+  margin:clamp(56px,8vw,86px) auto;
+  text-align:center;
+  padding:38px 26px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:600;
+  font-size:clamp(1.1rem,3.1vw,1.55rem);
+  line-height:1.72;
+  color:#f0ffe6;
+  border-top:1px solid rgba(140,230,90,0.3);
+  border-bottom:1px solid rgba(140,230,90,0.3);
+  background:radial-gradient(circle at 50% 0%,rgba(34,197,94,0.16),transparent 72%);
+}
+.quote .mark{
+  display:block;
+  font-size:2.4rem;
+  line-height:1;
+  margin-bottom:12px;
+  color:var(--venom-300);
+}
+
+/* ---------- Footer ---------- */
+footer{
+  text-align:center;
+  padding:46px 22px 84px;
+  font-size:.85rem;
+  color:var(--muted);
+  border-top:1px solid rgba(140,230,90,0.14);
+  max-width:var(--maxw);
+  margin:0 auto;
+}
+
+/* ---------- Back to top ---------- */
+#backToTop{
+  position:fixed;
+  right:20px;bottom:22px;
+  width:52px;height:52px;
+  border:none;
+  border-radius:50%;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  font-size:1.35rem;
+  font-weight:700;
+  color:#04120a;
+  background:linear-gradient(135deg,#c6f6a0,#22c55e);
+  box-shadow:0 12px 30px rgba(34,197,94,0.45);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(18px) scale(.88);
+  transition:opacity .35s ease,transform .35s ease,box-shadow .35s ease;
+  z-index:99;
+}
+#backToTop.show{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0) scale(1);
+}
+#backToTop:hover{box-shadow:0 16px 38px rgba(34,197,94,0.65);}
+
+/* ---------- Scroll reveal ---------- */
+.reveal{
+  opacity:0;
+  transform:translateY(38px);
+  transition:opacity .85s ease,transform .85s cubic-bezier(.22,1,.36,1);
+}
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ============================================================
+   5. RESPONSIVE
+   ============================================================ */
+@media (max-width:600px){
+  .hero{padding:80px 18px 64px;}
+  .hero-visual{width:226px;height:216px;margin-bottom:16px;}
+  .snake{width:190px;height:88px;margin:-44px 0 0 -95px;}
+  .snake-head{width:40px;height:32px;margin-top:-16px;}
+  .snake-head::before,.snake-head::after{width:8px;height:8px;top:7px;}
+  .snake-head::before{left:10px;}
+  .snake-head::after{right:11px;}
+  .tongue{width:22px;height:4px;right:-26px;}
+  .jungle-glow{width:200px;height:200px;margin:-100px 0 0 -100px;}
+  .ground{width:210px;margin-left:-105px;height:20px;}
+  .trail{width:190px;margin-left:-95px;}
+
+  .article{padding:0 16px 30px;}
+
+  .section-head{gap:12px;margin-bottom:16px;}
+  .badge{width:44px;height:44px;border-radius:13px;font-size:1.1rem;}
+
+  .stats{grid-template-columns:1fr;}
+  .compare{grid-template-columns:1fr;}
+  .bar-row{grid-template-columns:98px 1fr 66px;font-size:.76rem;}
+  .bar-row .val{font-size:.7rem;}
+
+  .step{flex-direction:row;padding:16px;}
+  .step:hover{transform:none;}
+
+  .callout{padding:16px 18px;}
+  .quote{padding:30px 18px;}
+
+  .timeline{padding-left:30px;}
+  .tl-item::before{left:-27px;}
+
+  #backToTop{width:46px;height:46px;right:14px;bottom:16px;font-size:1.2rem;}
+}
+
+@media (min-width:601px) and (max-width:900px){
+  .stats{grid-template-columns:repeat(2,1fr);}
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,
+  *::before,
+  *::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+  .reveal{opacity:1;transform:none;}
+  html{scroll-behavior:auto;}
+  .snake-body,.tongue{animation:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Fixed background ===== -->
+<div class="bg-fixed" aria-hidden="true"></div>
+<div class="blob blob-1" aria-hidden="true"></div>
+<div class="blob blob-2" aria-hidden="true"></div>
+<div class="blob blob-3" aria-hidden="true"></div>
+<div id="particles" aria-hidden="true"></div>
+
+<!-- ===== Reading progress ===== -->
+<div id="progressBar" aria-hidden="true"></div>
+
+<main>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="hero-visual" id="heroVisual" aria-hidden="true">
+      <div class="jungle-glow"></div>
+      <div class="ground"></div>
+      <div class="snake">
+        <div class="snake-body">
+          <div class="snake-pattern"></div>
+        </div>
+        <div class="snake-head"></div>
+        <div class="tongue"></div>
+      </div>
+      <div class="trail"></div>
+      <div class="trail"></div>
+      <div class="trail"></div>
+    </div>
+
+    <h1>साँप बिना पैरों के कैसे चलता है?</h1>
+    <p>पैर नहीं, हड्डियाँ नहीं, फिर भी साँप ज़मीन पर फिसलता है, पेड़ पर चढ़ता है और पानी में तैरता है। यह उसकी रीढ़, पसलियों और शरीर की अद्भुत लचीली बनावट का कमाल है। आइए जानते हैं इस अनोखी गति का विज्ञान।</p>
+
+    <div class="scroll-hint">
+      <span>↓</span>
+      जंगल में उतरें
+    </div>
+  </section>
+
+  <!-- ================= ARTICLE ================= -->
+  <div class="article">
+
+    <!-- ---------- 01 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">01</span>
+        <h2>एक सवाल, जो सदियों से हैरान करता है</h2>
+      </div>
+      <p>बचपन में हम सबने कभी न कभी सोचा है — साँप के पैर नहीं होते, फिर वह चलता कैसे है? यह सवाल सिर्फ़ हमारे मन में ही नहीं आया, बल्कि सदियों से वैज्ञानिकों को भी हैरान करता रहा है।</p>
+      <p>असल में साँप का शरीर एक <span class="hl">बहुत ही लचीली और सुडौल रचना</span> है। उसकी रीढ़ की हड्डी में सैकड़ों जोड़ होते हैं, और पसलियाँ शरीर के साथ-साथ लचकती हैं। यही लचीलापन साँप को बिना पैरों के भी आगे बढ़ने में मदद करता है।</p>
+      <p>साँप की गति कोई एक तरीका नहीं है — वह अलग-अलग ज़मीन पर अलग-अलग तरीकों से चलता है। रेत पर एक तरह, घास पर दूसरे तरह, और पेड़ पर तीसरे तरह। यह बात और भी दिलचस्प बनाती है।</p>
+
+      <div class="callout fact">🌟 <strong>रोचक तथ्य:</strong> दुनिया में साँपों की लगभग <strong>3,900 प्रजातियाँ</strong> हैं, और सभी बिना पैरों के ही चलती हैं — लेकिन हर प्रजाति की चलने की शैली अलग हो सकती है।</div>
+    </section>
+
+    <!-- ---------- 02 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">02</span>
+        <h2>शरीर की बनावट: साँप का असली राज़</h2>
+      </div>
+      <p>साँप का शरीर सामान्य जानवरों से बहुत अलग है। उसके पैर नहीं होते, लेकिन उसकी रीढ़ की हड्डी में <span class="hl">200 से 400 तक जोड़</span> हो सकते हैं। हर जोड़ के साथ एक पसली जुड़ी होती है, जो शरीर को लचीलापन देती है।</p>
+      <p>इस लचीलेपन के कारण साँप अपने शरीर को किसी भी आकार में मोड़ सकता है — लहर, घुमाव, सीधी रेखा। यही लचीलापन उसे अलग-अलग सतहों पर अलग-अलग तरीके से चलने में सक्षम बनाता है।</p>
+      <p>साँप के पेट की तरफ़ <span class="hl-earth">स्केल्स की पट्टियाँ</span> होती हैं, जिन्हें <em>स्क्यूट्स</em> कहते हैं। ये पट्टियाँ ज़मीन से रगड़ खाकर पकड़ बनाती हैं, जिससे साँप आगे बढ़ पाता है। इनके बिना साँप फिसल जाएगा।</p>
+
+      <div class="composition">
+        <div class="comp-item">
+          <span class="icon">🦴</span>
+          <span class="name">रीढ़ की हड्डी</span>
+          <span class="val">200-400 जोड़</span>
+        </div>
+        <div class="comp-item">
+          <span class="icon">🪶</span>
+          <span class="name">पसलियाँ</span>
+          <span class="val">लचीली और मज़बूत</span>
+        </div>
+        <div class="comp-item">
+          <span class="icon">🟫</span>
+          <span class="name">पेट की पट्टियाँ</span>
+          <span class="val">ज़मीन पकड़ने के लिए</span>
+        </div>
+        <div class="comp-item">
+          <span class="icon">💪</span>
+          <span class="name">मांसपेशियाँ</span>
+          <span class="val">लहर पैदा करती हैं</span>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="num">3,900+</span>
+          <span class="label">दुनिया में साँपों की प्रजातियाँ</span>
+        </div>
+        <div class="stat">
+          <span class="num">400</span>
+          <span class="label">रीढ़ में अधिकतम जोड़</span>
+        </div>
+        <div class="stat">
+          <span class="num">~1.5 m/s</span>
+          <span class="label">कुछ साँपों की अधिकतम गति</span>
+        </div>
+        <div class="stat">
+          <span class="num">5</span>
+          <span class="label">मुख्य चलने की शैलियाँ</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 03 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">03</span>
+        <h2>पहली शैली: सर्पिल लहर (साइडवाइंडिंग)</h2>
+      </div>
+      <p>सबसे परिचित तरीका है <span class="hl">लहराते हुए चलना</span>। साँप अपने शरीर को लहरों में मोड़ता है और हर लहर से ज़मीन को पीछे की ओर धकेलता है। जैसे हम पैर से ज़मीन को दबाकर आगे बढ़ते हैं, वैसे ही साँप अपने शरीर के हर हिस्से से ज़मीन को दबाता है।</p>
+      <p>यह तरीका रेत और मुलायम ज़मीन पर बहुत कारगर होता है, क्योंकि रेत साँप के शरीर को पकड़ बनाने का मौका देती है। साँप के शरीर की हर पट्टी ज़मीन से रगड़ खाकर आगे धकेलती है।</p>
+      <p>रेत पर चलते समय साँप अपना शरीर S आकार में मोड़ता है, और शरीर का हर हिस्सा अलग दिशा में बल लगाता है। नतीजा — वह आगे बढ़ता जाता है। यह प्रक्रिया इतनी सहज है कि देखने में लगता है कि साँप तैर रहा हो।</p>
+
+      <div class="steps">
+        <div class="step">
+          <span class="n">1</span>
+          <span class="txt"><strong>शरीर को मोड़ना</strong>साँप अपने शरीर को S आकार में लहराता है।</span>
+        </div>
+        <div class="step">
+          <span class="n">2</span>
+          <span class="txt"><strong>ज़मीन को पकड़ना</strong>पेट की पट्टियाँ ज़मीन से रगड़ खाती हैं।</span>
+        </div>
+        <div class="step">
+          <span class="n">3</span>
+          <span class="txt"><strong>बल लगाना</strong>हर लहर ज़मीन को पीछे धकेलती है।</span>
+        </div>
+        <div class="step">
+          <span class="n">4</span>
+          <span class="txt"><strong>आगे बढ़ना</strong>साँप सीधी रेखा में आगे बढ़ता जाता है।</span>
+        </div>
+      </div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 660 260" role="img" aria-label="साँप की लहराती गति — S आकार में शरीर, ज़मीन को पकड़कर आगे बढ़ना">
+          <defs>
+            <linearGradient id="snakeGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#15803d"/>
+              <stop offset="50%" stop-color="#22c55e"/>
+              <stop offset="100%" stop-color="#15803d"/>
+            </linearGradient>
+            <pattern id="sandPat" width="20" height="20" patternUnits="userSpaceOnUse">
+              <rect width="20" height="20" fill="rgba(201,176,138,0.14)"/>
+              <circle cx="6" cy="6" r="1.2" fill="rgba(201,176,138,0.55)"/>
+              <circle cx="15" cy="14" r="1" fill="rgba(201,176,138,0.55)"/>
+            </pattern>
+            <marker id="snArrow" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#fde047"/>
+            </marker>
+          </defs>
+
+          <!-- रेत की ज़मीन -->
+          <rect x="0" y="140" width="660" height="120" fill="url(#sandPat)"/>
+          <line x1="0" y1="140" x2="660" y2="140" stroke="rgba(201,176,138,0.5)" stroke-width="1.5" stroke-dasharray="6 6"/>
+
+          <!-- साँप की लहराती बॉडी -->
+          <path d="M40 130 Q80 90 120 130 T200 130 T280 130 T360 130 T440 130 T520 130 T600 130"
+                fill="none" stroke="url(#snakeGrad)" stroke-width="20" stroke-linecap="round"/>
+          <!-- पीठ की धारियाँ -->
+          <path d="M40 130 Q80 90 120 130 T200 130 T280 130 T360 130 T440 130 T520 130 T600 130"
+                fill="none" stroke="#fde047" stroke-width="3" stroke-dasharray="4 24" stroke-linecap="round" opacity="0.85"/>
+
+          <!-- सिर -->
+          <ellipse cx="618" cy="130" rx="18" ry="14" fill="#15803d" stroke="#0a4a1e" stroke-width="2"/>
+          <circle cx="612" cy="126" r="2.5" fill="#fde047"/>
+          <circle cx="624" cy="126" r="2.5" fill="#fde047"/>
+
+          <!-- आगे बढ़ने का तीर -->
+          <line x1="500" y1="60" x2="600" y2="60" stroke="#fde047" stroke-width="2.5" marker-end="url(#snArrow)"/>
+          <text x="550" y="48" text-anchor="middle" class="svg-label-bright">आगे की दिशा</text>
+
+          <!-- पकड़ के निशान -->
+          <g stroke="#fde047" stroke-width="2" fill="none" opacity="0.9">
+            <path d="M100 148 L88 158"/>
+            <path d="M180 148 L168 158"/>
+            <path d="M260 148 L248 158"/>
+            <path d="M340 148 L328 158"/>
+            <path d="M420 148 L408 158"/>
+            <path d="M500 148 L488 158"/>
+          </g>
+          <text x="330" y="200" text-anchor="middle" class="svg-label-bright">पेट की पट्टियाँ ज़मीन पकड़ती हैं</text>
+          <text x="330" y="222" text-anchor="middle" class="svg-label">S आकार में शरीर लहराता है</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ---------- 04 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">04</span>
+        <h2>दूसरी शैली: सीधी रेखा में चलना</h2>
+      </div>
+      <p>कुछ साँप ऐसे होते हैं जो शरीर को लहराते नहीं, बल्कि सीधी रेखा में सिकोड़कर आगे बढ़ते हैं। इसे <span class="hl">रेक्टिलिनियर मोशन</span> कहते हैं। यह तरीका बड़े और भारी साँपों में ज़्यादा देखा जाता है, जैसे अजगर।</p>
+      <p>इस तरीके में साँप अपने शरीर के आगे के हिस्से को ज़मीन पर टिकाता है, फिर पीछे के हिस्से को सिकोड़कर आगे खींचता है। यह बहुत धीमा तरीका है, लेकिन बहुत शक्तिशाली।</p>
+      <p>इसका फ़ायदा यह है कि साँप बिना शोर किए और बिना ज़्यादा हिले-डुले आगे बढ़ सकता है। शिकार के पास जाने या सुरक्षित जगह से निकलने के लिए यह तरीका बहुत उपयोगी होता है।</p>
+
+      <div class="compare">
+        <div class="card jungle">
+          <h3>लहराते चलना</h3>
+          <ul>
+            <li>तेज़ गति</li>
+            <li>रेत और मुलायम ज़मीन के लिए</li>
+            <li>छोटे और मध्यम साँप</li>
+            <li>S आकार में शरीर</li>
+          </ul>
+        </div>
+        <div class="card venom">
+          <h3>सीधी रेखा</h3>
+          <ul>
+            <li>धीमी गति</li>
+            <li>सख़्त और चिकनी ज़मीन के लिए</li>
+            <li>बड़े और भारी साँप</li>
+            <li>शरीर सिकोड़कर आगे बढ़ना</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- QUOTE ---------- -->
+    <div class="quote reveal">
+      <span class="mark">❝</span>
+      प्रकृति ने साँप को पैर नहीं दिए, लेकिन उसे वह लचीलापन दिया कि वह बिना पैरों के भी हर ज़मीन पर चल सके।
+    </div>
+
+    <!-- ---------- 05 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">05</span>
+        <h2>तीसरी शैली: साइडवाइंडिंग (रेत पर सरपट)</h2>
+      </div>
+      <p>रेगिस्तान में रहने वाले साँप — जैसे साइडवाइंडर रैटलस्नेक — एक बहुत ही खास तरीके से चलते हैं। वे अपना शरीर एक तरफ़ मोड़ते हैं और फिर दूसरी तरफ़, जिससे वे रेत पर बहुत तेज़ी से आगे बढ़ते हैं।</p>
+      <p>इस तरीके को <span class="hl-warm">साइडवाइंडिंग</span> कहते हैं। साँप का शरीर रेत पर एक तिरछी रेखा बनाता है, और हर बार थोड़ा-थोड़ा आगे बढ़ता है। इसमें शरीर का ज़्यादा हिस्सा रेत से कम संपर्क में रहता है।</p>
+      <p>यह तरीका गर्म रेत पर बहुत फ़ायदेमंद है, क्योंकि कम शरीर के संपर्क से कम गर्मी लगती है। यही कारण है कि रेगिस्तानी साँप इस शैली में माहिर होते हैं।</p>
+
+      <div class="bars">
+        <div class="bar-row">
+          <span class="name">लहराते चलना</span>
+          <span class="bar-track"><span class="bar-fill g1" data-width="90"></span></span>
+          <span class="val">तेज़</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">साइडवाइंडिंग</span>
+          <span class="bar-track"><span class="bar-fill g2" data-width="80"></span></span>
+          <span class="val">बहुत तेज़</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">सीधी रेखा</span>
+          <span class="bar-track"><span class="bar-fill g3" data-width="35"></span></span>
+          <span class="val">धीमी</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">पेड़ पर चढ़ना</span>
+          <span class="bar-track"><span class="bar-fill g4" data-width="55"></span></span>
+          <span class="val">मध्यम</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 06 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">06</span>
+        <h2>चौथी और पाँचवीं शैली: पेड़ पर और पानी में</h2>
+      </div>
+      <p>कुछ साँप पेड़ों पर भी चढ़ते हैं। उनके शरीर की पकड़ बहुत मज़बूत होती है — पेट की पट्टियाँ टहनियों को कसकर पकड़ती हैं और शरीर की लहरों से वे ऊपर की ओर बढ़ते हैं। इसके लिए उनके शरीर का हर हिस्सा अलग-अलग काम करता है।</p>
+      <p>पानी में साँप बहुत ही सहजता से तैरते हैं। वे अपने शरीर को लहरों में मोड़कर पानी को पीछे धकेलते हैं और आगे बढ़ते जाते हैं। यह वही तरीका है जो मछलियाँ इस्तेमाल करती हैं — शरीर की लहर ही उनका पतवार है।</p>
+      <p>कुछ साँप पानी की सतह पर भी तैर सकते हैं, और कुछ गहरे पानी में डुबकी लगाते हैं। उनका फेफड़ा लंबा होता है, जिससे वे लंबे समय तक पानी में रह सकते हैं — कुछ प्रजातियाँ तो 30 मिनट तक पानी के अंदर रह सकती हैं।</p>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <strong>ज़मीन पर</strong>
+          लहराते या सीधी रेखा में चलते हैं।
+        </div>
+        <div class="tl-item">
+          <strong>रेत पर</strong>
+          साइडवाइंडिंग से तेज़ी से आगे बढ़ते हैं।
+        </div>
+        <div class="tl-item">
+          <strong>पेड़ पर</strong>
+          पेट की पट्टियों से टहनी पकड़कर चढ़ते हैं।
+        </div>
+        <div class="tl-item">
+          <strong>पानी में</strong>
+          शरीर की लहरों से तैरते हैं।
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 07 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">07</span>
+        <h2>बिना पैरों के चलना: विज्ञान की नज़र में</h2>
+      </div>
+      <p>वैज्ञानिक भाषा में साँप की गति को <span class="hl">“पैरों के बिना गति”</span> कहा जाता है। यह भौतिकी के नियमों पर आधारित है — घर्षण, दबाव और बल। जब साँप अपने शरीर को लहराता है, तो ज़मीन के साथ घर्षण पैदा होता है।</p>
+      <p>साँप का शरीर जहाँ ज़मीन को दबाता है, वहाँ घर्षण ज़्यादा होता है। लेकिन जब शरीर आगे बढ़ता है, तो वह उसी घर्षण का फ़ायदा उठाकर आगे खिसकता है। यानी साँप घर्षण को अपने पक्ष में इस्तेमाल करता है।</p>
+      <p>यही कारण है कि साँप चिकनी ज़मीन (जैसे काँच या पॉलिश किए फर्श) पर ठीक से नहीं चल पाता, क्योंकि वहाँ घर्षण बहुत कम होता है। ज़मीन जितनी खुरदरी होगी, साँप उतनी ही तेज़ी से चलेगा।</p>
+
+      <div class="callout earth">💡 <strong>आसान उदाहरण:</strong> अगर आप किसी चिकनी मेज़ पर कोई रबर का टुकड़ा खींचें, तो वह आसानी से खिंच जाएगा। लेकिन खुरदरी ज़मीन पर वह अटकेगा। साँप के शरीर के साथ भी यही होता है।</div>
+    </section>
+
+    <!-- ---------- 08 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">08</span>
+        <h2>साँप की गति के कुछ रोचक तथ्य</h2>
+      </div>
+      <p>साँप की गति के बारे में कुछ बातें बहुत दिलचस्प हैं। जैसे — सबसे तेज़ साँप <span class="hl-warm">ब्लैक मांबा</span> माना जाता है, जो लगभग 20 किलोमीटर प्रति घंटा की रफ़्तार से दौड़ सकता है। हालाँकि यह रफ़्तार इंसान के दौड़ने से कम है, फिर भी साँप के लिए यह बहुत तेज़ है।</p>
+      <p>कुछ साँप हवा में भी उड़ सकते हैं — इन्हें <span class="hl">उड़ने वाले साँप</span> कहते हैं। ये पेड़ से छलाँग लगाते हैं और हवा में शरीर को चपटा करके एक ग्लाइडर की तरह तैरते हुए दूसरे पेड़ तक पहुँच जाते हैं।</p>
+      <p>साँप की रीढ़ इतनी लचीली होती है कि वह अपने शरीर को लगभग किसी भी आकार में मोड़ सकता है। यही लचीलापन उसे शिकार पकड़ने, बचने और आगे बढ़ने में मदद करता है।</p>
+
+      <div class="callout fact">🌟 <strong>रोचक तथ्य:</strong> उड़ने वाले साँप 100 मीटर तक हवा में ग्लाइड कर सकते हैं — बिना पंखों के, सिर्फ़ शरीर की बनावट के दम पर।</div>
+    </section>
+
+    <!-- ---------- 09 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">09</span>
+        <h2>साँप का शरीर: प्रकृति की बेहतरीन रचना</h2>
+      </div>
+      <p>साँप का शरीर देखकर लगता है कि प्रकृति ने उसे पैरों के बिना ही पूरा बना दिया। उसकी रीढ़, पसलियाँ, पट्टियाँ और मांसपेशियाँ — सब कुछ इस तरह बना है कि वह बिना पैरों के चल सके।</p>
+      <p>साँप के शरीर में लगभग <span class="hl">10,000 से 20,000 मांसपेशियाँ</span> तक हो सकती हैं, जो उसे लहराने और आगे बढ़ने में मदद करती हैं। यह इंसान के शरीर से कई गुना ज़्यादा है।</p>
+      <p>अगर हम गौर करें, तो साँप एक बहुत ही कुशल जीव है — बिना पैरों के, बिना हाथों के, वह शिकार पकड़ता है, पेड़ पर चढ़ता है, पानी में तैरता है और हवा में उड़ता है। यह सिर्फ़ प्रकृति की समझदारी का करिश्मा है।</p>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="num">20,000</span>
+          <span class="label">शरीर में संभावित मांसपेशियाँ</span>
+        </div>
+        <div class="stat">
+          <span class="num">20 km/h</span>
+          <span class="label">ब्लैक मांबा की गति</span>
+        </div>
+        <div class="stat">
+          <span class="num">100 m</span>
+          <span class="label">उड़ते साँप की ग्लाइड दूरी</span>
+        </div>
+        <div class="stat">
+          <span class="num">30 min</span>
+          <span class="label">पानी के अंदर रह सकते हैं</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 10 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">10</span>
+        <h2>निष्कर्ष</h2>
+      </div>
+      <p>तो सवाल का जवाब यह है — साँप बिना पैरों के चलता है क्योंकि उसका शरीर <span class="hl">बहुत ही लचीला</span> है। उसकी रीढ़ में सैकड़ों जोड़ होते हैं और पेट की पट्टियाँ ज़मीन को पकड़कर उसे आगे बढ़ने में मदद करती हैं।</p>
+      <p>साँप अलग-अलग ज़मीन पर अलग-अलग तरीकों से चलता है — रेत पर साइडवाइंडिंग, सपाट ज़मीन पर लहराते हुए, पेड़ पर पकड़ बनाकर और पानी में तैरते हुए। यह सब उसके शरीर की बनावट का कमाल है।</p>
+      <p>अगली बार जब आप साँप को ज़मीन पर फिसलते देखें, तो याद रखें — वह सिर्फ़ चल नहीं रहा, वह प्रकृति की सबसे अद्भुत रचनाओं में से एक है, जो बिना पैरों के भी जीवन की पूरी कहानी लिख रहा है।</p>
+    </section>
+
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>🐍 प्रकृति ने साँप को पैर नहीं दिए, लेकिन उसे चलने का सबसे अनोखा हुनर दिया।</footer>
+
+</main>
+
+<!-- ===== Back to top ===== -->
+<button id="backToTop" aria-label="ऊपर जाएँ">↑</button>
+
+<script>
+/* ============================================================
+   सारा JavaScript — शुद्ध वैनिला
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var docEl       = document.documentElement;
+  var progressBar = document.getElementById('progressBar');
+  var backToTop   = document.getElementById('backToTop');
+
+  /* 1. स्क्रॉल हैंडलर */
+  var ticking = false;
+  function handleScroll() {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(function () {
+      var scrollTop = window.pageYOffset || docEl.scrollTop || 0;
+      var maxScroll = docEl.scrollHeight - docEl.clientHeight;
+      var percent   = maxScroll > 0 ? (scrollTop / maxScroll) * 100 : 0;
+      progressBar.style.width = percent.toFixed(2) + '%';
+      if (scrollTop > 500) {
+        backToTop.classList.add('show');
+      } else {
+        backToTop.classList.remove('show');
+      }
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('resize', handleScroll, { passive: true });
+  handleScroll();
+
+  /* 2. स्मूद स्क्रॉल */
+  backToTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* 3. स्क्रॉल रिवील + बार एनिमेशन */
+  var revealItems = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('visible');
+        var fills = entry.target.querySelectorAll('.bar-fill');
+        fills.forEach(function (fill) {
+          var w = fill.getAttribute('data-width') || '0';
+          window.setTimeout(function () {
+            fill.style.width = w + '%';
+          }, 180);
+        });
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    revealItems.forEach(function (el) { observer.observe(el); });
+  } else {
+    revealItems.forEach(function (el) { el.classList.add('visible'); });
+    document.querySelectorAll('.bar-fill').forEach(function (fill) {
+      fill.style.width = (fill.getAttribute('data-width') || 0) + '%';
+    });
+  }
+
+  /* 4. जुगनू पार्टिकल जनरेटर */
+  var particleLayer = document.getElementById('particles');
+  function buildParticles() {
+    if (!particleLayer) return;
+    particleLayer.innerHTML = '';
+    var isSmall = window.innerWidth < 600;
+    var count   = isSmall ? 22 : 44;
+    var frag    = document.createDocumentFragment();
+    for (var i = 0; i < count; i++) {
+      var p = document.createElement('span');
+      p.className = 'particle';
+      var size = (Math.random() * 5 + 2).toFixed(1);
+      p.style.left = (Math.random() * 100).toFixed(2) + '%';
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.animationDuration = (Math.random() * 18 + 14).toFixed(1) + 's';
+      p.style.animationDelay = (-Math.random() * 32).toFixed(1) + 's';
+      p.style.setProperty('--drift', (Math.random() * 80 - 40).toFixed(0) + 'px');
+      frag.appendChild(p);
+    }
+    particleLayer.appendChild(frag);
+  }
+  buildParticles();
+
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    if (resizeTimer) window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(buildParticles, 300);
+  }, { passive: true });
+
+  /* 5. हीरो पैरालैक्स */
+  var hero        = document.querySelector('.hero');
+  var heroVisual  = document.getElementById('heroVisual');
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (hero && heroVisual && finePointer) {
+    var parallaxFrame = null;
+    hero.addEventListener('mousemove', function (e) {
+      if (parallaxFrame) return;
+      parallaxFrame = window.requestAnimationFrame(function () {
+        var rect = hero.getBoundingClientRect();
+        var cx = rect.width / 2;
+        var cy = rect.height / 2;
+        var dx = (e.clientX - rect.left - cx) / cx;
+        var dy = (e.clientY - rect.top  - cy) / cy;
+        heroVisual.style.transform =
+          'translate3d(' + (dx * 16).toFixed(2) + 'px,' +
+                            (dy * 12).toFixed(2) + 'px, 0)';
+        parallaxFrame = null;
+      });
+    }, { passive: true });
+    hero.addEventListener('mouseleave', function () {
+      heroVisual.style.transform = 'translate3d(0,0,0)';
+    });
+  }
+
+})();
+</script>
+</body>
+</html>

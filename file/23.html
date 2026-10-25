@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>हमारी आँखें झपकती क्यों हैं?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@500;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   1. CSS VARIABLES — नेत्र थीम (गहरा नीला + तांबई गरम)
+   ============================================================ */
+:root{
+  --bg-deep:#05060f;
+  --bg-mid:#0a0e24;
+  --bg-eye:#111a3a;
+  --bg-warm:#2a1436;
+
+  --iris-100:#e0f2fe;
+  --iris-200:#c7d9ff;
+  --iris-300:#8fb3ff;
+  --iris-400:#5a8bff;
+  --iris-500:#3b6ee0;
+  --violet:#8b5cf6;
+  --copper:#f0a868;
+  --copper-soft:#ffd6b0;
+  --tear:#7fe4f5;
+
+  --text:#eef4ff;
+  --text-soft:#c4d1ea;
+  --muted:#8b9bbd;
+
+  --card:rgba(200,220,255,0.055);
+  --card-border:rgba(140,180,255,0.2);
+  --radius:20px;
+
+  --grad-eye:linear-gradient(135deg,#8fb3ff,#3b6ee0);
+  --grad-warm:linear-gradient(135deg,#ffd6b0,#f0a868);
+  --grad-iris:linear-gradient(135deg,#e0f2fe,#8fb3ff,#8b5cf6);
+
+  --shadow:0 18px 44px rgba(0,10,30,0.55);
+  --maxw:860px;
+}
+
+/* ============================================================
+   2. RESET + BASE
+   ============================================================ */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+
+body{
+  font-family:'Poppins',system-ui,sans-serif;
+  color:var(--text);
+  line-height:1.85;
+  background:var(--bg-deep);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- Fixed background ---------- */
+.bg-fixed{
+  position:fixed;
+  inset:0;
+  z-index:-7;
+  background:
+    radial-gradient(900px 620px at 50% -12%, rgba(139,179,255,0.22), transparent 70%),
+    radial-gradient(700px 500px at 88% 82%, rgba(240,168,104,0.12), transparent 72%),
+    linear-gradient(180deg,#05060f 0%,#0a0e24 26%,#111a3a 58%,#1a1240 82%,#2a1436 100%);
+}
+
+/* ---------- Glowing blobs ---------- */
+.blob{
+  position:fixed;
+  border-radius:50%;
+  filter:blur(100px);
+  pointer-events:none;
+  z-index:-5;
+  opacity:.36;
+  animation:blobFloat 22s ease-in-out infinite alternate;
+}
+.blob-1{width:460px;height:460px;background:#3b6ee0;top:-150px;left:-120px;}
+.blob-2{width:420px;height:420px;background:#8b5cf6;bottom:-170px;right:-140px;animation-delay:-8s;}
+.blob-3{width:330px;height:330px;background:#f0a868;opacity:.16;top:48%;left:-110px;animation-delay:-14s;}
+
+@keyframes blobFloat{
+  from{transform:translate3d(0,0,0) scale(1);}
+  to{transform:translate3d(40px,-52px,0) scale(1.12);}
+}
+
+/* ---------- Particle layer ---------- */
+#particles{
+  position:fixed;
+  inset:0;
+  z-index:-4;
+  overflow:hidden;
+  pointer-events:none;
+}
+.particle{
+  position:absolute;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,rgba(255,255,255,0.95),rgba(143,179,255,0.4) 60%,rgba(143,179,255,0) 100%);
+  box-shadow:0 0 10px rgba(143,179,255,0.65);
+  animation-name:floatUp;
+  animation-timing-function:linear;
+  animation-iteration-count:infinite;
+  will-change:transform,opacity;
+}
+@keyframes floatUp{
+  0%{transform:translate3d(0,110vh,0) scale(.85);opacity:0;}
+  12%{opacity:.85;}
+  60%{transform:translate3d(var(--drift,20px),40vh,0) scale(1);}
+  100%{transform:translate3d(calc(var(--drift,20px) * -1),-14vh,0) scale(1.05);opacity:0;}
+}
+
+/* ---------- Reading progress ---------- */
+#progressBar{
+  position:fixed;
+  top:0;left:0;
+  height:4px;
+  width:0%;
+  z-index:100;
+  border-radius:0 4px 4px 0;
+  background:linear-gradient(90deg,#e0f2fe,#8fb3ff,#8b5cf6,#f0a868);
+  box-shadow:0 0 14px rgba(139,179,255,0.8);
+  transition:width .09s linear;
+}
+
+/* ============================================================
+   3. HERO
+   ============================================================ */
+.hero{
+  min-height:100vh;
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:96px 20px 78px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ---------- Hero visual: पलक झपकती आँख ---------- */
+.hero-visual{
+  position:relative;
+  width:290px;
+  height:250px;
+  margin-bottom:22px;
+  transition:transform .35s ease-out;
+  will-change:transform;
+}
+
+.eye-frame{
+  position:absolute;
+  top:50%;left:50%;
+  width:250px;height:150px;
+  margin:-75px 0 0 -125px;
+  border-radius:50% 50% 50% 50% / 60% 60% 60% 60%;
+  background:radial-gradient(ellipse at 50% 40%,#f5faff,#c7d9ff 55%,#8fb3ff 100%);
+  box-shadow:
+    0 0 60px rgba(143,179,255,0.55),
+    0 0 130px rgba(139,92,246,0.28),
+    inset 0 8px 30px rgba(58,110,224,0.35);
+  overflow:hidden;
+  transform-origin:center;
+  animation:blink 6s ease-in-out infinite;
+}
+@keyframes blink{
+  0%,42%,58%,100%{transform:scaleY(1);}
+  48%,52%{transform:scaleY(.06);}
+}
+
+.iris{
+  position:absolute;
+  top:50%;left:50%;
+  width:96px;height:96px;
+  margin:-48px 0 0 -48px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 40% 35%,#8fb3ff 0%,#5a8bff 38%,#3b6ee0 65%,#1e3a8a 100%);
+  box-shadow:inset 0 0 18px rgba(0,10,40,0.6),0 0 24px rgba(90,139,255,0.55);
+  animation:irisMove 9s ease-in-out infinite;
+}
+@keyframes irisMove{
+  0%,100%{transform:translate(-6px,2px);}
+  25%{transform:translate(8px,-3px);}
+  50%{transform:translate(2px,6px);}
+  75%{transform:translate(-8px,-2px);}
+}
+
+.pupil{
+  position:absolute;
+  top:50%;left:50%;
+  width:44px;height:44px;
+  margin:-22px 0 0 -22px;
+  border-radius:50%;
+  background:radial-gradient(circle at 38% 32%,#1a1f4a,#05060f 78%);
+  box-shadow:inset 0 0 12px rgba(0,0,0,0.9);
+}
+
+.glint{
+  position:absolute;
+  top:26%;left:34%;
+  width:14px;height:14px;
+  border-radius:50%;
+  background:radial-gradient(circle,#ffffff,rgba(255,255,255,0) 72%);
+  opacity:.9;
+}
+.glint.small{
+  top:44%;left:58%;
+  width:7px;height:7px;
+  opacity:.65;
+}
+
+/* पलकें */
+.lashes{
+  position:absolute;
+  top:50%;left:50%;
+  width:260px;height:160px;
+  margin:-80px 0 0 -130px;
+  pointer-events:none;
+  animation:blinkLash 6s ease-in-out infinite;
+}
+@keyframes blinkLash{
+  0%,42%,58%,100%{transform:scaleY(1);}
+  48%,52%{transform:scaleY(.06);}
+}
+.lashes::before,
+.lashes::after{
+  content:'';
+  position:absolute;
+  left:50%;
+  width:250px;
+  height:78px;
+  margin-left:-125px;
+  border-radius:50%;
+  border:2px solid rgba(224,242,254,0.55);
+  border-bottom-color:transparent;
+}
+.lashes::before{top:0;border-top-color:rgba(224,242,254,0.85);}
+.lashes::after{bottom:0;border-bottom-color:rgba(224,242,254,0.85);border-top-color:transparent;}
+
+/* आँसू की बूँद */
+.tear-drop{
+  position:absolute;
+  bottom:10px;left:50%;
+  width:12px;height:18px;
+  margin-left:-6px;
+  border-radius:50% 50% 50% 50% / 65% 65% 35% 35%;
+  background:radial-gradient(circle at 38% 30%,#ffffff,#7fe4f5 60%,#3b6ee0 100%);
+  box-shadow:0 0 12px rgba(127,228,245,0.75);
+  animation:tearFall 3.6s ease-in infinite;
+}
+@keyframes tearFall{
+  0%,60%{transform:translateY(0) scale(.85);opacity:0;}
+  70%{opacity:1;}
+  100%{transform:translateY(58px) scale(1);opacity:0;}
+}
+
+/* ---------- Hero text ---------- */
+.hero h1{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:clamp(1.9rem,7.3vw,4.4rem);
+  line-height:1.22;
+  letter-spacing:-.5px;
+  background:linear-gradient(120deg,#ffffff 6%,#c7d9ff 40%,#8fb3ff 62%,#8b5cf6 84%,#ffd6b0 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  max-width:16ch;
+  margin-bottom:18px;
+  filter:drop-shadow(0 8px 26px rgba(143,179,255,0.35));
+}
+
+.hero p{
+  max-width:620px;
+  font-size:clamp(.92rem,2.4vw,1.06rem);
+  color:var(--text-soft);
+  font-weight:300;
+  text-align:center;
+}
+
+/* ---------- Scroll hint ---------- */
+.scroll-hint{
+  position:absolute;
+  bottom:26px;left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  color:var(--iris-300);
+  font-size:.74rem;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+  opacity:.85;
+}
+.scroll-hint span{
+  font-size:1.5rem;
+  line-height:1;
+  animation:bounce 1.9s ease-in-out infinite;
+}
+@keyframes bounce{
+  0%,100%{transform:translateY(0);opacity:.65;}
+  50%{transform:translateY(9px);opacity:1;}
+}
+
+/* ============================================================
+   4. ARTICLE LAYOUT
+   ============================================================ */
+.article{
+  width:100%;
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:0 20px 40px;
+  position:relative;
+}
+
+.section{margin-bottom:clamp(56px,8vw,92px);}
+
+.section-head{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.badge{
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  width:52px;height:52px;
+  border-radius:16px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:1.28rem;
+  color:#080c1e;
+  background:linear-gradient(135deg,#8fb3ff,#3b6ee0);
+  box-shadow:0 10px 26px rgba(90,139,255,0.42);
+}
+
+h2{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:clamp(1.32rem,4vw,2rem);
+  line-height:1.35;
+  color:#f3f8ff;
+}
+
+.article p{
+  text-align:justify;
+  text-justify:inter-word;
+  color:var(--text-soft);
+  font-size:clamp(.9rem,2.3vw,1rem);
+  font-weight:300;
+  margin-bottom:18px;
+}
+
+.hl{color:var(--iris-300);font-weight:600;}
+.hl-warm{color:var(--copper-soft);font-weight:600;}
+.hl-violet{color:#c4b5fd;font-weight:600;}
+.hl-tear{color:var(--tear);font-weight:600;}
+
+/* ---------- Callouts ---------- */
+.callout{
+  border-radius:18px;
+  padding:18px 22px;
+  margin:24px 0;
+  font-size:clamp(.85rem,2.2vw,.95rem);
+  line-height:1.8;
+  border:1px solid rgba(143,179,255,0.28);
+  background:linear-gradient(135deg,rgba(90,139,255,0.15),rgba(139,92,246,0.07));
+  border-left:4px solid var(--iris-300);
+  color:#e2ecff;
+}
+.callout.fact{
+  border-color:rgba(255,214,176,0.32);
+  background:linear-gradient(135deg,rgba(255,214,176,0.14),rgba(240,168,104,0.05));
+  border-left-color:var(--copper);
+}
+.callout.warm{
+  border-color:rgba(127,228,245,0.32);
+  background:linear-gradient(135deg,rgba(127,228,245,0.13),rgba(59,110,224,0.05));
+  border-left-color:var(--tear);
+}
+
+/* ---------- Stats cards ---------- */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(152px,1fr));
+  gap:16px;
+  margin:30px 0;
+}
+.stat{
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  padding:22px 16px;
+  text-align:center;
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;
+}
+.stat:hover{
+  transform:translateY(-9px);
+  box-shadow:var(--shadow);
+  border-color:rgba(143,179,255,0.55);
+}
+.stat .num{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:clamp(1.4rem,4.2vw,1.9rem);
+  line-height:1.15;
+  background:var(--grad-eye);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.stat .label{
+  display:block;
+  margin-top:8px;
+  font-size:.78rem;
+  line-height:1.55;
+  color:var(--muted);
+}
+
+/* ---------- Progress bars ---------- */
+.bars{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  margin:28px 0;
+  padding:22px 20px;
+  border-radius:var(--radius);
+  background:rgba(200,220,255,0.045);
+  border:1px solid var(--card-border);
+}
+.bar-row{
+  display:grid;
+  grid-template-columns:120px 1fr 80px;
+  align-items:center;
+  gap:12px;
+  font-size:.82rem;
+  color:var(--text-soft);
+}
+.bar-row .name{font-weight:500;}
+.bar-row .val{text-align:right;color:var(--muted);font-size:.76rem;}
+.bar-track{
+  height:12px;
+  border-radius:99px;
+  background:rgba(255,255,255,0.08);
+  overflow:hidden;
+}
+.bar-fill{
+  height:100%;
+  width:0;
+  border-radius:99px;
+  transition:width 1.35s cubic-bezier(.22,1,.36,1);
+}
+.bar-fill.b1{background:linear-gradient(90deg,#5a8bff,#8fb3ff);}
+.bar-fill.b2{background:linear-gradient(90deg,#8b5cf6,#c4b5fd);}
+.bar-fill.b3{background:linear-gradient(90deg,#f0a868,#ffd6b0);}
+.bar-fill.b4{background:linear-gradient(90deg,#7fe4f5,#b6f2fb);}
+
+/* ---------- Comparison cards ---------- */
+.compare{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin:28px 0;
+}
+.compare .card{
+  padding:22px 20px;
+  border-radius:var(--radius);
+  background:var(--card);
+  border:1px solid var(--card-border);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;
+}
+.compare .card:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow);
+}
+.compare .card.blue{border-color:rgba(143,179,255,0.5);}
+.compare .card.warm{border-color:rgba(255,214,176,0.5);}
+.compare h3{
+  font-family:'Baloo Bhai 2',cursive;
+  font-size:1.12rem;
+  font-weight:700;
+  margin-bottom:10px;
+}
+.compare .card.blue h3{color:var(--iris-300);}
+.compare .card.warm h3{color:var(--copper-soft);}
+.compare ul{
+  list-style:none;
+  font-size:.86rem;
+  color:var(--text-soft);
+  line-height:1.9;
+}
+.compare li::before{
+  content:'•';
+  color:var(--iris-300);
+  margin-right:8px;
+  font-weight:700;
+}
+
+/* ---------- Step cards ---------- */
+.steps{
+  display:grid;
+  gap:14px;
+  margin:28px 0;
+}
+.step{
+  display:flex;
+  align-items:flex-start;
+  gap:16px;
+  padding:18px 20px;
+  border-radius:18px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  font-size:.9rem;
+  color:var(--text-soft);
+  transition:transform .3s ease,border-color .3s ease;
+}
+.step:hover{
+  transform:translateX(6px);
+  border-color:rgba(143,179,255,0.5);
+}
+.step .n{
+  flex:0 0 38px;
+  width:38px;height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:1rem;
+  color:#23100a;
+  background:var(--grad-warm);
+}
+.step .txt strong{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:#f0f6ff;
+  margin-bottom:2px;
+}
+
+/* ---------- SVG Diagram ---------- */
+.diagram{
+  margin:30px 0;
+  padding:18px;
+  border-radius:var(--radius);
+  background:rgba(200,220,255,0.035);
+  border:1px solid var(--card-border);
+}
+.diagram svg{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.svg-label{
+  font-family:'Poppins',sans-serif;
+  font-size:12.5px;
+  fill:#b5c6e2;
+}
+.svg-label-bright{
+  font-family:'Poppins',sans-serif;
+  font-size:12.5px;
+  font-weight:600;
+  fill:#e0f2fe;
+}
+
+/* ---------- Timeline ---------- */
+.timeline{
+  position:relative;
+  margin:32px 0;
+  padding-left:34px;
+}
+.timeline::before{
+  content:'';
+  position:absolute;
+  top:8px;bottom:8px;left:11px;
+  width:3px;
+  border-radius:99px;
+  background:linear-gradient(180deg,#8fb3ff,#8b5cf6,#f0a868);
+  opacity:.6;
+}
+.tl-item{
+  position:relative;
+  margin-bottom:22px;
+  padding:16px 18px;
+  border-radius:16px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  font-size:.88rem;
+  color:var(--text-soft);
+  transition:transform .3s ease,border-color .3s ease;
+}
+.tl-item:hover{
+  transform:translateX(4px);
+  border-color:rgba(143,179,255,0.5);
+}
+.tl-item::before{
+  content:'';
+  position:absolute;
+  left:-31px;top:22px;
+  width:14px;height:14px;
+  border-radius:50%;
+  background:var(--iris-300);
+  box-shadow:0 0 0 4px rgba(143,179,255,0.2),0 0 12px rgba(143,179,255,0.75);
+}
+.tl-item strong{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:#eef4ff;
+  margin-bottom:3px;
+}
+
+/* ---------- Quote ---------- */
+.quote{
+  max-width:720px;
+  margin:clamp(56px,8vw,86px) auto;
+  text-align:center;
+  padding:38px 26px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:600;
+  font-size:clamp(1.1rem,3.1vw,1.55rem);
+  line-height:1.72;
+  color:#f0f6ff;
+  border-top:1px solid rgba(143,179,255,0.3);
+  border-bottom:1px solid rgba(143,179,255,0.3);
+  background:radial-gradient(circle at 50% 0%,rgba(90,139,255,0.16),transparent 72%);
+}
+.quote .mark{
+  display:block;
+  font-size:2.4rem;
+  line-height:1;
+  margin-bottom:12px;
+  color:var(--copper);
+}
+
+/* ---------- Footer ---------- */
+footer{
+  text-align:center;
+  padding:46px 22px 84px;
+  font-size:.85rem;
+  color:var(--muted);
+  border-top:1px solid rgba(143,179,255,0.14);
+  max-width:var(--maxw);
+  margin:0 auto;
+}
+
+/* ---------- Back to top ---------- */
+#backToTop{
+  position:fixed;
+  right:20px;bottom:22px;
+  width:52px;height:52px;
+  border:none;
+  border-radius:50%;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  font-size:1.35rem;
+  font-weight:700;
+  color:#080c1e;
+  background:linear-gradient(135deg,#8fb3ff,#3b6ee0);
+  box-shadow:0 12px 30px rgba(90,139,255,0.45);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(18px) scale(.88);
+  transition:opacity .35s ease,transform .35s ease,box-shadow .35s ease;
+  z-index:99;
+}
+#backToTop.show{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0) scale(1);
+}
+#backToTop:hover{box-shadow:0 16px 38px rgba(90,139,255,0.65);}
+
+/* ---------- Scroll reveal ---------- */
+.reveal{
+  opacity:0;
+  transform:translateY(38px);
+  transition:opacity .85s ease,transform .85s cubic-bezier(.22,1,.36,1);
+}
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ============================================================
+   5. RESPONSIVE
+   ============================================================ */
+@media (max-width:600px){
+  .hero{padding:80px 18px 64px;}
+  .hero-visual{width:226px;height:200px;margin-bottom:16px;}
+  .eye-frame{width:194px;height:116px;margin:-58px 0 0 -97px;}
+  .iris{width:74px;height:74px;margin:-37px 0 0 -37px;}
+  .pupil{width:34px;height:34px;margin:-17px 0 0 -17px;}
+  .lashes{width:202px;height:124px;margin:-62px 0 0 -101px;}
+  .lashes::before,.lashes::after{width:194px;height:60px;margin-left:-97px;}
+
+  .article{padding:0 16px 30px;}
+
+  .section-head{gap:12px;margin-bottom:16px;}
+  .badge{width:44px;height:44px;border-radius:13px;font-size:1.1rem;}
+
+  .stats{grid-template-columns:1fr;}
+  .compare{grid-template-columns:1fr;}
+  .bar-row{grid-template-columns:94px 1fr 66px;font-size:.76rem;}
+  .bar-row .val{font-size:.7rem;}
+
+  .step{flex-direction:row;padding:16px;}
+  .step:hover{transform:none;}
+
+  .callout{padding:16px 18px;}
+  .quote{padding:30px 18px;}
+
+  .timeline{padding-left:30px;}
+  .tl-item::before{left:-27px;}
+
+  #backToTop{width:46px;height:46px;right:14px;bottom:16px;font-size:1.2rem;}
+}
+
+@media (min-width:601px) and (max-width:900px){
+  .stats{grid-template-columns:repeat(2,1fr);}
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,
+  *::before,
+  *::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+  .reveal{opacity:1;transform:none;}
+  html{scroll-behavior:auto;}
+  .eye-frame,.lashes{animation:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Fixed background ===== -->
+<div class="bg-fixed" aria-hidden="true"></div>
+<div class="blob blob-1" aria-hidden="true"></div>
+<div class="blob blob-2" aria-hidden="true"></div>
+<div class="blob blob-3" aria-hidden="true"></div>
+<div id="particles" aria-hidden="true"></div>
+
+<!-- ===== Reading progress ===== -->
+<div id="progressBar" aria-hidden="true"></div>
+
+<main>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="hero-visual" id="heroVisual" aria-hidden="true">
+      <div class="lashes"></div>
+      <div class="eye-frame">
+        <div class="iris">
+          <div class="pupil"></div>
+          <span class="glint"></span>
+          <span class="glint small"></span>
+        </div>
+      </div>
+      <div class="tear-drop"></div>
+    </div>
+
+    <h1>हमारी आँखें झपकती क्यों हैं?</h1>
+    <p>एक दिन में हम हज़ारों बार पलक झपकते हैं — बिना सोचे, बिना रुके। यह छोटी-सी हरकत हमारी आँखों की सबसे बड़ी रक्षा है। जानिए कैसे यह सरल क्रिया शरीर की सबसे नफ़ीस मशीन को साफ़, नम और सुरक्षित रखती है।</p>
+
+    <div class="scroll-hint">
+      <span>↓</span>
+      आँखें खोलकर पढ़ें
+    </div>
+  </section>
+
+  <!-- ================= ARTICLE ================= -->
+  <div class="article">
+
+    <!-- ---------- 01 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">01</span>
+        <h2>एक दिन में हज़ारों बार... बिना सोचे</h2>
+      </div>
+      <p>ध्यान दीजिए — जब आप यह पंक्ति पढ़ रहे हैं, तब भी कहीं न कहीं आपकी पलकें झपक रही हैं। और आपने उस झपकने का निर्णय नहीं लिया। यह अपने आप होता है। हमारा शरीर हर कुछ सेकंड में पलक झपकता है, बिना किसी प्रयास के।</p>
+      <p>यह स्वाभाविक क्रिया इतनी सहज है कि हम उसे कभी गिनते ही नहीं। लेकिन जब कोई हमें बताता है कि हम दिन में <span class="hl">करीब 15,000 से 20,000 बार</span> पलक झपकते हैं, तो पहली बार यकीन मुश्किल होता है।</p>
+      <p>सवाल उठता है — इतनी बार? और इतनी तेज़ी से? आइए, इस छोटी-सी हरकत के पीछे छिपी बड़ी कहानी को समझते हैं।</p>
+
+      <div class="callout fact">🌟 <strong>रोचक तथ्य:</strong> सामान्य व्यक्ति एक दिन में लगभग <strong>4 से 5 किलोमीटर की दूरी</strong> पलकों की हरकत से तय कर लेता है — यह एक गाँव से बाज़ार तक की पैदल दूरी है!</div>
+    </section>
+
+    <!-- ---------- 02 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">02</span>
+        <h2>पलक झपकना: शरीर की एक छोटी-सी मशीन</h2>
+      </div>
+      <p>पलक झपकना कोई साधारण क्रिया नहीं है। इसमें एक साथ कई मांसपेशियाँ काम करती हैं। पलक के ऊपर मौजूद <span class="hl-warm">ऑर्बिक्युलरिस ओकुलाई</span> मांसपेशी पलक को बंद करती है, और <span class="hl-warm">लेवेटर पैल्पेब्रे</span> मांसपेशी उसे फिर से खोलती है।</p>
+      <p>पूरी क्रिया में लगभग <span class="hl">0.3 से 0.4 सेकंड</span> का समय लगता है। यह इतना तेज़ है कि हमें अंधेरे का एहसास भी ठीक से नहीं होता। दरअसल, हमारा दिमाग़ झपकने के दौरान उस अंधेरे को “भर” देता है, जिससे हमें लगता है कि हम लगातार देख रहे थे।</p>
+      <p>इसे <span class="hl-violet">दृष्टि की निरंतरता</span> कहते हैं। यही कारण है कि सिनेमा हॉल में तस्वीरों का बदलना हमें तेज़ चलती कहानी जैसा लगता है — और पलक झपकते ही हम कुछ खो भी नहीं देते।</p>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="num">~18,000</span>
+          <span class="label">दिन में औसत पलक झपकने की संख्या</span>
+        </div>
+        <div class="stat">
+          <span class="num">0.3 sec</span>
+          <span class="label">एक बार पलक झपकने का समय</span>
+        </div>
+        <div class="stat">
+          <span class="num">6-20</span>
+          <span class="label">प्रति मिनट पलक झपकने की दर</span>
+        </div>
+        <div class="stat">
+          <span class="num">~4 किमी</span>
+          <span class="label">दिन में पलकों की कुल यात्रा</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 03 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">03</span>
+        <h2>सबसे बड़ा कारण: आँखों को नम रखना</h2>
+      </div>
+      <p>आँख की सतह पर <span class="hl-tear">आँसू की एक पतली परत</span> होती है, जिसे आँसू फिल्म कहते हैं। यह परत तीन हिस्सों से बनी होती है — तेल, पानी और म्यूकस। यह परत आँख को नम रखती है, धूल हटाती है, और रोशनी को साफ़ तरीके से अंदर जाने देती है।</p>
+      <p>लेकिन हवा में उड़ते हुए कण, गरमी, पंखे की हवा और स्क्रीन की रोशनी — सब मिलकर इस परत को सुखाते रहते हैं। अगर आँख लंबे समय तक खुली रहे, तो यह परत सूखने लगती है और जलन, खुजली और धुंधलापन होता है।</p>
+      <p>यहीं पलक झपकना काम आता है। हर बार पलक बंद होने पर यह परत फिर से फैल जाती है — जैसे सूखी ज़मीन पर पानी का एक पतला-सा छिड़काव। इसीलिए <span class="hl">पलक झपकना आँख की सबसे बड़ी नमी-रक्षा प्रणाली</span> है।</p>
+
+      <div class="callout warm">💡 <strong>आसान उदाहरण:</strong> जैसे सूखी ज़मीन पर पानी का छिड़काव मिट्टी को फिर से गीला कर देता है, वैसे ही पलक झपकने से आँख की सतह फिर से नम हो जाती है।</div>
+    </section>
+
+    <!-- ---------- 04 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">04</span>
+        <h2>धूल और बैक्टीरिया से सुरक्षा</h2>
+      </div>
+      <p>पलकें सिर्फ़ नमी नहीं देतीं — वे एक सुरक्षा कवच भी हैं। जब भी कोई धूल का कण, छोटा कीड़ा या बाल आँख के पास आता है, पलक अपने आप बंद हो जाती है। यह एक <span class="hl">पलक प्रतिवर्त क्रिया (blink reflex)</span> है, जिसे हमारा दिमाग़ मिलीसेकंड में चला देता है।</p>
+      <p>धूल के कण जब पलकों से टकराते हैं, तो आँसू उन्हें बहाकर आँख से बाहर निकाल देते हैं। यह प्रक्रिया <span class="hl-tear">आँख की सफ़ाई मशीन</span> की तरह काम करती है — बिना किसी साबुन और पानी के।</p>
+      <p>इसके अलावा पलकें आँख में जाने वाली तेज़ रोशनी को भी नियंत्रित करती हैं। बहुत तेज़ रोशनी में हम अपने आप पलकें सिकोड़ लेते हैं, जिससे आँख की रेटिना को नुकसान नहीं पहुँचता। पलकें, यानी एक ढाल, एक सफ़ाईकर्मी और एक सुरक्षा गार्ड — तीनों एक साथ।</p>
+
+      <div class="compare">
+        <div class="card blue">
+          <h3>धूल-संरक्षण</h3>
+          <ul>
+            <li>पलकें अपने आप बंद होती हैं</li>
+            <li>आँसू धूल को बहाकर बाहर निकालते हैं</li>
+            <li>कण आँख की सतह तक नहीं पहुँचते</li>
+            <li>आँख साफ़ बनी रहती है</li>
+          </ul>
+        </div>
+        <div class="card warm">
+          <h3>रोशनी-संरक्षण</h3>
+          <ul>
+            <li>तेज़ रोशनी में पलकें सिकुड़ जाती हैं</li>
+            <li>रेटिना को नुकसान से बचाव</li>
+            <li>अंधेरे से प्रकाश में संतुलन</li>
+            <li>आँख को थकान से राहत</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 05 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">05</span>
+        <h2>स्क्रीन और पलक झपकने का रिश्ता</h2>
+      </div>
+      <p>आज के दौर में एक नई समस्या उभरी है — <span class="hl-warm">डिजिटल आँख थकान</span>। मोबाइल, लैपटॉप या टीवी स्क्रीन देखते समय हमारी पलक झपकने की दर अचानक कम हो जाती है। अध्ययनों के अनुसार, स्क्रीन देखते समय यह दर <span class="hl">लगभग आधी</span> रह जाती है।</p>
+      <p>कम पलक झपकने का मतलब है — आँसू की परत लंबे समय तक बिना नवीनीकरण के रहना। इससे आँख सूखने लगती है, जलन होती है, और दृष्टि धुँधली लगने लगती है। इसे <span class="hl-violet">कंप्यूटर विज़न सिंड्रोम</span> भी कहा जाता है।</p>
+      <p>विशेषज्ञ <span class="hl">“20-20-20” नियम</span> की सलाह देते हैं — हर 20 मिनट में, 20 सेकंड के लिए, 20 फ़ीट दूर किसी चीज़ को देखें। यह एक छोटा-सा ब्रेक आँखों की नमी और पलकों की प्राकृतिक गति को दोबारा सामान्य कर देता है।</p>
+
+      <div class="bars">
+        <div class="bar-row">
+          <span class="name">सामान्य पढ़ते समय</span>
+          <span class="bar-track"><span class="bar-fill b1" data-width="70"></span></span>
+          <span class="val">~15/मिनट</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">बातचीत करते समय</span>
+          <span class="bar-track"><span class="bar-fill b2" data-width="85"></span></span>
+          <span class="val">~18/मिनट</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">टीवी देखते समय</span>
+          <span class="bar-track"><span class="bar-fill b3" data-width="40"></span></span>
+          <span class="val">~9/मिनट</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">मोबाइल पर</span>
+          <span class="bar-track"><span class="bar-fill b4" data-width="30"></span></span>
+          <span class="val">~6/मिनट</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 06 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">06</span>
+        <h2>पलक झपकने के चार मुख्य कारण</h2>
+      </div>
+      <p>वैज्ञानिक भाषा में पलक झपकने की चार प्रमुख वजहें हैं। इन्हें समझकर हम इस छोटी-सी क्रिया को बेहतर तरीके से देख पाते हैं।</p>
+
+      <div class="steps">
+        <div class="step">
+          <span class="n">1</span>
+          <span class="txt"><strong>आँसू की परत बनाए रखना</strong>नमी का संतुलन बना रहे ताकि आँख सूखे नहीं।</span>
+        </div>
+        <div class="step">
+          <span class="n">2</span>
+          <span class="txt"><strong>धूल और कण हटाना</strong>आँसू के साथ गंदगी बहकर बाहर निकल जाए।</span>
+        </div>
+        <div class="step">
+          <span class="n">3</span>
+          <span class="txt"><strong>रोशनी से सुरक्षा</strong>तेज़ प्रकाश में आँख की सतह सुरक्षित रहे।</span>
+        </div>
+        <div class="step">
+          <span class="n">4</span>
+          <span class="txt"><strong>दिमाग़ को आराम</strong>लंबे समय तक एक ही चीज़ देखने पर विराम मिले।</span>
+        </div>
+      </div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 660 320" role="img" aria-label="पलक झपकने की प्रक्रिया — पलक बंद होकर आँसू की परत फैलाती है और आँख की सफ़ाई करती है">
+          <defs>
+            <radialGradient id="eyeGrad">
+              <stop offset="0%" stop-color="#f5faff"/>
+              <stop offset="60%" stop-color="#c7d9ff"/>
+              <stop offset="100%" stop-color="#8fb3ff"/>
+            </radialGradient>
+            <radialGradient id="irisGrad">
+              <stop offset="0%" stop-color="#8fb3ff"/>
+              <stop offset="55%" stop-color="#3b6ee0"/>
+              <stop offset="100%" stop-color="#1e3a8a"/>
+            </radialGradient>
+            <radialGradient id="tearGrad">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="60%" stop-color="#7fe4f5"/>
+              <stop offset="100%" stop-color="#3b6ee0"/>
+            </radialGradient>
+            <linearGradient id="dropletFlow" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#7fe4f5" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#7fe4f5" stop-opacity="0"/>
+            </linearGradient>
+            <marker id="eyeArrow" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#8fb3ff"/>
+            </marker>
+          </defs>
+
+          <!-- बाईं ओर: खुली आँख -->
+          <g transform="translate(50,60)">
+            <ellipse cx="110" cy="80" rx="105" ry="62" fill="url(#eyeGrad)" stroke="#5a8bff" stroke-opacity="0.5"/>
+            <circle cx="110" cy="80" r="36" fill="url(#irisGrad)"/>
+            <circle cx="110" cy="80" r="16" fill="#05060f"/>
+            <circle cx="100" cy="70" r="5" fill="#ffffff" opacity="0.9"/>
+            <circle cx="120" cy="88" r="3" fill="#ffffff" opacity="0.6"/>
+            <!-- पलक रेखा -->
+            <path d="M8 34 Q110 0 212 34" fill="none" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round"/>
+            <text x="110" y="180" text-anchor="middle" class="svg-label-bright">खुली आँख</text>
+            <text x="110" y="200" text-anchor="middle" class="svg-label">आँसू की परत सूखने लगती है</text>
+          </g>
+
+          <!-- बीच में: बंद होती पलक -->
+          <g transform="translate(280,60)">
+            <ellipse cx="60" cy="80" rx="60" ry="52" fill="url(#eyeGrad)" stroke="#5a8bff" stroke-opacity="0.5"/>
+            <path d="M0 80 Q60 40 120 80" fill="none" stroke="#c7d9ff" stroke-width="3"/>
+            <path d="M0 80 Q60 120 120 80" fill="none" stroke="#c7d9ff" stroke-width="3"/>
+            <line x1="60" y1="52" x2="60" y2="108" stroke="#7fe4f5" stroke-width="2" stroke-dasharray="4 4"/>
+            <line x1="60" y1="52" x2="60" y2="108" stroke="#7fe4f5" stroke-width="2" stroke-dasharray="4 4"/>
+            <text x="60" y="180" text-anchor="middle" class="svg-label-bright">पलक बंद</text>
+            <text x="60" y="200" text-anchor="middle" class="svg-label">आँसू फिर फैलता है</text>
+          </g>
+
+          <!-- दाईं ओर: साफ़ आँख -->
+          <g transform="translate(400,60)">
+            <ellipse cx="110" cy="80" rx="105" ry="62" fill="url(#eyeGrad)" stroke="#5a8bff" stroke-opacity="0.5"/>
+            <circle cx="110" cy="80" r="36" fill="url(#irisGrad)"/>
+            <circle cx="110" cy="80" r="16" fill="#05060f"/>
+            <circle cx="100" cy="70" r="5" fill="#ffffff" opacity="0.95"/>
+            <circle cx="120" cy="88" r="3" fill="#ffffff" opacity="0.65"/>
+            <path d="M8 34 Q110 0 212 34" fill="none" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round"/>
+            <!-- चमकते आँसू के कण -->
+            <circle cx="70" cy="98" r="4" fill="url(#tearGrad)"/>
+            <circle cx="150" cy="100" r="3" fill="url(#tearGrad)"/>
+            <circle cx="90" cy="112" r="3" fill="url(#tearGrad)"/>
+            <text x="110" y="180" text-anchor="middle" class="svg-label-bright">नम और साफ़ आँख</text>
+            <text x="110" y="200" text-anchor="middle" class="svg-label">दृष्टि फिर स्पष्ट</text>
+          </g>
+
+          <!-- तीर -->
+          <line x1="200" y1="220" x2="262" y2="220" stroke="#8fb3ff" stroke-width="2" marker-end="url(#eyeArrow)"/>
+          <line x1="382" y1="220" x2="448" y2="220" stroke="#8fb3ff" stroke-width="2" marker-end="url(#eyeArrow)"/>
+
+          <text x="330" y="290" text-anchor="middle" class="svg-label">एक झपकने का पूरा चक्र — लगभग 0.3 सेकंड</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ---------- QUOTE ---------- -->
+    <div class="quote reveal">
+      <span class="mark">❝</span>
+      हमारी आँखें दुनिया देखने का दरवाज़ा हैं — और पलक झपकना वह चौकीदार है, जो उस दरवाज़े को हर पल साफ़, नम और सुरक्षित रखता है।
+    </div>
+
+    <!-- ---------- 07 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">07</span>
+        <h2>क्या झपकने की गति बदलती रहती है?</h2>
+      </div>
+      <p>हाँ, बिल्कुल बदलती है। पलक झपकने की दर हर इंसान में अलग होती है और स्थिति के हिसाब से भी बदलती रहती है। जब हम सोते हैं, तब पलकें अपने आप बंद रहती हैं, इसलिए झपकना शून्य होता है। जागते समय यह दर <span class="hl">प्रति मिनट 6 से 20 बार</span> के बीच रहती है।</p>
+      <p>अगर हम किसी चीज़ पर बहुत ध्यान से देख रहे हैं — जैसे किताब पढ़ना, स्क्रीन पर काम करना या किसी को गौर से देखना — तो यह दर तेज़ी से गिर जाती है। इसके उलट, जब हम बातचीत कर रहे होते हैं या अधिक सजग होते हैं, तो पलक झपकने की दर बढ़ जाती है।</p>
+      <p>वैज्ञानिकों का मानना है कि पलक झपकने का दिमाग़ से भी गहरा रिश्ता है। कुछ अध्ययन बताते हैं कि झपकना ध्यान के टूटने और फिर जुड़ने के साथ जुड़ा होता है — जैसे दिमाग़ एक पल के लिए रुककर खुद को दोबारा तैयार करता है।</p>
+
+      <div class="callout">💡 <strong>आसान उदाहरण:</strong> एक ही पन्ने को पढ़ते रहने पर पलकें कम झपकती हैं, लेकिन जैसे ही आप सिर उठाकर किसी से बात करते हैं, पलकें अपनी सामान्य गति पर आ जाती हैं।</div>
+    </section>
+
+    <!-- ---------- 08 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">08</span>
+        <h2>क्या हम पलक झपकने पर नियंत्रण कर सकते हैं?</h2>
+      </div>
+      <p>कुछ हद तक — हाँ। हम जानबूझकर पलक झपक सकते हैं, जैसे किसी को शरारत में इशारा करने के लिए। लेकिन स्वाभाविक पलक झपकने को ज़्यादा देर तक रोकना मुश्किल है। कोई भी व्यक्ति बिना झपके अपनी आँखें <span class="hl-warm">कुछ ही सेकंड से लेकर अधिकतम एक मिनट तक</span> खुली रख सकता है।</p>
+      <p>अगर हम ज़बरदस्ती लंबे समय तक पलक न झपकें, तो आँख की सतह सूखने लगती है, जलन होती है और आँसू अपने आप बहने लगते हैं। यही शरीर का स्वाभाविक बचाव है — दिमाग़ झपकने का संकेत भेजता है और पलक बंद हो जाती है।</p>
+      <p>कुछ पेशेवर लोग — जैसे तैराक या तीरंदाज़ — इस दर को थोड़े समय के लिए नियंत्रित कर पाते हैं, लेकिन सामान्य व्यक्ति के लिए यह संभव नहीं। नतीजा साफ़ है — <span class="hl">पलक झपकना हमारी इच्छा से नहीं, हमारे शरीर की ज़रूरत से चलता है</span>।</p>
+    </section>
+
+    <!-- ---------- 09 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">09</span>
+        <h2>जानवरों की आँखें कैसे झपकती हैं?</h2>
+      </div>
+      <p>इंसानों में पलक ऊपर से नीचे बंद होती है, लेकिन कई जानवरों में यह प्रक्रिया अलग है। कुछ जीव अपनी पलक नीचे से ऊपर की ओर बंद करते हैं। मगरमच्छ और कछुए जैसे जीवों में एक <span class="hl-tear">पारदर्शी पलक</span> होती है, जिसे निक्टिटेटिंग मेम्ब्रेन कहते हैं।</p>
+      <p>यह पलक पानी के अंदर भी देखने में मदद करती है। पक्षियों में यह विशेष पलक बहुत तेज़ी से काम करती है, इसलिए वे उड़ते समय भी अपनी आँखें साफ़ रख पाते हैं। यह एक शानदार प्राकृतिक अनुकूलन है।</p>
+      <p>दिलचस्प बात यह है कि कुछ मछलियों में पलकें नहीं होतीं, क्योंकि उनकी आँखें पानी में हमेशा नम रहती हैं और धूल का खतरा भी नहीं होता। यह दिखाता है कि <span class="hl-violet">पलकें उसी वातावरण की ज़रूरत हैं जिसमें कोई जीव रहता है</span>।</p>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <strong>इंसान</strong>
+          पलक ऊपर से नीचे बंद होती है, प्रति मिनट 15–20 बार।
+        </div>
+        <div class="tl-item">
+          <strong>मगरमच्छ</strong>
+          पारदर्शी पलक, पानी के अंदर भी स्पष्ट दृष्टि।
+        </div>
+        <div class="tl-item">
+          <strong>पक्षी</strong>
+          तेज़ पलक, उड़ान के दौरान भी आँख साफ़।
+        </div>
+        <div class="tl-item">
+          <strong>मछली</strong>
+          पलक की ज़रूरत नहीं, आँख हमेशा पानी में नम।
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 10 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">10</span>
+        <h2>निष्कर्ष</h2>
+      </div>
+      <p>तो सवाल का जवाब सरल है — हमारी आँखें झपकती हैं क्योंकि <span class="hl">आँख की सतह को नम रखना, धूल और कणों को हटाना, रोशनी से सुरक्षा देना और दिमाग़ को छोटा-सा विराम देना ज़रूरी है</span>। यह सब एक छोटी-सी पलक में समाया हुआ है।</p>
+      <p>यह क्रिया इतनी सहज है कि हम उसे कभी महसूस नहीं करते। लेकिन जब आँख सूखती है, जलन होती है या स्क्रीन के सामने लंबे समय बिताने के बाद थकान महसूस होती है — तब हमें पता चलता है कि यह छोटी-सी हरकत कितनी बड़ी रक्षा है।</p>
+      <p>अगली बार जब आप स्क्रीन से नज़र हटाएँ, तो एक गहरी साँस लें, दूर किसी चीज़ को देखें, और अपनी पलकों को धन्यवाद कहें — क्योंकि वे हर पल आपकी आँखों की देखभाल कर रही हैं, बिना किसी शिकायत के।</p>
+    </section>
+
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>👁️ आँखें वही देखती हैं जो दिल देखना चाहता है — और पलकें उन्हें हर पल सुरक्षित रखती हैं।</footer>
+
+</main>
+
+<!-- ===== Back to top ===== -->
+<button id="backToTop" aria-label="ऊपर जाएँ">↑</button>
+
+<script>
+/* ============================================================
+   सारा JavaScript — शुद्ध वैनिला, कोई लाइब्रेरी नहीं
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var docEl       = document.documentElement;
+  var progressBar = document.getElementById('progressBar');
+  var backToTop   = document.getElementById('backToTop');
+
+  /* ---------------------------------------------------------
+     1. स्क्रॉल हैंडलर — प्रोग्रेस बार + बैक-टू-टॉप
+     --------------------------------------------------------- */
+  var ticking = false;
+
+  function handleScroll() {
+    if (ticking) return;
+    ticking = true;
+
+    window.requestAnimationFrame(function () {
+      var scrollTop = window.pageYOffset || docEl.scrollTop || 0;
+      var maxScroll = docEl.scrollHeight - docEl.clientHeight;
+      var percent   = maxScroll > 0 ? (scrollTop / maxScroll) * 100 : 0;
+
+      progressBar.style.width = percent.toFixed(2) + '%';
+
+      if (scrollTop > 500) {
+        backToTop.classList.add('show');
+      } else {
+        backToTop.classList.remove('show');
+      }
+
+      ticking = false;
+    });
+  }
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('resize', handleScroll, { passive: true });
+  handleScroll();
+
+  /* ---------------------------------------------------------
+     2. स्मूद स्क्रॉल टॉप
+     --------------------------------------------------------- */
+  backToTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ---------------------------------------------------------
+     3. स्क्रॉल रिवील + बार एनिमेशन
+     --------------------------------------------------------- */
+  var revealItems = document.querySelectorAll('.reveal');
+
+  if ('IntersectionObserver' in window) {
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+
+        entry.target.classList.add('visible');
+
+        var fills = entry.target.querySelectorAll('.bar-fill');
+        fills.forEach(function (fill) {
+          var w = fill.getAttribute('data-width') || '0';
+          window.setTimeout(function () {
+            fill.style.width = w + '%';
+          }, 180);
+        });
+
+        observer.unobserve(entry.target);
+      });
+    }, {
+      threshold: 0.12,
+      rootMargin: '0px 0px -60px 0px'
+    });
+
+    revealItems.forEach(function (el) { observer.observe(el); });
+
+  } else {
+    revealItems.forEach(function (el) { el.classList.add('visible'); });
+    document.querySelectorAll('.bar-fill').forEach(function (fill) {
+      fill.style.width = (fill.getAttribute('data-width') || 0) + '%';
+    });
+  }
+
+  /* ---------------------------------------------------------
+     4. पार्टिकल जनरेटर — तैरती रोशनी
+     --------------------------------------------------------- */
+  var particleLayer = document.getElementById('particles');
+
+  function buildParticles() {
+    if (!particleLayer) return;
+
+    particleLayer.innerHTML = '';
+
+    var isSmall = window.innerWidth < 600;
+    var count   = isSmall ? 22 : 42;
+    var frag    = document.createDocumentFragment();
+
+    for (var i = 0; i < count; i++) {
+      var p = document.createElement('span');
+      p.className = 'particle';
+
+      var size = (Math.random() * 4 + 1.4).toFixed(2);
+
+      p.style.left = (Math.random() * 100).toFixed(2) + '%';
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.animationDuration = (Math.random() * 20 + 16).toFixed(1) + 's';
+      p.style.animationDelay = (-Math.random() * 38).toFixed(1) + 's';
+      p.style.setProperty('--drift', (Math.random() * 100 - 50).toFixed(0) + 'px');
+
+      frag.appendChild(p);
+    }
+
+    particleLayer.appendChild(frag);
+  }
+
+  buildParticles();
+
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    if (resizeTimer) window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(buildParticles, 300);
+  }, { passive: true });
+
+  /* ---------------------------------------------------------
+     5. हीरो पैरालैक्स
+     --------------------------------------------------------- */
+  var hero        = document.querySelector('.hero');
+  var heroVisual  = document.getElementById('heroVisual');
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  if (hero && heroVisual && finePointer) {
+    var parallaxFrame = null;
+
+    hero.addEventListener('mousemove', function (e) {
+      if (parallaxFrame) return;
+
+      parallaxFrame = window.requestAnimationFrame(function () {
+        var rect = hero.getBoundingClientRect();
+        var cx = rect.width / 2;
+        var cy = rect.height / 2;
+
+        var dx = (e.clientX - rect.left - cx) / cx;
+        var dy = (e.clientY - rect.top  - cy) / cy;
+
+        heroVisual.style.transform =
+          'translate3d(' + (dx * 16).toFixed(2) + 'px,' +
+                            (dy * 12).toFixed(2) + 'px, 0)';
+
+        parallaxFrame = null;
+      });
+    }, { passive: true });
+
+    hero.addEventListener('mouseleave', function () {
+      heroVisual.style.transform = 'translate3d(0,0,0)';
+    });
+  }
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>हवाई जहाज़ उड़ता कैसे है?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@500;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   1. CSS VARIABLES — आसमान थीम (स्काई ब्लू + बादल सफ़ेद + धातु)
+   ============================================================ */
+:root{
+  --bg-deep:#020617;
+  --bg-mid:#0a1533;
+  --bg-sky:#10305e;
+  --bg-high:#1e4a8a;
+
+  --sky-100:#e0f2fe;
+  --sky-200:#bae6fd;
+  --sky-300:#7dd3fc;
+  --sky-400:#38bdf8;
+  --sky-500:#0ea5e9;
+  --sky-600:#0284c7;
+  --sky-deep:#0c4a6e;
+
+  --cloud-white:#ffffff;
+  --cloud-soft:#f0f9ff;
+  --cloud-glow:#dbeafe;
+
+  --metal-100:#cbd5e1;
+  --metal-200:#94a3b8;
+  --metal-300:#64748b;
+  --metal-400:#475569;
+  --metal-500:#334155;
+
+  --sun-gold:#fde68a;
+  --sun-warm:#fbbf24;
+
+  --text:#f2f9ff;
+  --text-soft:#c8ddf0;
+  --muted:#8fa8c4;
+
+  --card:rgba(180,225,255,0.055);
+  --card-border:rgba(120,200,255,0.24);
+  --radius:20px;
+
+  --grad-sky:linear-gradient(135deg,#bae6fd,#38bdf8);
+  --grad-cloud:linear-gradient(135deg,#ffffff,#dbeafe);
+  --grad-metal:linear-gradient(135deg,#cbd5e1,#475569);
+
+  --shadow:0 18px 44px rgba(0,20,50,0.55);
+  --maxw:860px;
+}
+
+/* ============================================================
+   2. RESET + BASE
+   ============================================================ */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+
+body{
+  font-family:'Poppins',system-ui,sans-serif;
+  color:var(--text);
+  line-height:1.85;
+  background:var(--bg-deep);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- Fixed background ---------- */
+.bg-fixed{
+  position:fixed;
+  inset:0;
+  z-index:-7;
+  background:
+    radial-gradient(900px 620px at 50% -10%, rgba(56,189,248,0.24), transparent 70%),
+    radial-gradient(700px 500px at 88% 82%, rgba(255,255,255,0.08), transparent 72%),
+    linear-gradient(180deg,#020617 0%,#0a1533 26%,#10305e 56%,#1e4a8a 80%,#2d5fa8 100%);
+}
+
+/* ---------- Glowing blobs ---------- */
+.blob{
+  position:fixed;
+  border-radius:50%;
+  filter:blur(100px);
+  pointer-events:none;
+  z-index:-5;
+  opacity:.34;
+  animation:blobFloat 22s ease-in-out infinite alternate;
+}
+.blob-1{width:470px;height:470px;background:#0284c7;top:-160px;left:-120px;}
+.blob-2{width:430px;height:430px;background:#38bdf8;bottom:-170px;right:-140px;animation-delay:-8s;opacity:.28;}
+.blob-3{width:330px;height:330px;background:#ffffff;opacity:.12;top:48%;right:-130px;animation-delay:-14s;}
+
+@keyframes blobFloat{
+  from{transform:translate3d(0,0,0) scale(1);}
+  to{transform:translate3d(42px,-52px,0) scale(1.13);}
+}
+
+/* ---------- Cloud particle layer ---------- */
+#particles{
+  position:fixed;
+  inset:0;
+  z-index:-4;
+  overflow:hidden;
+  pointer-events:none;
+}
+.particle{
+  position:absolute;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#ffffff,#dbeafe 60%,rgba(186,230,253,0) 100%);
+  box-shadow:0 0 14px rgba(219,234,254,0.75);
+  animation-name:cloudDrift;
+  animation-timing-function:linear;
+  animation-iteration-count:infinite;
+  will-change:transform,opacity;
+}
+@keyframes cloudDrift{
+  0%{transform:translate3d(-10vw,var(--ypos,20vh),0) scale(.7);opacity:0;}
+  10%{opacity:.85;}
+  90%{opacity:.7;}
+  100%{transform:translate3d(110vw,var(--ypos,20vh),0) scale(1.05);opacity:0;}
+}
+
+/* ---------- Reading progress ---------- */
+#progressBar{
+  position:fixed;
+  top:0;left:0;
+  height:4px;
+  width:0%;
+  z-index:100;
+  border-radius:0 4px 4px 0;
+  background:linear-gradient(90deg,#ffffff,#bae6fd,#38bdf8,#0284c7);
+  box-shadow:0 0 14px rgba(56,189,248,0.85);
+  transition:width .09s linear;
+}
+
+/* ============================================================
+   3. HERO
+   ============================================================ */
+.hero{
+  min-height:100vh;
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:96px 20px 78px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ---------- Hero visual: उड़ता हवाई जहाज़ + बादल ---------- */
+.hero-visual{
+  position:relative;
+  width:300px;
+  height:270px;
+  margin-bottom:20px;
+  transition:transform .35s ease-out;
+  will-change:transform;
+}
+
+/* सूर्य की चमक */
+.sun-glow{
+  position:absolute;
+  top:10px;right:10px;
+  width:110px;height:110px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(253,230,138,0.7),rgba(251,191,36,0) 70%);
+  animation:sunPulse 4.5s ease-in-out infinite;
+}
+@keyframes sunPulse{
+  0%,100%{transform:scale(1);opacity:.85;}
+  50%{transform:scale(1.16);opacity:.6;}
+}
+
+/* सूर्य */
+.sun{
+  position:absolute;
+  top:40px;right:40px;
+  width:50px;height:50px;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fffdf0,#fde68a 50%,#fbbf24);
+  box-shadow:0 0 40px rgba(251,191,36,0.65);
+}
+
+/* बादल */
+.cloud{
+  position:absolute;
+  width:120px;height:44px;
+  background:rgba(255,255,255,0.92);
+  border-radius:60px;
+  filter:blur(.3px);
+  box-shadow:0 4px 20px rgba(0,30,60,0.15);
+}
+.cloud::before,
+.cloud::after{
+  content:'';
+  position:absolute;
+  background:inherit;
+  border-radius:50%;
+}
+.cloud::before{width:60px;height:60px;top:-28px;left:16px;}
+.cloud::after{width:44px;height:44px;top:-18px;right:22px;}
+
+.cloud-1{top:36px;left:6px;animation:drift 11s ease-in-out infinite alternate;}
+.cloud-2{bottom:70px;right:8px;transform:scale(.86);animation:drift 14s ease-in-out infinite alternate-reverse;}
+.cloud-3{bottom:32px;left:32px;transform:scale(.6);opacity:.85;animation:drift 9s ease-in-out infinite alternate;}
+
+@keyframes drift{
+  from{transform:translateX(-14px);}
+  to{transform:translateX(14px);}
+}
+.cloud-2{animation-name:driftScale2;}
+@keyframes driftScale2{
+  from{transform:translateX(14px) scale(.86);}
+  to{transform:translateX(-14px) scale(.86);}
+}
+.cloud-3{animation-name:driftScale3;}
+@keyframes driftScale3{
+  from{transform:translateX(-10px) scale(.6);}
+  to{transform:translateX(10px) scale(.6);}
+}
+
+/* विमान */
+.airplane{
+  position:absolute;
+  top:50%;left:50%;
+  width:220px;height:80px;
+  margin:-40px 0 0 -110px;
+  animation:planeFly 5s ease-in-out infinite;
+  filter:drop-shadow(0 10px 20px rgba(0,30,60,0.5));
+  z-index:3;
+}
+@keyframes planeFly{
+  0%,100%{transform:translateY(0) rotate(-2deg);}
+  50%{transform:translateY(-12px) rotate(2deg);}
+}
+
+/* विमान का शरीर (फ्यूज़लेज) */
+.fuselage{
+  position:absolute;
+  top:50%;left:8%;
+  width:84%;height:34px;
+  margin-top:-17px;
+  background:linear-gradient(180deg,#ffffff 0%,#e2e8f0 40%,#94a3b8 100%);
+  border-radius:50% 40% 40% 50%;
+  box-shadow:inset 0 -4px 8px rgba(71,85,105,0.35);
+  z-index:2;
+}
+.fuselage::after{
+  content:'';
+  position:absolute;
+  top:8px;left:14px;
+  width:60px;height:6px;
+  background:linear-gradient(90deg,#0ea5e9,#38bdf8);
+  border-radius:99px;
+  opacity:.7;
+}
+
+/* सिर (नाक) */
+.nose{
+  position:absolute;
+  top:50%;right:-2px;
+  width:44px;height:34px;
+  margin-top:-17px;
+  background:linear-gradient(135deg,#ffffff,#cbd5e1);
+  border-radius:0 100% 100% 0 / 0 50% 50% 0;
+  box-shadow:inset -4px 0 6px rgba(71,85,105,0.3);
+  z-index:3;
+}
+
+/* पूँछ */
+.tail{
+  position:absolute;
+  top:50%;left:0;
+  width:44px;height:60px;
+  margin-top:-30px;
+  background:linear-gradient(180deg,#cbd5e1,#64748b);
+  clip-path:polygon(20% 0%, 100% 40%, 100% 60%, 20% 100%);
+  z-index:1;
+}
+
+/* पंख */
+.wing{
+  position:absolute;
+  top:50%;left:35%;
+  width:100px;height:28px;
+  margin-top:2px;
+  background:linear-gradient(180deg,#cbd5e1,#475569);
+  clip-path:polygon(0% 0%, 100% 20%, 85% 100%, 15% 90%);
+  border-radius:0 0 40% 40%;
+  z-index:1;
+  box-shadow:0 6px 12px rgba(0,20,40,0.4);
+}
+.wing-upper{
+  width:96px;height:24px;
+  margin-top:-26px;
+  background:linear-gradient(180deg,#e2e8f0,#94a3b8);
+  clip-path:polygon(0% 100%, 100% 80%, 85% 0%, 15% 10%);
+  z-index:3;
+}
+
+/* खिड़कियाँ */
+.windows{
+  position:absolute;
+  top:50%;left:26%;
+  width:70px;height:6px;
+  margin-top:-3px;
+  background:repeating-linear-gradient(90deg,#0ea5e9 0 4px,transparent 4px 10px);
+  border-radius:99px;
+  opacity:.85;
+  z-index:4;
+}
+
+/* हवा की लकीरें */
+.airline{
+  position:absolute;
+  height:2px;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,0.85),rgba(255,255,255,0));
+  border-radius:99px;
+  animation:airFlow 2s linear infinite;
+}
+.airline:nth-child(1){top:24px;left:14px;width:70px;animation-delay:0s;}
+.airline:nth-child(2){top:38px;left:10px;width:90px;animation-delay:-0.6s;}
+.airline:nth-child(3){top:52px;left:20px;width:60px;animation-delay:-1.2s;}
+@keyframes airFlow{
+  0%{transform:translateX(-30px);opacity:0;}
+  30%{opacity:1;}
+  100%{transform:translateX(-110px);opacity:0;}
+}
+
+/* ---------- Hero text ---------- */
+.hero h1{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:clamp(1.85rem,7.1vw,4.3rem);
+  line-height:1.22;
+  letter-spacing:-.5px;
+  background:linear-gradient(120deg,#ffffff 6%,#bae6fd 30%,#7dd3fc 50%,#38bdf8 72%,#fde68a 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  max-width:16ch;
+  margin-bottom:18px;
+  filter:drop-shadow(0 8px 26px rgba(56,189,248,0.35));
+}
+
+.hero p{
+  max-width:620px;
+  font-size:clamp(.92rem,2.4vw,1.06rem);
+  color:var(--text-soft);
+  font-weight:300;
+  text-align:center;
+}
+
+/* ---------- Scroll hint ---------- */
+.scroll-hint{
+  position:absolute;
+  bottom:26px;left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  color:var(--sky-300);
+  font-size:.74rem;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+  opacity:.85;
+}
+.scroll-hint span{
+  font-size:1.5rem;
+  line-height:1;
+  animation:bounce 1.9s ease-in-out infinite;
+}
+@keyframes bounce{
+  0%,100%{transform:translateY(0);opacity:.65;}
+  50%{transform:translateY(9px);opacity:1;}
+}
+
+/* ============================================================
+   4. ARTICLE LAYOUT
+   ============================================================ */
+.article{
+  width:100%;
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:0 20px 40px;
+  position:relative;
+}
+
+.section{margin-bottom:clamp(56px,8vw,92px);}
+
+.section-head{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.badge{
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  width:52px;height:52px;
+  border-radius:16px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:1.28rem;
+  color:#021b33;
+  background:linear-gradient(135deg,#bae6fd,#0ea5e9);
+  box-shadow:0 10px 26px rgba(56,189,248,0.45);
+}
+
+h2{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:clamp(1.32rem,4vw,2rem);
+  line-height:1.35;
+  color:#f2f9ff;
+}
+
+.article p{
+  text-align:justify;
+  text-justify:inter-word;
+  color:var(--text-soft);
+  font-size:clamp(.9rem,2.3vw,1rem);
+  font-weight:300;
+  margin-bottom:18px;
+}
+
+.hl{color:var(--sky-300);font-weight:600;}
+.hl-warm{color:var(--sun-gold);font-weight:600;}
+.hl-metal{color:var(--metal-100);font-weight:600;}
+.hl-deep{color:#7dd3fc;font-weight:600;}
+
+/* ---------- Callouts ---------- */
+.callout{
+  border-radius:18px;
+  padding:18px 22px;
+  margin:24px 0;
+  font-size:clamp(.85rem,2.2vw,.95rem);
+  line-height:1.8;
+  border:1px solid rgba(120,200,255,0.28);
+  background:linear-gradient(135deg,rgba(56,189,248,0.15),rgba(2,132,199,0.06));
+  border-left:4px solid var(--sky-400);
+  color:#dff0ff;
+}
+.callout.fact{
+  border-color:rgba(253,230,138,0.32);
+  background:linear-gradient(135deg,rgba(253,230,138,0.14),rgba(251,191,36,0.05));
+  border-left-color:var(--sun-gold);
+}
+.callout.metal{
+  border-color:rgba(203,213,225,0.32);
+  background:linear-gradient(135deg,rgba(203,213,225,0.12),rgba(71,85,105,0.04));
+  border-left-color:var(--metal-100);
+}
+
+/* ---------- Stats ---------- */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(152px,1fr));
+  gap:16px;
+  margin:30px 0;
+}
+.stat{
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  padding:22px 16px;
+  text-align:center;
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;
+}
+.stat:hover{
+  transform:translateY(-9px);
+  box-shadow:var(--shadow);
+  border-color:rgba(120,200,255,0.55);
+}
+.stat .num{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:clamp(1.35rem,4.2vw,1.85rem);
+  line-height:1.15;
+  background:var(--grad-sky);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.stat .label{
+  display:block;
+  margin-top:8px;
+  font-size:.78rem;
+  line-height:1.55;
+  color:var(--muted);
+}
+
+/* ---------- Composition cards ---------- */
+.composition{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(155px,1fr));
+  gap:14px;
+  margin:28px 0;
+}
+.comp-item{
+  padding:20px 16px;
+  border-radius:18px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  text-align:center;
+  transition:transform .3s ease,border-color .3s ease;
+}
+.comp-item:hover{
+  transform:translateY(-6px);
+  border-color:rgba(120,200,255,0.55);
+}
+.comp-item .icon{
+  font-size:1.9rem;
+  display:block;
+  margin-bottom:8px;
+  line-height:1;
+}
+.comp-item .name{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:var(--sky-200);
+  display:block;
+  margin-bottom:4px;
+}
+.comp-item .val{
+  font-size:.78rem;
+  line-height:1.5;
+  color:var(--muted);
+}
+
+/* ---------- Progress bars ---------- */
+.bars{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  margin:28px 0;
+  padding:22px 20px;
+  border-radius:var(--radius);
+  background:rgba(180,225,255,0.045);
+  border:1px solid var(--card-border);
+}
+.bar-row{
+  display:grid;
+  grid-template-columns:126px 1fr 84px;
+  align-items:center;
+  gap:12px;
+  font-size:.82rem;
+  color:var(--text-soft);
+}
+.bar-row .name{font-weight:500;}
+.bar-row .val{text-align:right;color:var(--muted);font-size:.76rem;}
+.bar-track{
+  height:12px;
+  border-radius:99px;
+  background:rgba(255,255,255,0.08);
+  overflow:hidden;
+}
+.bar-fill{
+  height:100%;
+  width:0;
+  border-radius:99px;
+  transition:width 1.35s cubic-bezier(.22,1,.36,1);
+}
+.bar-fill.s1{background:linear-gradient(90deg,#0284c7,#38bdf8);}
+.bar-fill.s2{background:linear-gradient(90deg,#38bdf8,#7dd3fc);}
+.bar-fill.s3{background:linear-gradient(90deg,#7dd3fc,#bae6fd);}
+.bar-fill.s4{background:linear-gradient(90deg,#fbbf24,#fde68a);}
+
+/* ---------- Compare ---------- */
+.compare{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin:28px 0;
+}
+.compare .card{
+  padding:22px 20px;
+  border-radius:var(--radius);
+  background:var(--card);
+  border:1px solid var(--card-border);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;
+}
+.compare .card:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow);
+}
+.compare .card.blue{border-color:rgba(120,200,255,0.5);}
+.compare .card.metal{border-color:rgba(203,213,225,0.5);}
+.compare h3{
+  font-family:'Baloo Bhai 2',cursive;
+  font-size:1.12rem;
+  font-weight:700;
+  margin-bottom:10px;
+}
+.compare .card.blue h3{color:var(--sky-200);}
+.compare .card.metal h3{color:var(--metal-100);}
+.compare ul{
+  list-style:none;
+  font-size:.86rem;
+  color:var(--text-soft);
+  line-height:1.9;
+}
+.compare li::before{
+  content:'•';
+  color:var(--sky-300);
+  margin-right:8px;
+  font-weight:700;
+}
+
+/* ---------- Steps ---------- */
+.steps{
+  display:grid;
+  gap:14px;
+  margin:28px 0;
+}
+.step{
+  display:flex;
+  align-items:flex-start;
+  gap:16px;
+  padding:18px 20px;
+  border-radius:18px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  font-size:.9rem;
+  color:var(--text-soft);
+  transition:transform .3s ease,border-color .3s ease;
+}
+.step:hover{
+  transform:translateX(6px);
+  border-color:rgba(120,200,255,0.55);
+}
+.step .n{
+  flex:0 0 38px;
+  width:38px;height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:1rem;
+  color:#021b33;
+  background:var(--grad-cloud);
+  box-shadow:0 4px 14px rgba(219,234,254,0.3);
+}
+.step .txt strong{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:#f2f9ff;
+  margin-bottom:2px;
+}
+
+/* ---------- Diagram ---------- */
+.diagram{
+  margin:30px 0;
+  padding:18px;
+  border-radius:var(--radius);
+  background:rgba(180,225,255,0.035);
+  border:1px solid var(--card-border);
+}
+.diagram svg{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.svg-label{
+  font-family:'Poppins',sans-serif;
+  font-size:12px;
+  fill:#a9c4de;
+}
+.svg-label-bright{
+  font-family:'Poppins',sans-serif;
+  font-size:12.5px;
+  font-weight:600;
+  fill:#e0f2fe;
+}
+
+/* ---------- Timeline ---------- */
+.timeline{
+  position:relative;
+  margin:32px 0;
+  padding-left:34px;
+}
+.timeline::before{
+  content:'';
+  position:absolute;
+  top:8px;bottom:8px;left:11px;
+  width:3px;
+  border-radius:99px;
+  background:linear-gradient(180deg,#ffffff,#38bdf8,#0284c7);
+  opacity:.6;
+}
+.tl-item{
+  position:relative;
+  margin-bottom:22px;
+  padding:16px 18px;
+  border-radius:16px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  font-size:.88rem;
+  color:var(--text-soft);
+  transition:transform .3s ease,border-color .3s ease;
+}
+.tl-item:hover{
+  transform:translateX(4px);
+  border-color:rgba(120,200,255,0.55);
+}
+.tl-item::before{
+  content:'';
+  position:absolute;
+  left:-31px;top:22px;
+  width:14px;height:14px;
+  border-radius:50%;
+  background:var(--sky-300);
+  box-shadow:0 0 0 4px rgba(120,200,255,0.2),0 0 12px rgba(120,200,255,0.75);
+}
+.tl-item strong{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:#f2f9ff;
+  margin-bottom:3px;
+}
+
+/* ---------- Quote ---------- */
+.quote{
+  max-width:720px;
+  margin:clamp(56px,8vw,86px) auto;
+  text-align:center;
+  padding:38px 26px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:600;
+  font-size:clamp(1.1rem,3.1vw,1.55rem);
+  line-height:1.72;
+  color:#f2f9ff;
+  border-top:1px solid rgba(120,200,255,0.3);
+  border-bottom:1px solid rgba(120,200,255,0.3);
+  background:radial-gradient(circle at 50% 0%,rgba(56,189,248,0.16),transparent 72%);
+}
+.quote .mark{
+  display:block;
+  font-size:2.4rem;
+  line-height:1;
+  margin-bottom:12px;
+  color:var(--sun-gold);
+}
+
+/* ---------- Footer ---------- */
+footer{
+  text-align:center;
+  padding:46px 22px 84px;
+  font-size:.85rem;
+  color:var(--muted);
+  border-top:1px solid rgba(120,200,255,0.14);
+  max-width:var(--maxw);
+  margin:0 auto;
+}
+
+/* ---------- Back to top ---------- */
+#backToTop{
+  position:fixed;
+  right:20px;bottom:22px;
+  width:52px;height:52px;
+  border:none;
+  border-radius:50%;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  font-size:1.35rem;
+  font-weight:700;
+  color:#021b33;
+  background:linear-gradient(135deg,#bae6fd,#0ea5e9);
+  box-shadow:0 12px 30px rgba(56,189,248,0.45);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(18px) scale(.88);
+  transition:opacity .35s ease,transform .35s ease,box-shadow .35s ease;
+  z-index:99;
+}
+#backToTop.show{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0) scale(1);
+}
+#backToTop:hover{box-shadow:0 16px 38px rgba(56,189,248,0.65);}
+
+/* ---------- Scroll reveal ---------- */
+.reveal{
+  opacity:0;
+  transform:translateY(38px);
+  transition:opacity .85s ease,transform .85s cubic-bezier(.22,1,.36,1);
+}
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ============================================================
+   5. RESPONSIVE
+   ============================================================ */
+@media (max-width:600px){
+  .hero{padding:80px 18px 64px;}
+  .hero-visual{width:230px;height:216px;margin-bottom:16px;}
+  .airplane{width:170px;height:64px;margin:-32px 0 0 -85px;}
+  .fuselage{height:28px;margin-top:-14px;}
+  .nose{width:36px;height:28px;margin-top:-14px;}
+  .tail{width:36px;height:48px;margin-top:-24px;}
+  .wing{width:80px;height:22px;margin-top:1px;}
+  .wing-upper{width:76px;height:20px;margin-top:-20px;}
+  .windows{width:56px;height:5px;margin-top:-2.5px;}
+  .cloud{width:90px;height:34px;}
+  .cloud::before{width:46px;height:46px;top:-22px;left:12px;}
+  .cloud::after{width:34px;height:34px;top:-14px;right:18px;}
+  .cloud-1{left:2px;top:20px;}
+  .cloud-2{right:2px;bottom:50px;}
+  .cloud-3{bottom:22px;left:20px;}
+  .sun{width:38px;height:38px;top:24px;right:24px;}
+  .sun-glow{width:80px;height:80px;}
+  .airline:nth-child(1){top:18px;width:52px;}
+  .airline:nth-child(2){top:30px;width:68px;}
+  .airline:nth-child(3){top:42px;width:44px;}
+
+  .article{padding:0 16px 30px;}
+
+  .section-head{gap:12px;margin-bottom:16px;}
+  .badge{width:44px;height:44px;border-radius:13px;font-size:1.1rem;}
+
+  .stats{grid-template-columns:1fr;}
+  .compare{grid-template-columns:1fr;}
+  .bar-row{grid-template-columns:98px 1fr 66px;font-size:.76rem;}
+  .bar-row .val{font-size:.7rem;}
+
+  .step{flex-direction:row;padding:16px;}
+  .step:hover{transform:none;}
+
+  .callout{padding:16px 18px;}
+  .quote{padding:30px 18px;}
+
+  .timeline{padding-left:30px;}
+  .tl-item::before{left:-27px;}
+
+  #backToTop{width:46px;height:46px;right:14px;bottom:16px;font-size:1.2rem;}
+}
+
+@media (min-width:601px) and (max-width:900px){
+  .stats{grid-template-columns:repeat(2,1fr);}
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,
+  *::before,
+  *::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+  .reveal{opacity:1;transform:none;}
+  html{scroll-behavior:auto;}
+  .airplane{animation:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Fixed background ===== -->
+<div class="bg-fixed" aria-hidden="true"></div>
+<div class="blob blob-1" aria-hidden="true"></div>
+<div class="blob blob-2" aria-hidden="true"></div>
+<div class="blob blob-3" aria-hidden="true"></div>
+<div id="particles" aria-hidden="true"></div>
+
+<!-- ===== Reading progress ===== -->
+<div id="progressBar" aria-hidden="true"></div>
+
+<main>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="hero-visual" id="heroVisual" aria-hidden="true">
+      <div class="sun-glow"></div>
+      <div class="sun"></div>
+      <div class="cloud cloud-1"></div>
+      <div class="cloud cloud-2"></div>
+      <div class="cloud cloud-3"></div>
+      <div class="airplane">
+        <div class="airline"></div>
+        <div class="airline"></div>
+        <div class="airline"></div>
+        <div class="tail"></div>
+        <div class="wing"></div>
+        <div class="fuselage">
+          <div class="windows"></div>
+        </div>
+        <div class="wing wing-upper"></div>
+        <div class="nose"></div>
+      </div>
+    </div>
+
+    <h1>हवाई जहाज़ उड़ता कैसे है?</h1>
+    <p>सैकड़ों टन वज़नी लोहे का विमान आसमान में कैसे तैरता है? चार दिखने वाले बल — लिफ्ट, गुरुत्वाकर्षण, थ्रस्ट और ड्रैग — का यह खेल ही हवाई यात्रा को संभव बनाता है। आइए इस अद्भुत विज्ञान को समझें।</p>
+
+    <div class="scroll-hint">
+      <span>↓</span>
+      आसमान में उड़ें
+    </div>
+  </section>
+
+  <!-- ================= ARTICLE ================= -->
+  <div class="article">
+
+    <!-- ---------- 01 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">01</span>
+        <h2>एक सवाल, जिसने सदियों तक इंसान को उलझाया</h2>
+      </div>
+      <p>इंसान ने हमेशा पक्षियों को आसमान में उड़ते देखकर सोचा — क्या हम भी उड़ सकते हैं? सदियों तक यह सिर्फ़ एक सपना था। 1903 में राइट बंधुओं ने पहली बार एक मोटरयुक्त विमान उड़ाया — और सपना सच हो गया।</p>
+      <p>आज हम सैकड़ों टन वज़नी विशाल विमानों में बैठकर दुनिया के एक छोर से दूसरे छोर तक पहुँच जाते हैं। लेकिन सवाल वही है — इतना भारी लोहे का ढाँचा हवा में कैसे रहता है?</p>
+      <p>इसका जवाब छिपा है चार बलों में — <span class="hl">लिफ्ट</span>, <span class="hl-warm">गुरुत्वाकर्षण</span>, <span class="hl-metal">थ्रस्ट</span> और ड्रैग। जब ये चारों संतुलित होते हैं, तो विमान उड़ता है। इन्हें समझ लें, तो उड़ान का पूरा रहस्य खुल जाता है।</p>
+
+      <div class="callout fact">🌟 <strong>रोचक तथ्य:</strong> दुनिया का सबसे बड़ा यात्री विमान एयरबस A380 लगभग <strong>575 टन</strong> वज़नी है — यह लगभग 100 हाथियों के बराबर है, फिर भी आसमान में उड़ता है।</div>
+    </section>
+
+    <!-- ---------- 02 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">02</span>
+        <h2>चार बलों का खेल</h2>
+      </div>
+      <p>हवाई जहाज़ की उड़ान को समझने के लिए हमें चार बलों को जानना होगा। ये चारों एक साथ काम करते हैं और विमान को हवा में बनाए रखते हैं।</p>
+      <p>पहला है <span class="hl">लिफ्ट</span> — पंखों से पैदा होने वाला ऊपर की ओर बल। दूसरा है <span class="hl-warm">गुरुत्वाकर्षण</span> — जो विमान को नीचे खींचता है। तीसरा है <span class="hl-metal">थ्रस्ट</span> — इंजन से पैदा होने वाला आगे का बल। और चौथा है ड्रैग — हवा का वह प्रतिरोध जो विमान को पीछे धकेलता है।</p>
+      <p>अगर लिफ्ट गुरुत्वाकर्षण से ज़्यादा हो, तो विमान ऊपर उठता है। अगर थ्रस्ट ड्रैग से ज़्यादा हो, तो विमान आगे बढ़ता है। यही चारों बलों का संतुलन उड़ान की कुंजी है।</p>
+
+      <div class="composition">
+        <div class="comp-item">
+          <span class="icon">⬆️</span>
+          <span class="name">लिफ्ट</span>
+          <span class="val">पंखों से ऊपर का बल</span>
+        </div>
+        <div class="comp-item">
+          <span class="icon">⬇️</span>
+          <span class="name">गुरुत्वाकर्षण</span>
+          <span class="val">नीचे खींचने वाला बल</span>
+        </div>
+        <div class="comp-item">
+          <span class="icon">➡️</span>
+          <span class="name">थ्रस्ट</span>
+          <span class="val">इंजन से आगे का बल</span>
+        </div>
+        <div class="comp-item">
+          <span class="icon">⬅️</span>
+          <span class="name">ड्रैग</span>
+          <span class="val">हवा का प्रतिरोध</span>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="num">575 टन</span>
+          <span class="label">A380 का अधिकतम वज़न</span>
+        </div>
+        <div class="stat">
+          <span class="num">~900 km/h</span>
+          <span class="label">क्रूज़ गति</span>
+        </div>
+        <div class="stat">
+          <span class="num">~11 km</span>
+          <span class="label">आम उड़ान की ऊँचाई</span>
+        </div>
+        <div class="stat">
+          <span class="num">4</span>
+          <span class="label">मुख्य बल</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 03 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">03</span>
+        <h2>लिफ्ट: पंखों का जादू</h2>
+      </div>
+      <p>विमान के पंख (wing) एक खास आकार के होते हैं — ऊपर से उभरे हुए और नीचे से लगभग सपाट। इस आकार को <span class="hl">एयरफ़ॉइल</span> कहते हैं। जब हवा पंख के ऊपर से गुज़रती है, तो उसे एक लंबा रास्ता तय करना पड़ता है।</p>
+      <p>इसी कारण पंख के ऊपर हवा की गति तेज़ हो जाती है और दबाव कम हो जाता है। नीचे की तरफ़ हवा की गति धीमी और दबाव ज़्यादा रहता है। यही <span class="hl-warm">दबाव का अंतर</span> पंख को ऊपर की ओर धकेलता है — इसे ही लिफ्ट कहते हैं।</p>
+      <p>यह सिद्धांत डैनियल बर्नौली ने दिया था — जहाँ हवा तेज़ चलती है, वहाँ दबाव कम होता है। पंख की बनावट इसी सिद्धांत का चमत्कार है।</p>
+
+      <div class="steps">
+        <div class="step">
+          <span class="n">1</span>
+          <span class="txt"><strong>विमान आगे बढ़ता है</strong>इंजन की शक्ति से हवा पंखों से टकराती है।</span>
+        </div>
+        <div class="step">
+          <span class="n">2</span>
+          <span class="txt"><strong>हवा दो हिस्सों में बँटती है</strong>पंख के ऊपर तेज़, नीचे धीमी।</span>
+        </div>
+        <div class="step">
+          <span class="n">3</span>
+          <span class="txt"><strong>दबाव का अंतर बनता है</strong>ऊपर कम दबाव, नीचे ज़्यादा दबाव।</span>
+        </div>
+        <div class="step">
+          <span class="n">4</span>
+          <span class="txt"><strong>लिफ्ट पैदा होती है</strong>विमान ऊपर उठने लगता है।</span>
+        </div>
+      </div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 660 300" role="img" aria-label="पंख पर लिफ्ट — हवा पंख के ऊपर तेज़ और नीचे धीमी चलती है, जिससे दबाव का अंतर बनता है">
+          <defs>
+            <linearGradient id="wingGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#e2e8f0"/>
+              <stop offset="100%" stop-color="#94a3b8"/>
+            </linearGradient>
+            <marker id="flowFast" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#ffffff"/>
+            </marker>
+            <marker id="flowSlow" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#7dd3fc"/>
+            </marker>
+            <marker id="liftArrow" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#fde68a"/>
+            </marker>
+          </defs>
+
+          <!-- हवा का बहाव: ऊपर तेज़ -->
+          <path d="M30 80 Q200 60 400 70 Q500 76 620 80" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="6 8" marker-end="url(#flowFast)" opacity="0.95"/>
+          <text x="320" y="46" text-anchor="middle" class="svg-label-bright">हवा तेज़ · दबाव कम</text>
+
+          <!-- पंख -->
+          <path d="M180 150 Q260 100 360 100 Q480 100 560 130 Q480 170 360 170 Q260 170 180 150 Z"
+                fill="url(#wingGrad)" stroke="#475569" stroke-width="1.5"/>
+          <text x="370" y="148" text-anchor="middle" font-family="Baloo Bhai 2,sans-serif" font-size="14" font-weight="700" fill="#0a1533">पंख</text>
+
+          <!-- हवा का बहाव: नीचे धीमी -->
+          <path d="M30 220 Q200 210 400 218 Q500 222 620 220" fill="none" stroke="#7dd3fc" stroke-width="2" stroke-dasharray="10 10" marker-end="url(#flowSlow)"/>
+          <text x="320" y="252" text-anchor="middle" class="svg-label-bright">हवा धीमी · दबाव ज़्यादा</text>
+
+          <!-- लिफ्ट तीर -->
+          <line x1="370" y1="100" x2="370" y2="30" stroke="#fde68a" stroke-width="3" marker-end="url(#liftArrow)"/>
+          <text x="430" y="66" text-anchor="middle" class="svg-label-bright">लिफ्ट (ऊपर)</text>
+
+          <!-- आगे की दिशा -->
+          <line x1="80" y1="290" x2="180" y2="290" stroke="#ffffff" stroke-width="2" marker-end="url(#flowFast)"/>
+          <text x="130" y="312" text-anchor="middle" class="svg-label">आगे की दिशा</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ---------- 04 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">04</span>
+        <h2>थ्रस्ट: इंजन की शक्ति</h2>
+      </div>
+      <p>लिफ्ट पैदा करने के लिए विमान को लगातार आगे बढ़ना पड़ता है। यह काम करता है <span class="hl-metal">इंजन</span>। आधुनिक जेट इंजन हवा को पीछे की ओर तेज़ी से धकेलते हैं, जिससे विमान आगे बढ़ता है — इसे ही थ्रस्ट कहते हैं।</p>
+      <p>यह न्यूटन के तीसरे नियम पर आधारित है — <em>“हर क्रिया की बराबर और विपरीत प्रतिक्रिया होती है।”</em> जब इंजन हवा को पीछे धकेलता है, तो हवा भी विमान को आगे धकेलती है।</p>
+      <p>इंजन जितना शक्तिशाली होगा, विमान उतनी ही तेज़ी से आगे बढ़ेगा — और उतनी ही लिफ्ट पैदा होगी। इसीलिए विमान उड़ान भरते समय पूरी रफ़्तार से दौड़ता है।</p>
+
+      <div class="bars">
+        <div class="bar-row">
+          <span class="name">टेकऑफ़</span>
+          <span class="bar-track"><span class="bar-fill s1" data-width="100"></span></span>
+          <span class="val">पूरी शक्ति</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">चढ़ाई</span>
+          <span class="bar-track"><span class="bar-fill s2" data-width="85"></span></span>
+          <span class="val">बहुत ज़्यादा</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">क्रूज़</span>
+          <span class="bar-track"><span class="bar-fill s3" data-width="55"></span></span>
+          <span class="val">संतुलित</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">लैंडिंग</span>
+          <span class="bar-track"><span class="bar-fill s4" data-width="25"></span></span>
+          <span class="val">कम</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- QUOTE ---------- -->
+    <div class="quote reveal">
+      <span class="mark">❝</span>
+      उड़ान कोई जादू नहीं है — वह चार बलों का ऐसा नाज़ुक संतुलन है, जिसे इंसान ने सदियों की मेहनत के बाद समझा और वश में किया।
+    </div>
+
+    <!-- ---------- 05 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">05</span>
+        <h2>गुरुत्वाकर्षण और ड्रैग: विरोधी बल</h2>
+      </div>
+      <p>विमान को नीचे खींचने वाला बल है <span class="hl-warm">गुरुत्वाकर्षण</span>। अगर कोई विमान का वज़न 100 टन है, तो उसे ऊपर बनाए रखने के लिए लिफ्ट भी 100 टन के बराबर होनी चाहिए। इसीलिए बड़े विमानों के पंख भी बड़े होते हैं।</p>
+      <p>दूसरा विरोधी बल है <span class="hl">ड्रैग</span> — हवा का प्रतिरोध। जब विमान हवा में आगे बढ़ता है, तो हवा उसे पीछे धकेलती है। ड्रैग को कम करने के लिए विमान का आकार सुडौल और सपाट होता है।</p>
+      <p>इसीलिए इंजन को ड्रैग को पार करने के लिए लगातार काम करना पड़ता है। जितना कम ड्रैग, उतना ही कम ईंधन — और उतनी ही सस्ती उड़ान। यही वजह है कि विमान के डिज़ाइन में हर कोना सोच-समझकर बनाया जाता है।</p>
+
+      <div class="compare">
+        <div class="card blue">
+          <h3>लिफ्ट और थ्रस्ट</h3>
+          <ul>
+            <li>विमान को ऊपर उठाते हैं</li>
+            <li>पंख और इंजन से पैदा होते हैं</li>
+            <li>उड़ान को संभव बनाते हैं</li>
+            <li>जितने ज़्यादा, उतनी तेज़ उड़ान</li>
+          </ul>
+        </div>
+        <div class="card metal">
+          <h3>गुरुत्व और ड्रैग</h3>
+          <ul>
+            <li>विमान को नीचे और पीछे खींचते हैं</li>
+            <li>वज़न और हवा से पैदा होते हैं</li>
+            <li>ऊर्जा बर्बाद करते हैं</li>
+            <li>डिज़ाइन से कम किए जाते हैं</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 06 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">06</span>
+        <h2>टेकऑफ़ और लैंडिंग: सबसे नाज़ुक पल</h2>
+      </div>
+      <p>विमान के लिए सबसे नाज़ुक समय होता है <span class="hl">टेकऑफ़</span> — जब वह ज़मीन से ऊपर उठता है। इस समय लिफ्ट कम होती है और वज़न पूरा। इसीलिए इंजन पूरी शक्ति लगाते हैं और विमान लंबी दौड़ लगाता है।</p>
+      <p>जैसे-जैसे रफ़्तार बढ़ती है, लिफ्ट भी बढ़ती जाती है। जब लिफ्ट गुरुत्वाकर्षण से ज़्यादा हो जाती है, विमान पंखों के बल ऊपर उठता है। यही क्षण टेकऑफ़ कहलाता है।</p>
+      <p>लैंडिंग के समय उल्टा होता है — इंजन की शक्ति कम होती है, विमान की गति धीमी होती है और लिफ्ट घटती जाती है। फिर पहिए ज़मीन को छूते हैं और विमान रुकता है।</p>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <strong>दौड़</strong>
+          इंजन पूरी शक्ति से विमान को दौड़ाते हैं।
+        </div>
+        <div class="tl-item">
+          <strong>लिफ्ट पैदा</strong>
+          रफ़्तार बढ़ने के साथ पंखों से लिफ्ट बनती है।
+        </div>
+        <div class="tl-item">
+          <strong>टेकऑफ़</strong>
+          लिफ्ट गुरुत्व से ज़्यादा होते ही विमान उठता है।
+        </div>
+        <div class="tl-item">
+          <strong>लैंडिंग</strong>
+          गति घटती है, लिफ्ट घटती है, विमान उतरता है।
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 07 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">07</span>
+        <h2>पंखों के आकार: हर विमान का अपना डिज़ाइन</h2>
+      </div>
+      <p>अलग-अलग विमानों के पंख अलग आकार के होते हैं। छोटे विमानों के पंख छोटे और सीधे होते हैं, जबकि बड़े विमानों के पंख लंबे और पीछे की ओर झुके होते हैं। इन्हें <span class="hl">स्वेप्ट विंग</span> कहते हैं।</p>
+      <p>स्वेप्ट विंग का फ़ायदा यह है कि तेज़ गति पर हवा का प्रतिरोध (ड्रैग) कम होता है। इसीलिए जेट विमानों के पंख पीछे की ओर झुके होते हैं। यह एक बहुत ही सुंदर और उपयोगी डिज़ाइन है।</p>
+      <p>कुछ विमानों के पंखों के सिरों पर छोटे टुकड़े लगे होते हैं — <span class="hl-warm">विंगलेट्स</span> — जो हवा के भंवर को कम करते हैं और ईंधन बचाते हैं। इस तरह विमान का हर हिस्सा एक ही उद्देश्य के लिए काम करता है — बेहतर और सस्ती उड़ान।</p>
+
+      <div class="callout metal">💡 <strong>जानिए:</strong> विंगलेट्स लगाने से विमान की ईंधन खपत में लगभग <strong>5 प्रतिशत</strong> तक की कमी आ सकती है — जो लंबी उड़ानों में बहुत बड़ी बचत है।</div>
+    </section>
+
+    <!-- ---------- 08 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">08</span>
+        <h2>उड़ान के दौरान क्या-क्या होता है?</h2>
+      </div>
+      <p>जब विमान हवा में होता है, तो कई चीज़ें एक साथ होती रहती हैं। पंखों पर बर्फ़ न जमे, इसके लिए गरम हवा की व्यवस्था होती है। केबिन में दबाव बना रहे, इसके लिए दबाव नियंत्रण प्रणाली होती है। और ईंधन लगातार पंखों में भेजा जाता है ताकि संतुलन बना रहे।</p>
+      <p>विमान की दिशा बदलने के लिए पूँछ पर लगे छोटे पंख (ailerons) और रडर काम करते हैं। पायलट इन्हें नियंत्रित करके विमान को मोड़ते हैं, ऊपर-नीचे करते हैं और स्थिर रखते हैं।</p>
+      <p>पूरी उड़ान के दौरान पायलट लगातार तापमान, दबाव, गति और ऊँचाई पर नज़र रखते हैं। यही कारण है कि उड़ान इतनी सुरक्षित होती है — क्योंकि हर पल की गणना पहले से की जाती है।</p>
+
+      <div class="callout">💡 <strong>आसान उदाहरण:</strong> साइकिल चलाते समय आप संतुलन बनाए रखने के लिए लगातार छोटे-छोटे सुधार करते हैं — विमान के साथ भी ऐसा ही होता है। पायलट लगातार छोटे सुधार करके विमान को स्थिर रखता है।</div>
+    </section>
+
+    <!-- ---------- 09 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">09</span>
+        <h2>विमान उड़ान के कुछ रोचक तथ्य</h2>
+      </div>
+      <p>विमानों के बारे में कई आश्चर्यजनक बातें हैं। जैसे — एक बड़ा यात्री विमान एक बार में लगभग <span class="hl">2 लाख लीटर</span> तक ईंधन ले सकता है और 15,000 किलोमीटर तक लगातार उड़ सकता है।</p>
+      <p>विमान की ऊँचाई पर तापमान -50°C तक गिर जाता है, लेकिन केबिन के अंदर आरामदायक तापमान बना रहता है। यह इंजन की गरम हवा और वातानुकूलन प्रणाली की वजह से संभव होता है।</p>
+      <p>दिलचस्प बात यह भी है कि विमान जितना ऊँचा उड़ता है, उतना ही कम ईंधन खर्च होता है, क्योंकि वहाँ हवा पतली होती है और ड्रैग कम होता है। इसीलिए लंबी उड़ानें अक्सर बहुत ऊँचाई पर होती हैं।</p>
+
+      <div class="callout fact">🌟 <strong>रोचक तथ्य:</strong> एक आधुनिक जेट इंजन उड़ान के दौरान हर सेकंड में लगभग <strong>1 टन हवा</strong> को पीछे धकेलता है — यही विमान को आगे बढ़ाती है।</div>
+    </section>
+
+    <!-- ---------- 10 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">10</span>
+        <h2>निष्कर्ष</h2>
+      </div>
+      <p>तो सवाल का जवाब यह है — हवाई जहाज़ उड़ता है क्योंकि <span class="hl">पंखों से लिफ्ट पैदा होती है, इंजन से थ्रस्ट बनता है, और ये दोनों बल गुरुत्वाकर्षण और ड्रैग को संतुलित करते हैं</span>। यह चार बलों का नाज़ुक खेल है, जिसे इंसान ने सदियों की मेहनत से समझा।</p>
+      <p>पंखों का आकार, इंजन की शक्ति और विमान का डिज़ाइन — सब कुछ इसी एक उद्देश्य के लिए बना है कि विमान सुरक्षित और कुशलता से उड़ सके।</p>
+      <p>अगली बार जब आप विमान में बैठें और खिड़की से बाहर बादलों को देखें, तो याद रखें — वह विमान सिर्फ़ हवा में नहीं तैर रहा, वह भौतिकी के चार बुनियादी नियमों का एक सुंदर उदाहरण है।</p>
+    </section>
+
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>✈️ उड़ान वह सपना है जिसे इंसान ने भौतिकी की मदद से सच कर दिखाया।</footer>
+
+</main>
+
+<!-- ===== Back to top ===== -->
+<button id="backToTop" aria-label="ऊपर जाएँ">↑</button>
+
+<script>
+/* ============================================================
+   सारा JavaScript — शुद्ध वैनिला
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var docEl       = document.documentElement;
+  var progressBar = document.getElementById('progressBar');
+  var backToTop   = document.getElementById('backToTop');
+
+  /* 1. स्क्रॉल हैंडलर */
+  var ticking = false;
+  function handleScroll() {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(function () {
+      var scrollTop = window.pageYOffset || docEl.scrollTop || 0;
+      var maxScroll = docEl.scrollHeight - docEl.clientHeight;
+      var percent   = maxScroll > 0 ? (scrollTop / maxScroll) * 100 : 0;
+      progressBar.style.width = percent.toFixed(2) + '%';
+      if (scrollTop > 500) {
+        backToTop.classList.add('show');
+      } else {
+        backToTop.classList.remove('show');
+      }
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('resize', handleScroll, { passive: true });
+  handleScroll();
+
+  /* 2. स्मूद स्क्रॉल */
+  backToTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* 3. स्क्रॉल रिवील + बार एनिमेशन */
+  var revealItems = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('visible');
+        var fills = entry.target.querySelectorAll('.bar-fill');
+        fills.forEach(function (fill) {
+          var w = fill.getAttribute('data-width') || '0';
+          window.setTimeout(function () {
+            fill.style.width = w + '%';
+          }, 180);
+        });
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    revealItems.forEach(function (el) { observer.observe(el); });
+  } else {
+    revealItems.forEach(function (el) { el.classList.add('visible'); });
+    document.querySelectorAll('.bar-fill').forEach(function (fill) {
+      fill.style.width = (fill.getAttribute('data-width') || 0) + '%';
+    });
+  }
+
+  /* 4. बादल कण जनरेटर */
+  var particleLayer = document.getElementById('particles');
+  function buildParticles() {
+    if (!particleLayer) return;
+    particleLayer.innerHTML = '';
+    var isSmall = window.innerWidth < 600;
+    var count   = isSmall ? 18 : 32;
+    var frag    = document.createDocumentFragment();
+    for (var i = 0; i < count; i++) {
+      var p = document.createElement('span');
+      p.className = 'particle';
+      var size = (Math.random() * 14 + 6).toFixed(1);
+      p.style.width = size + 'px';
+      p.style.height = (size * 0.7).toFixed(1) + 'px';
+      p.style.top = '-20px';
+      p.style.animationDuration = (Math.random() * 26 + 18).toFixed(1) + 's';
+      p.style.animationDelay = (-Math.random() * 30).toFixed(1) + 's';
+      p.style.setProperty('--ypos', (Math.random() * 90 + 5).toFixed(0) + 'vh');
+      frag.appendChild(p);
+    }
+    particleLayer.appendChild(frag);
+  }
+  buildParticles();
+
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    if (resizeTimer) window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(buildParticles, 300);
+  }, { passive: true });
+
+  /* 5. हीरो पैरालैक्स */
+  var hero        = document.querySelector('.hero');
+  var heroVisual  = document.getElementById('heroVisual');
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (hero && heroVisual && finePointer) {
+    var parallaxFrame = null;
+    hero.addEventListener('mousemove', function (e) {
+      if (parallaxFrame) return;
+      parallaxFrame = window.requestAnimationFrame(function () {
+        var rect = hero.getBoundingClientRect();
+        var cx = rect.width / 2;
+        var cy = rect.height / 2;
+        var dx = (e.clientX - rect.left - cx) / cx;
+        var dy = (e.clientY - rect.top  - cy) / cy;
+        heroVisual.style.transform =
+          'translate3d(' + (dx * 16).toFixed(2) + 'px,' +
+                            (dy * 12).toFixed(2) + 'px, 0)';
+        parallaxFrame = null;
+      });
+    }, { passive: true });
+    hero.addEventListener('mouseleave', function () {
+      heroVisual.style.transform = 'translate3d(0,0,0)';
+    });
+  }
+
+})();
+</script>
+</body>
+</html>

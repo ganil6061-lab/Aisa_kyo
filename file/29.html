@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>शहद कभी खराब क्यों नहीं होता?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@500;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   1. CSS VARIABLES — शहद थीम (एम्बर गोल्ड + गहरा भूरा + मधुमक्खी पीला)
+   ============================================================ */
+:root{
+  --bg-deep:#140a02;
+  --bg-mid:#26150a;
+  --bg-honey:#3d2109;
+  --bg-amber:#5a3210;
+
+  --honey-100:#fff8e1;
+  --honey-200:#ffeeb0;
+  --honey-300:#ffdb70;
+  --honey-400:#fbbf24;
+  --honey-500:#f59e0b;
+  --honey-600:#d97706;
+  --amber:#b45309;
+  --deep-honey:#92400e;
+  --bee-black:#1c1208;
+
+  --gold-light:#fef3c7;
+  --gold-glow:#fde68a;
+
+  --text:#fff8ef;
+  --text-soft:#e8d5b8;
+  --muted:#a88f6f;
+
+  --card:rgba(255,235,180,0.055);
+  --card-border:rgba(251,191,36,0.24);
+  --radius:20px;
+
+  --grad-honey:linear-gradient(135deg,#fde68a,#fbbf24,#d97706);
+  --grad-amber:linear-gradient(135deg,#fbbf24,#b45309);
+  --grad-bee:linear-gradient(135deg,#fde68a,#1c1208);
+
+  --shadow:0 18px 44px rgba(40,15,0,0.55);
+  --maxw:860px;
+}
+
+/* ============================================================
+   2. RESET + BASE
+   ============================================================ */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+
+body{
+  font-family:'Poppins',system-ui,sans-serif;
+  color:var(--text);
+  line-height:1.85;
+  background:var(--bg-deep);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- Fixed background ---------- */
+.bg-fixed{
+  position:fixed;
+  inset:0;
+  z-index:-7;
+  background:
+    radial-gradient(900px 620px at 50% -10%, rgba(251,191,36,0.22), transparent 70%),
+    radial-gradient(700px 500px at 88% 82%, rgba(217,119,6,0.14), transparent 72%),
+    linear-gradient(180deg,#140a02 0%,#26150a 26%,#3d2109 58%,#5a3210 82%,#7a4415 100%);
+}
+
+/* ---------- Glowing blobs ---------- */
+.blob{
+  position:fixed;
+  border-radius:50%;
+  filter:blur(100px);
+  pointer-events:none;
+  z-index:-5;
+  opacity:.36;
+  animation:blobFloat 22s ease-in-out infinite alternate;
+}
+.blob-1{width:470px;height:470px;background:#d97706;top:-160px;left:-120px;}
+.blob-2{width:430px;height:430px;background:#b45309;bottom:-170px;right:-140px;animation-delay:-8s;opacity:.3;}
+.blob-3{width:330px;height:330px;background:#fbbf24;opacity:.14;top:48%;right:-130px;animation-delay:-14s;}
+
+@keyframes blobFloat{
+  from{transform:translate3d(0,0,0) scale(1);}
+  to{transform:translate3d(42px,-52px,0) scale(1.13);}
+}
+
+/* ---------- Pollen / honey particle layer ---------- */
+#particles{
+  position:fixed;
+  inset:0;
+  z-index:-4;
+  overflow:hidden;
+  pointer-events:none;
+}
+.particle{
+  position:absolute;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff8e1,#fbbf24 55%,rgba(217,119,6,0) 100%);
+  box-shadow:0 0 10px rgba(251,191,36,0.7);
+  animation-name:floatUp;
+  animation-timing-function:linear;
+  animation-iteration-count:infinite;
+  will-change:transform,opacity;
+}
+@keyframes floatUp{
+  0%{transform:translate3d(0,110vh,0) scale(.7);opacity:0;}
+  12%{opacity:.9;}
+  55%{transform:translate3d(var(--drift,20px),45vh,0) scale(1);}
+  100%{transform:translate3d(calc(var(--drift,20px) * -1),-14vh,0) scale(1.06);opacity:0;}
+}
+
+/* ---------- Reading progress ---------- */
+#progressBar{
+  position:fixed;
+  top:0;left:0;
+  height:4px;
+  width:0%;
+  z-index:100;
+  border-radius:0 4px 4px 0;
+  background:linear-gradient(90deg,#fef3c7,#fde68a,#fbbf24,#b45309);
+  box-shadow:0 0 14px rgba(251,191,36,0.85);
+  transition:width .09s linear;
+}
+
+/* ============================================================
+   3. HERO
+   ============================================================ */
+.hero{
+  min-height:100vh;
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:96px 20px 78px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ---------- Hero visual: शहद की बूँद + छत्ता ---------- */
+.hero-visual{
+  position:relative;
+  width:280px;
+  height:270px;
+  margin-bottom:20px;
+  transition:transform .35s ease-out;
+  will-change:transform;
+}
+
+/* चमकती गर्म रोशनी */
+.honey-glow{
+  position:absolute;
+  top:50%;left:50%;
+  width:250px;height:250px;
+  margin:-125px 0 0 -125px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(251,191,36,0.45),rgba(217,119,6,0) 70%);
+  animation:honeyPulse 4.5s ease-in-out infinite;
+}
+@keyframes honeyPulse{
+  0%,100%{transform:scale(1);opacity:.75;}
+  50%{transform:scale(1.14);opacity:.5;}
+}
+
+/* छत्ते की जाली */
+.honeycomb{
+  position:absolute;
+  top:50%;left:50%;
+  width:230px;height:210px;
+  margin:-105px 0 0 -115px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:repeat(3,1fr);
+  gap:5px;
+  opacity:.75;
+  z-index:1;
+}
+.cell{
+  width:100%;
+  aspect-ratio:1/1.15;
+  background:linear-gradient(160deg,rgba(251,191,36,0.28),rgba(180,83,9,0.12));
+  clip-path:polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  border:1px solid rgba(253,230,138,0.35);
+  transition:transform .3s ease;
+}
+.cell:nth-child(odd){background:linear-gradient(160deg,rgba(251,191,36,0.38),rgba(217,119,6,0.18));}
+.cell.filled{
+  background:linear-gradient(160deg,#fde68a,#fbbf24 55%,#d97706);
+  box-shadow:inset 0 0 8px rgba(255,248,225,0.6),0 0 8px rgba(251,191,36,0.5);
+  animation:cellGlow 3s ease-in-out infinite;
+}
+.cell.filled:nth-child(1){animation-delay:0s;}
+.cell.filled:nth-child(6){animation-delay:-1s;}
+.cell.filled:nth-child(8){animation-delay:-2s;}
+@keyframes cellGlow{
+  0%,100%{opacity:.85;}
+  50%{opacity:1;}
+}
+
+/* शहद की बूँद */
+.honey-drop{
+  position:absolute;
+  top:50%;left:50%;
+  width:88px;height:118px;
+  margin:-64px 0 0 -44px;
+  background:radial-gradient(circle at 38% 32%,#fff8e1,#fbbf24 45%,#d97706 78%,#92400e 100%);
+  border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+  box-shadow:
+    0 0 40px rgba(251,191,36,0.6),
+    inset -8px -12px 24px rgba(146,64,14,0.6),
+    inset 8px 8px 18px rgba(255,248,225,0.6);
+  z-index:2;
+  animation:dropBob 4s ease-in-out infinite;
+}
+.honey-drop::before{
+  content:'';
+  position:absolute;
+  top:18%;left:24%;
+  width:22px;height:32px;
+  background:radial-gradient(ellipse,rgba(255,255,255,0.85),rgba(255,255,255,0) 70%);
+  border-radius:50%;
+  opacity:.85;
+}
+@keyframes dropBob{
+  0%,100%{transform:translateY(0) scale(1);}
+  50%{transform:translateY(-8px) scale(1.04);}
+}
+
+/* नीचे टपकती शहद की बूँद */
+.honey-drip{
+  position:absolute;
+  bottom:44px;left:50%;
+  width:14px;height:20px;
+  margin-left:-7px;
+  background:radial-gradient(circle at 38% 30%,#fde68a,#d97706 80%);
+  border-radius:50% 50% 50% 50% / 65% 65% 35% 35%;
+  box-shadow:0 0 12px rgba(251,191,36,0.8);
+  animation:dripFall 3s ease-in infinite;
+  z-index:3;
+}
+@keyframes dripFall{
+  0%,60%{transform:translateY(0) scale(.85);opacity:0;}
+  70%{opacity:1;}
+  100%{transform:translateY(38px) scale(1);opacity:0;}
+}
+
+/* मधुमक्खी */
+.bee{
+  position:absolute;
+  width:34px;height:22px;
+  background:linear-gradient(90deg,#1c1208 0%,#fbbf24 25%,#1c1208 40%,#fbbf24 55%,#1c1208 70%,#fbbf24 85%,#1c1208 100%);
+  border-radius:50%;
+  box-shadow:0 0 10px rgba(251,191,36,0.55),inset 0 0 4px rgba(0,0,0,0.6);
+  animation:beeFly 8s ease-in-out infinite;
+  z-index:4;
+}
+.bee::before,
+.bee::after{
+  content:'';
+  position:absolute;
+  top:-4px;
+  width:14px;height:14px;
+  border-radius:50%;
+  background:rgba(255,248,225,0.75);
+  border:1px solid rgba(255,248,225,0.5);
+  animation:wingFlap .18s linear infinite alternate;
+}
+.bee::before{left:6px;}
+.bee::after{right:6px;animation-delay:-.09s;}
+@keyframes wingFlap{
+  from{transform:scaleY(1);}
+  to{transform:scaleY(.55);}
+}
+@keyframes beeFly{
+  0%{top:20px;left:14px;transform:rotate(8deg);}
+  25%{top:40px;left:220px;transform:rotate(-6deg);}
+  50%{top:16px;left:238px;transform:rotate(10deg);}
+  75%{top:56px;left:10px;transform:rotate(-8deg);}
+  100%{top:20px;left:14px;transform:rotate(8deg);}
+}
+
+/* ---------- Hero text ---------- */
+.hero h1{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:clamp(1.85rem,7.1vw,4.3rem);
+  line-height:1.22;
+  letter-spacing:-.5px;
+  background:linear-gradient(120deg,#ffffff 6%,#fff8e1 30%,#fde68a 52%,#fbbf24 74%,#d97706 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  max-width:16ch;
+  margin-bottom:18px;
+  filter:drop-shadow(0 8px 26px rgba(251,191,36,0.35));
+}
+
+.hero p{
+  max-width:620px;
+  font-size:clamp(.92rem,2.4vw,1.06rem);
+  color:var(--text-soft);
+  font-weight:300;
+  text-align:center;
+}
+
+/* ---------- Scroll hint ---------- */
+.scroll-hint{
+  position:absolute;
+  bottom:26px;left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  color:var(--honey-300);
+  font-size:.74rem;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+  opacity:.85;
+}
+.scroll-hint span{
+  font-size:1.5rem;
+  line-height:1;
+  animation:bounce 1.9s ease-in-out infinite;
+}
+@keyframes bounce{
+  0%,100%{transform:translateY(0);opacity:.65;}
+  50%{transform:translateY(9px);opacity:1;}
+}
+
+/* ============================================================
+   4. ARTICLE LAYOUT
+   ============================================================ */
+.article{
+  width:100%;
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:0 20px 40px;
+  position:relative;
+}
+
+.section{margin-bottom:clamp(56px,8vw,92px);}
+
+.section-head{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.badge{
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  width:52px;height:52px;
+  border-radius:16px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:1.28rem;
+  color:#1c1208;
+  background:linear-gradient(135deg,#fde68a,#fbbf24,#d97706);
+  box-shadow:0 10px 26px rgba(251,191,36,0.45);
+}
+
+h2{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:clamp(1.32rem,4vw,2rem);
+  line-height:1.35;
+  color:#fff8ef;
+}
+
+.article p{
+  text-align:justify;
+  text-justify:inter-word;
+  color:var(--text-soft);
+  font-size:clamp(.9rem,2.3vw,1rem);
+  font-weight:300;
+  margin-bottom:18px;
+}
+
+.hl{color:var(--honey-300);font-weight:600;}
+.hl-warm{color:var(--gold-glow);font-weight:600;}
+.hl-deep{color:#fdba74;font-weight:600;}
+.hl-bee{color:#fef3c7;font-weight:600;}
+
+/* ---------- Callouts ---------- */
+.callout{
+  border-radius:18px;
+  padding:18px 22px;
+  margin:24px 0;
+  font-size:clamp(.85rem,2.2vw,.95rem);
+  line-height:1.8;
+  border:1px solid rgba(251,191,36,0.3);
+  background:linear-gradient(135deg,rgba(251,191,36,0.16),rgba(217,119,6,0.06));
+  border-left:4px solid var(--honey-400);
+  color:#fff8e1;
+}
+.callout.fact{
+  border-color:rgba(253,230,138,0.32);
+  background:linear-gradient(135deg,rgba(253,230,138,0.14),rgba(251,191,36,0.05));
+  border-left-color:var(--gold-glow);
+}
+.callout.deep{
+  border-color:rgba(217,119,6,0.32);
+  background:linear-gradient(135deg,rgba(217,119,6,0.14),rgba(146,64,14,0.05));
+  border-left-color:var(--honey-600);
+}
+
+/* ---------- Stats ---------- */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(152px,1fr));
+  gap:16px;
+  margin:30px 0;
+}
+.stat{
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  padding:22px 16px;
+  text-align:center;
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;
+}
+.stat:hover{
+  transform:translateY(-9px);
+  box-shadow:var(--shadow);
+  border-color:rgba(251,191,36,0.55);
+}
+.stat .num{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:clamp(1.35rem,4.2vw,1.85rem);
+  line-height:1.15;
+  background:var(--grad-honey);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.stat .label{
+  display:block;
+  margin-top:8px;
+  font-size:.78rem;
+  line-height:1.55;
+  color:var(--muted);
+}
+
+/* ---------- Composition cards ---------- */
+.composition{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(155px,1fr));
+  gap:14px;
+  margin:28px 0;
+}
+.comp-item{
+  padding:20px 16px;
+  border-radius:18px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  text-align:center;
+  transition:transform .3s ease,border-color .3s ease;
+}
+.comp-item:hover{
+  transform:translateY(-6px);
+  border-color:rgba(251,191,36,0.55);
+}
+.comp-item .icon{
+  font-size:1.9rem;
+  display:block;
+  margin-bottom:8px;
+  line-height:1;
+}
+.comp-item .name{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:var(--honey-200);
+  display:block;
+  margin-bottom:4px;
+}
+.comp-item .val{
+  font-size:.78rem;
+  line-height:1.5;
+  color:var(--muted);
+}
+
+/* ---------- Progress bars ---------- */
+.bars{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  margin:28px 0;
+  padding:22px 20px;
+  border-radius:var(--radius);
+  background:rgba(255,235,180,0.045);
+  border:1px solid var(--card-border);
+}
+.bar-row{
+  display:grid;
+  grid-template-columns:126px 1fr 84px;
+  align-items:center;
+  gap:12px;
+  font-size:.82rem;
+  color:var(--text-soft);
+}
+.bar-row .name{font-weight:500;}
+.bar-row .val{text-align:right;color:var(--muted);font-size:.76rem;}
+.bar-track{
+  height:12px;
+  border-radius:99px;
+  background:rgba(255,255,255,0.08);
+  overflow:hidden;
+}
+.bar-fill{
+  height:100%;
+  width:0;
+  border-radius:99px;
+  transition:width 1.35s cubic-bezier(.22,1,.36,1);
+}
+.bar-fill.h1{background:linear-gradient(90deg,#d97706,#fbbf24);}
+.bar-fill.h2{background:linear-gradient(90deg,#fbbf24,#fde68a);}
+.bar-fill.h3{background:linear-gradient(90deg,#fde68a,#fef3c7);}
+.bar-fill.h4{background:linear-gradient(90deg,#b45309,#fbbf24);}
+
+/* ---------- Comparison ---------- */
+.compare{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin:28px 0;
+}
+.compare .card{
+  padding:22px 20px;
+  border-radius:var(--radius);
+  background:var(--card);
+  border:1px solid var(--card-border);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;
+}
+.compare .card:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow);
+}
+.compare .card.honey{border-color:rgba(251,191,36,0.5);}
+.compare .card.bee{border-color:rgba(28,18,8,0.65);}
+.compare h3{
+  font-family:'Baloo Bhai 2',cursive;
+  font-size:1.12rem;
+  font-weight:700;
+  margin-bottom:10px;
+}
+.compare .card.honey h3{color:var(--honey-200);}
+.compare .card.bee h3{color:#fde68a;}
+.compare ul{
+  list-style:none;
+  font-size:.86rem;
+  color:var(--text-soft);
+  line-height:1.9;
+}
+.compare li::before{
+  content:'•';
+  color:var(--honey-300);
+  margin-right:8px;
+  font-weight:700;
+}
+
+/* ---------- Steps ---------- */
+.steps{
+  display:grid;
+  gap:14px;
+  margin:28px 0;
+}
+.step{
+  display:flex;
+  align-items:flex-start;
+  gap:16px;
+  padding:18px 20px;
+  border-radius:18px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  font-size:.9rem;
+  color:var(--text-soft);
+  transition:transform .3s ease,border-color .3s ease;
+}
+.step:hover{
+  transform:translateX(6px);
+  border-color:rgba(251,191,36,0.55);
+}
+.step .n{
+  flex:0 0 38px;
+  width:38px;height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:1rem;
+  color:#1c1208;
+  background:var(--grad-honey);
+}
+.step .txt strong{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:#fff8ef;
+  margin-bottom:2px;
+}
+
+/* ---------- Diagram ---------- */
+.diagram{
+  margin:30px 0;
+  padding:18px;
+  border-radius:var(--radius);
+  background:rgba(255,235,180,0.035);
+  border:1px solid var(--card-border);
+}
+.diagram svg{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.svg-label{
+  font-family:'Poppins',sans-serif;
+  font-size:12px;
+  fill:#c9b597;
+}
+.svg-label-bright{
+  font-family:'Poppins',sans-serif;
+  font-size:12.5px;
+  font-weight:600;
+  fill:#fff8e1;
+}
+
+/* ---------- Timeline ---------- */
+.timeline{
+  position:relative;
+  margin:32px 0;
+  padding-left:34px;
+}
+.timeline::before{
+  content:'';
+  position:absolute;
+  top:8px;bottom:8px;left:11px;
+  width:3px;
+  border-radius:99px;
+  background:linear-gradient(180deg,#fef3c7,#fbbf24,#b45309);
+  opacity:.6;
+}
+.tl-item{
+  position:relative;
+  margin-bottom:22px;
+  padding:16px 18px;
+  border-radius:16px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  font-size:.88rem;
+  color:var(--text-soft);
+  transition:transform .3s ease,border-color .3s ease;
+}
+.tl-item:hover{
+  transform:translateX(4px);
+  border-color:rgba(251,191,36,0.55);
+}
+.tl-item::before{
+  content:'';
+  position:absolute;
+  left:-31px;top:22px;
+  width:14px;height:14px;
+  border-radius:50%;
+  background:var(--honey-300);
+  box-shadow:0 0 0 4px rgba(251,191,36,0.2),0 0 12px rgba(251,191,36,0.75);
+}
+.tl-item strong{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:#fff8ef;
+  margin-bottom:3px;
+}
+
+/* ---------- Quote ---------- */
+.quote{
+  max-width:720px;
+  margin:clamp(56px,8vw,86px) auto;
+  text-align:center;
+  padding:38px 26px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:600;
+  font-size:clamp(1.1rem,3.1vw,1.55rem);
+  line-height:1.72;
+  color:#fff8ef;
+  border-top:1px solid rgba(251,191,36,0.3);
+  border-bottom:1px solid rgba(251,191,36,0.3);
+  background:radial-gradient(circle at 50% 0%,rgba(251,191,36,0.16),transparent 72%);
+}
+.quote .mark{
+  display:block;
+  font-size:2.4rem;
+  line-height:1;
+  margin-bottom:12px;
+  color:var(--gold-glow);
+}
+
+/* ---------- Footer ---------- */
+footer{
+  text-align:center;
+  padding:46px 22px 84px;
+  font-size:.85rem;
+  color:var(--muted);
+  border-top:1px solid rgba(251,191,36,0.14);
+  max-width:var(--maxw);
+  margin:0 auto;
+}
+
+/* ---------- Back to top ---------- */
+#backToTop{
+  position:fixed;
+  right:20px;bottom:22px;
+  width:52px;height:52px;
+  border:none;
+  border-radius:50%;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  font-size:1.35rem;
+  font-weight:700;
+  color:#1c1208;
+  background:linear-gradient(135deg,#fde68a,#fbbf24,#d97706);
+  box-shadow:0 12px 30px rgba(251,191,36,0.45);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(18px) scale(.88);
+  transition:opacity .35s ease,transform .35s ease,box-shadow .35s ease;
+  z-index:99;
+}
+#backToTop.show{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0) scale(1);
+}
+#backToTop:hover{box-shadow:0 16px 38px rgba(251,191,36,0.65);}
+
+/* ---------- Scroll reveal ---------- */
+.reveal{
+  opacity:0;
+  transform:translateY(38px);
+  transition:opacity .85s ease,transform .85s cubic-bezier(.22,1,.36,1);
+}
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ============================================================
+   5. RESPONSIVE
+   ============================================================ */
+@media (max-width:600px){
+  .hero{padding:80px 18px 64px;}
+  .hero-visual{width:222px;height:214px;margin-bottom:16px;}
+  .honeycomb{width:184px;height:168px;margin:-84px 0 0 -92px;gap:4px;}
+  .honey-drop{width:70px;height:94px;margin:-51px 0 0 -35px;}
+  .honey-drop::before{width:16px;height:24px;}
+  .honey-glow{width:200px;height:200px;margin:-100px 0 0 -100px;}
+  .honey-drip{bottom:34px;}
+  .bee{width:26px;height:16px;}
+  .bee::before,.bee::after{width:10px;height:10px;}
+
+  .article{padding:0 16px 30px;}
+
+  .section-head{gap:12px;margin-bottom:16px;}
+  .badge{width:44px;height:44px;border-radius:13px;font-size:1.1rem;}
+
+  .stats{grid-template-columns:1fr;}
+  .compare{grid-template-columns:1fr;}
+  .bar-row{grid-template-columns:98px 1fr 66px;font-size:.76rem;}
+  .bar-row .val{font-size:.7rem;}
+
+  .step{flex-direction:row;padding:16px;}
+  .step:hover{transform:none;}
+
+  .callout{padding:16px 18px;}
+  .quote{padding:30px 18px;}
+
+  .timeline{padding-left:30px;}
+  .tl-item::before{left:-27px;}
+
+  #backToTop{width:46px;height:46px;right:14px;bottom:16px;font-size:1.2rem;}
+}
+
+@media (min-width:601px) and (max-width:900px){
+  .stats{grid-template-columns:repeat(2,1fr);}
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,
+  *::before,
+  *::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+  .reveal{opacity:1;transform:none;}
+  html{scroll-behavior:auto;}
+  .bee,.honey-drop{animation:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Fixed background ===== -->
+<div class="bg-fixed" aria-hidden="true"></div>
+<div class="blob blob-1" aria-hidden="true"></div>
+<div class="blob blob-2" aria-hidden="true"></div>
+<div class="blob blob-3" aria-hidden="true"></div>
+<div id="particles" aria-hidden="true"></div>
+
+<!-- ===== Reading progress ===== -->
+<div id="progressBar" aria-hidden="true"></div>
+
+<main>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="hero-visual" id="heroVisual" aria-hidden="true">
+      <div class="honey-glow"></div>
+      <div class="honeycomb">
+        <div class="cell filled"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell filled"></div>
+        <div class="cell"></div>
+        <div class="cell filled"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+      </div>
+      <div class="honey-drop"></div>
+      <div class="honey-drip"></div>
+      <div class="bee"></div>
+    </div>
+
+    <h1>शहद कभी खराब क्यों नहीं होता?</h1>
+    <p>एक जार शहद रसोई में वर्षों पड़ा रह सकता है और फिर भी खराब नहीं होता। प्राचीन मिस्र की कब्रों में रखा शहद हज़ारों साल बाद भी खाने योग्य मिला है। इसके पीछे छिपी है एक रासायनिक सुरक्षा-प्रणाली, जिसे प्रकृति ने बड़ी ही समझदारी से बनाया है।</p>
+
+    <div class="scroll-hint">
+      <span>↓</span>
+      शहद में डुबकी लगाएँ
+    </div>
+  </section>
+
+  <!-- ================= ARTICLE ================= -->
+  <div class="article">
+
+    <!-- ---------- 01 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">01</span>
+        <h2>एक अजीब सी बात, जो सच है</h2>
+      </div>
+      <p>आमतौर पर हर खाने की चीज़ की एक उम्र होती है — दूध खट्टा हो जाता है, रोटी में फंगस लग जाती है, फल सड़ जाते हैं। लेकिन शहद इस नियम का अपवाद है। अगर उसे सही तरीके से बंद करके रखा जाए, तो वह <span class="hl">सालों-साल खराब नहीं होता</span>।</p>
+      <p>यह बात सिर्फ़ आधुनिक विज्ञान ने नहीं खोजी। प्राचीन मिस्र में फैरो की कब्रों में शहद के बर्तन रखे जाते थे। जब पुरातत्वविदों ने हज़ारों साल बाद उन बर्तनों को खोला, तो शहद अब भी खाने योग्य था। यह सुनकर हैरानी होती है — लेकिन इसके पीछे का विज्ञान बहुत स्पष्ट है।</p>
+      <p>शहद को "अमर भोजन" कहा जाए तो गलत नहीं। लेकिन सवाल यह उठता है — <span class="hl-warm">ऐसा कौन-सा गुण है जो शहद को बैक्टीरिया और फंगस से बचाता है?</span> आइए, इसका जवाब खोजते हैं।</p>
+
+      <div class="callout fact">🌟 <strong>रोचक तथ्य:</strong> मिस्र में लगभग <strong>3,000 साल पुरानी</strong> कब्रों में रखा शहद आज भी खाने योग्य पाया गया है — यह शहद की अमरता का सबसे बड़ा सबूत है।</div>
+    </section>
+
+    <!-- ---------- 02 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">02</span>
+        <h2>शहद में क्या-क्या होता है?</h2>
+      </div>
+      <p>शहद कोई साधारण मीठा तरल नहीं है। यह मधुमक्खियों द्वारा फूलों के रस से बनाया जाता है — और इसमें <span class="hl">करीब 80 प्रतिशत शर्करा</span> और सिर्फ़ 17 प्रतिशत पानी होता है। बाकी हिस्से में खनिज, विटामिन, एंजाइम और एंटीऑक्सीडेंट होते हैं।</p>
+      <p>शर्करा में सबसे ज़्यादा मात्रा फ्रुक्टोज़ और ग्लूकोज़ की होती है। यही शर्करा शहद को मीठा बनाती है, और साथ में उसे खराब होने से भी बचाती है। क्योंकि शर्करा की इतनी ज़्यादा मात्रा में बैक्टीरिया जीवित नहीं रह सकते।</p>
+      <p>इसके अलावा शहद में <span class="hl-deep">एंजाइम ग्लूकोज़ ऑक्सीडेज</span> भी होता है, जो एक बहुत ही कम मात्रा में हाइड्रोजन पेरोक्साइड बनाता है — यह एक प्राकृतिक एंटीसेप्टिक है, जो बैक्टीरिया को मारता है।</p>
+
+      <div class="composition">
+        <div class="comp-item">
+          <span class="icon">🍯</span>
+          <span class="name">शर्करा</span>
+          <span class="val">लगभग 80%</span>
+        </div>
+        <div class="comp-item">
+          <span class="icon">💧</span>
+          <span class="name">पानी</span>
+          <span class="val">सिर्फ़ ~17%</span>
+        </div>
+        <div class="comp-item">
+          <span class="icon">🧪</span>
+          <span class="name">खनिज और विटामिन</span>
+          <span class="val">कुछ प्रतिशत</span>
+        </div>
+        <div class="comp-item">
+          <span class="icon">⚗️</span>
+          <span class="name">एंजाइम</span>
+          <span class="val">ग्लूकोज़ ऑक्सीडेज आदि</span>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="num">~80%</span>
+          <span class="label">शहद में शर्करा की मात्रा</span>
+        </div>
+        <div class="stat">
+          <span class="num">~17%</span>
+          <span class="label">शहद में पानी की मात्रा</span>
+        </div>
+        <div class="stat">
+          <span class="num">~3.9 pH</span>
+          <span class="label">शहद की अम्लीयता</span>
+        </div>
+        <div class="stat">
+          <span class="num">3,000+</span>
+          <span class="label">वर्षों तक शहद सुरक्षित रह सकता है</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 03 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">03</span>
+        <h2>पहला रक्षक: बहुत कम पानी</h2>
+      </div>
+      <p>बैक्टीरिया और फंगस को जीवित रहने के लिए पानी चाहिए। अगर उनके आसपास पानी कम हो जाए, तो वे सूखकर मर जाते हैं या बढ़ ही नहीं पाते। शहद में पानी की मात्रा सिर्फ़ 17 प्रतिशत होती है — यह बैक्टीरिया के लिए बहुत कम है।</p>
+      <p>इसे समझने के लिए एक सरल उदाहरण लीजिए। अगर आप चीनी को पानी में घोलें और बहुत ज़्यादा चीनी डाल दें, तो अतिरिक्त चीनी घुलना बंद हो जाती है। इसी तरह शहद में शर्करा इतनी ज़्यादा है कि <span class="hl">बैक्टीरिया का पानी खींच लेती है</span>। इसे वैज्ञानिक भाषा में <em>ऑस्मोसिस</em> कहते हैं।</p>
+      <p>नतीजा यह है कि बैक्टीरिया के शरीर से पानी बाहर निकल जाता है और वे जीवित नहीं रह पाते। यह शहद की पहली सुरक्षा-दीवार है — यह बिना किसी रसायन के, सिर्फ़ प्रकृति के नियम से काम करती है।</p>
+
+      <div class="callout">💡 <strong>आसान उदाहरण:</strong> अगर आप नमक या चीनी को सब्ज़ी पर डालें, तो वह सब्ज़ी से पानी खींच लेती है। शहद के साथ भी बैक्टीरिया पर ऐसा ही होता है।</div>
+    </section>
+
+    <!-- ---------- 04 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">04</span>
+        <h2>दूसरा रक्षक: अम्लीयता (pH)</h2>
+      </div>
+      <p>शहद की दूसरी सुरक्षा है उसकी <span class="hl">अम्लीयता</span>। शहद का pH लगभग 3.9 होता है — यह हल्का अम्लीय है। ज़्यादातर बैक्टीरिया ऐसे वातावरण में जीवित नहीं रह सकते, क्योंकि उन्हें तटस्थ या हल्का क्षारीय वातावरण चाहिए।</p>
+      <p>यह अम्लीयता शहद में मौजूद <span class="hl-warm">ग्लूकोनिक एसिड</span> के कारण होती है। जब मधुमक्खियाँ फूलों का रस इकट्ठा करती हैं, तो उसमें मौजूद एंजाइम शर्करा को ग्लूकोनिक एसिड में बदल देते हैं। यह एसिड शहद को अम्लीय बनाता है और बैक्टीरिया को पनपने नहीं देता।</p>
+      <p>दिलचस्प बात यह है कि यह अम्लीयता हमारे शरीर के लिए हानिकारक नहीं है — हमारा पेट पहले से ही अम्लीय है, इसलिए शहद आसानी से पच जाता है। लेकिन बैक्टीरिया के लिए यह वातावरण बहुत कठिन है।</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 660 280" role="img" aria-label="शहद के तीन रक्षक — कम पानी, अम्लीयता और एंजाइम">
+          <defs>
+            <linearGradient id="honeyJar" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#fde68a"/>
+              <stop offset="55%" stop-color="#fbbf24"/>
+              <stop offset="100%" stop-color="#b45309"/>
+            </linearGradient>
+            <radialGradient id="bacteria">
+              <stop offset="0%" stop-color="#f87171"/>
+              <stop offset="100%" stop-color="#7f1d1d"/>
+            </radialGradient>
+            <marker id="shArrow" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#fbbf24"/>
+            </marker>
+          </defs>
+
+          <!-- बीच में शहद का जार -->
+          <rect x="230" y="90" width="200" height="130" rx="20" fill="url(#honeyJar)" opacity="0.9"/>
+          <rect x="250" y="76" width="160" height="20" rx="8" fill="#92400e"/>
+          <text x="330" y="160" text-anchor="middle" font-family="Baloo Bhai 2,sans-serif" font-size="18" font-weight="700" fill="#2a1402">शहद</text>
+          <text x="330" y="248" text-anchor="middle" class="svg-label-bright">तीन रक्षक</text>
+
+          <!-- बाईं ओर: कम पानी -->
+          <g transform="translate(20,60)">
+            <circle cx="60" cy="60" r="46" fill="rgba(251,191,36,0.16)" stroke="rgba(251,191,36,0.5)"/>
+            <text x="60" y="52" text-anchor="middle" font-family="Poppins,sans-serif" font-size="12" fill="#fff8e1">पानी</text>
+            <text x="60" y="72" text-anchor="middle" font-family="Poppins,sans-serif" font-size="18" font-weight="700" fill="#fde68a">17%</text>
+            <circle cx="60" cy="112" r="0" fill="none"/>
+            <line x1="106" y1="60" x2="196" y2="110" stroke="#fbbf24" stroke-width="2" marker-end="url(#shArrow)"/>
+            <text x="60" y="146" text-anchor="middle" class="svg-label-bright">कम पानी</text>
+            <text x="60" y="164" text-anchor="middle" class="svg-label">बैक्टीरिया सूखते हैं</text>
+          </g>
+
+          <!-- ऊपर: अम्लीयता -->
+          <g transform="translate(270,4)">
+            <rect x="0" y="0" width="120" height="60" rx="14" fill="rgba(217,119,6,0.18)" stroke="rgba(251,191,36,0.5)"/>
+            <text x="60" y="26" text-anchor="middle" font-family="Poppins,sans-serif" font-size="12" fill="#fff8e1">pH स्तर</text>
+            <text x="60" y="48" text-anchor="middle" font-family="Poppins,sans-serif" font-size="18" font-weight="700" fill="#fde68a">3.9</text>
+            <line x1="60" y1="62" x2="60" y2="84" stroke="#fbbf24" stroke-width="2" marker-end="url(#shArrow)"/>
+          </g>
+
+          <!-- दाईं ओर: एंजाइम -->
+          <g transform="translate(480,60)">
+            <circle cx="60" cy="60" r="46" fill="rgba(180,83,9,0.2)" stroke="rgba(251,191,36,0.5)"/>
+            <text x="60" y="52" text-anchor="middle" font-family="Poppins,sans-serif" font-size="12" fill="#fff8e1">एंजाइम</text>
+            <text x="60" y="72" text-anchor="middle" font-family="Poppins,sans-serif" font-size="14" font-weight="700" fill="#fde68a">H₂O₂</text>
+            <line x1="-20" y1="60" x2="6" y2="60" stroke="#fbbf24" stroke-width="2" marker-end="url(#shArrow)"/>
+            <text x="60" y="146" text-anchor="middle" class="svg-label-bright">एंटीसेप्टिक</text>
+            <text x="60" y="164" text-anchor="middle" class="svg-label">बैक्टीरिया मरते हैं</text>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ---------- 05 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">05</span>
+        <h2>तीसरा रक्षक: एंजाइम और एंटीसेप्टिक</h2>
+      </div>
+      <p>मधुमक्खियाँ जब फूलों का रस इकट्ठा करती हैं, तो अपने मुँह से उसमें एक खास एंजाइम — <span class="hl">ग्लूकोज़ ऑक्सीडेज</span> — मिलाती हैं। जब शहद बनता है और पानी वाष्पित होता है, तो यह एंजाइम सक्रिय हो जाता है।</p>
+      <p>यह एंजाइम ग्लूकोज़ को ऑक्सीकृत करके <span class="hl-warm">हाइड्रोजन पेरोक्साइड (H₂O₂)</span> बनाता है — वही रसायन जो हम घाव साफ़ करने के लिए इस्तेमाल करते हैं। हालाँकि शहद में यह बहुत ही कम मात्रा में बनता है, लेकिन बैक्टीरिया को रोकने के लिए इतना ही काफ़ी है।</p>
+      <p>इसीलिए पुराने ज़माने में घावों पर शहद लगाया जाता था। आज भी कुछ आधुनिक मेडिकल ड्रेसिंग में शहद का उपयोग होता है, क्योंकि यह घाव को साफ़ रखता है और संक्रमण नहीं होने देता।</p>
+
+      <div class="steps">
+        <div class="step">
+          <span class="n">1</span>
+          <span class="txt"><strong>मधुमक्खी रस इकट्ठा करती है</strong>फूलों से मीठा रस लेकर अपने मुँह में एंजाइम मिलाती है।</span>
+        </div>
+        <div class="step">
+          <span class="n">2</span>
+          <span class="txt"><strong>छत्ते में पानी वाष्पित होता है</strong>शहद गाढ़ा हो जाता है, पानी कम हो जाता है।</span>
+        </div>
+        <div class="step">
+          <span class="n">3</span>
+          <span class="txt"><strong>एंजाइम सक्रिय होता है</strong>ग्लूकोज़ ऑक्सीडेज H₂O₂ बनाता है।</span>
+        </div>
+        <div class="step">
+          <span class="n">4</span>
+          <span class="txt"><strong>शहद सुरक्षित रहता है</strong>बैक्टीरिया पनप नहीं पाते, शहद सालों चलता है।</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- QUOTE ---------- -->
+    <div class="quote reveal">
+      <span class="mark">❝</span>
+      शहद सिर्फ़ मीठा नहीं — वह प्रकृति की वह अनोखी रचना है, जिसमें समय भी हार मान लेता है।
+    </div>
+
+    <!-- ---------- 06 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">06</span>
+        <h2>शहद कब खराब हो सकता है?</h2>
+      </div>
+      <p>हालाँकि शहद लंबे समय तक सुरक्षित रहता है, लेकिन कुछ स्थितियों में वह खराब भी हो सकता है। सबसे बड़ी समस्या है <span class="hl">नमी का प्रवेश</span>। अगर शहद में पानी मिल जाए, तो उसकी शर्करा घुल जाती है और बैक्टीरिया को पनपने का मौका मिल जाता है।</p>
+      <p>इसीलिए शहद को हमेशा सूखे चम्मच से निकालना चाहिए और बर्तन का ढक्कन बंद रखना चाहिए। अगर नमी वाला चम्मच शहद में डालें, तो वह जल्दी खराब हो सकता है।</p>
+      <p>दूसरी बात — <span class="hl-warm">क्रिस्टलीकरण</span>। शहद कभी-कभी दानेदार हो जाता है। यह खराबी नहीं है, बल्कि शर्करा के जमने की प्राकृतिक प्रक्रिया है। इसे गुनगुने पानी में रखकर फिर से तरल किया जा सकता है।</p>
+
+      <div class="compare">
+        <div class="card honey">
+          <h3>सही तरीके से रखा शहद</h3>
+          <ul>
+            <li>सूखा और साफ़ बर्तन</li>
+            <li>कसकर बंद ढक्कन</li>
+            <li>ठंडी, सूखी जगह</li>
+            <li>सालों तक खराब नहीं होता</li>
+          </ul>
+        </div>
+        <div class="card bee">
+          <h3>गलत तरीके से रखा शहद</h3>
+          <ul>
+            <li>गीला चम्मच</li>
+            <li>खुला बर्तन</li>
+            <li>नमी वाली जगह</li>
+            <li>जल्दी खराब हो सकता है</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 07 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">07</span>
+        <h2>मधुमक्खियों का जादुई काम</h2>
+      </div>
+      <p>शहद की यह सारी खूबी मधुमक्खियों की बदौलत है। एक मधुमक्खी अपने जीवन में लगभग <span class="hl">एक चम्मच के बारहवें हिस्से</span> जितना शहद ही बना पाती है। इसके लिए उसे हज़ारों फूलों तक उड़ना पड़ता है।</p>
+      <p>जब मधुमक्खी छत्ते में शहद जमा करती है, तो वह उसे मोम की परत से बंद कर देती है। यह परत शहद को नमी और हवा से बचाती है। इसीलिए हज़ारों साल पुरानी कब्रों में बंद शहद आज भी खराब नहीं हुआ।</p>
+      <p>मधुमक्खियों का यह काम सिर्फ़ शहद तक सीमित नहीं — वे परागण (pollination) में भी मदद करती हैं, जिससे हमें फल, सब्ज़ियाँ और अनाज मिलते हैं। इसीलिए कहा जाता है — <span class="hl-warm">अगर मधुमक्खियाँ न हों, तो इंसान भी न हों।</span></p>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <strong>फूलों से रस</strong>
+          मधुमक्खी रस इकट्ठा करती है।
+        </div>
+        <div class="tl-item">
+          <strong>छत्ते में प्रसंस्करण</strong>
+          एंजाइम मिलाकर शहद तैयार होता है।
+        </div>
+        <div class="tl-item">
+          <strong>मोम से सील</strong>
+          शहद को हवा और नमी से बचाया जाता है।
+        </div>
+        <div class="tl-item">
+          <strong>सालों तक सुरक्षित</strong>
+          सही तरीके से रखा शहद अमर रहता है।
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 08 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">08</span>
+        <h2>क्या शहद सच में "अमर" है?</h2>
+      </div>
+      <p>शहद को "अमर भोजन" कहा जाता है, लेकिन इसका मतलब यह नहीं कि वह हमेशा के लिए सुरक्षित रहेगा। अगर उसे सही तरीके से बंद करके रखा जाए, तो वह वर्षों-वर्षों तक खराब नहीं होता। लेकिन नमी, गर्मी और खुली हवा उसे खराब कर सकती है।</p>
+      <p>वैज्ञानिकों का मानना है कि शहद में मौजूद एंटीऑक्सीडेंट और एंजाइम धीरे-धीरे अपना असर खोते रहते हैं — भले ही शहद खराब न दिखे। इसलिए बहुत पुराना शहद खाने से बचना चाहिए, भले ही वह सूखा और साफ़ हो।</p>
+      <p>फिर भी — अगर शहद को सही से रखा जाए, तो वह कई वर्षों तक सुरक्षित रहता है। यह उसकी सबसे बड़ी खूबी है, जिसे कोई दूसरा खाना हासिल नहीं कर पाता।</p>
+
+      <div class="bars">
+        <div class="bar-row">
+          <span class="name">ताज़ा शहद</span>
+          <span class="bar-track"><span class="bar-fill h1" data-width="95"></span></span>
+          <span class="val">100%</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">1 साल बाद</span>
+          <span class="bar-track"><span class="bar-fill h2" data-width="85"></span></span>
+          <span class="val">~90%</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">5 साल बाद</span>
+          <span class="bar-track"><span class="bar-fill h3" data-width="70"></span></span>
+          <span class="val">~75%</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">सही से रखा</span>
+          <span class="bar-track"><span class="bar-fill h4" data-width="95"></span></span>
+          <span class="val">वर्षों तक सुरक्षित</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 09 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">09</span>
+        <h2>शहद से जुड़े कुछ दिलचस्प तथ्य</h2>
+      </div>
+      <p>शहद के बारे में कई ऐसी बातें हैं जो हैरान कर देती हैं। जैसे — एक बड़े छत्ते में हर साल करीब 30 किलो शहद बन सकता है। और एक मधुमक्खी अपने जीवन में लगभग 800 किलोमीटर तक उड़ान भरती है।</p>
+      <p>दिलचस्प बात यह भी है कि शहद का रंग और स्वाद इस पर निर्भर करता है कि मधुमक्खियों ने किस फूल से रस इकट्ठा किया। जैसे नींबू के फूलों का शहद हल्का और खट्टा-मीठा होता है, तो जंगली फूलों का शहद गहरा और तीखा।</p>
+      <p>शहद को कभी फ्रिज में नहीं रखना चाहिए — ठंडा तापमान उसे जल्दी जमा देता है। सामान्य तापमान पर सूखी जगह में शहद सबसे लंबे समय तक सुरक्षित रहता है।</p>
+
+      <div class="callout deep">💡 <strong>जानिए:</strong> शहद को <strong>1,000 साल से ज़्यादा</strong> सुरक्षित रखा जा सकता है, अगर वह हवाबंद बर्तन में सूखी जगह पर रखा हो। यह दुनिया का सबसे लंबे समय तक चलने वाला खाना माना जाता है।</div>
+    </section>
+
+    <!-- ---------- 10 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">10</span>
+        <h2>निष्कर्ष</h2>
+      </div>
+      <p>तो सवाल का जवाब यह है — शहद कभी खराब नहीं होता क्योंकि उसमें तीन शक्तिशाली रक्षक हैं: <span class="hl">बहुत कम पानी</span>, <span class="hl-warm">अम्लीयता (कम pH)</span> और <span class="hl-deep">एंजाइम से बनने वाला प्राकृतिक एंटीसेप्टिक</span>। इन तीनों के कारण बैक्टीरिया और फंगस शहद में पनप ही नहीं पाते।</p>
+      <p>यह तीनों गुण प्रकृति ने ही बनाए हैं — मधुमक्खियों के परिश्रम और फूलों के रस से। इसलिए शहद सिर्फ़ मीठा खाना नहीं, बल्कि एक जीवित प्राकृतिक चमत्कार है।</p>
+      <p>अगली बार जब आप शहद की बूँद चखें, तो याद रखें — वह सिर्फ़ मिठास नहीं, हज़ारों मधुमक्खियों के परिश्रम, प्रकृति की समझदारी और समय से जीतने की कहानी है।</p>
+    </section>
+
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>🍯 शहद वह अनोखा तोहफ़ा है, जिसे समय भी नहीं बिगाड़ पाता।</footer>
+
+</main>
+
+<!-- ===== Back to top ===== -->
+<button id="backToTop" aria-label="ऊपर जाएँ">↑</button>
+
+<script>
+/* ============================================================
+   सारा JavaScript — शुद्ध वैनिला
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var docEl       = document.documentElement;
+  var progressBar = document.getElementById('progressBar');
+  var backToTop   = document.getElementById('backToTop');
+
+  /* 1. स्क्रॉल हैंडलर */
+  var ticking = false;
+  function handleScroll() {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(function () {
+      var scrollTop = window.pageYOffset || docEl.scrollTop || 0;
+      var maxScroll = docEl.scrollHeight - docEl.clientHeight;
+      var percent   = maxScroll > 0 ? (scrollTop / maxScroll) * 100 : 0;
+      progressBar.style.width = percent.toFixed(2) + '%';
+      if (scrollTop > 500) {
+        backToTop.classList.add('show');
+      } else {
+        backToTop.classList.remove('show');
+      }
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('resize', handleScroll, { passive: true });
+  handleScroll();
+
+  /* 2. स्मूद स्क्रॉल */
+  backToTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* 3. स्क्रॉल रिवील + बार एनिमेशन */
+  var revealItems = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('visible');
+        var fills = entry.target.querySelectorAll('.bar-fill');
+        fills.forEach(function (fill) {
+          var w = fill.getAttribute('data-width') || '0';
+          window.setTimeout(function () {
+            fill.style.width = w + '%';
+          }, 180);
+        });
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    revealItems.forEach(function (el) { observer.observe(el); });
+  } else {
+    revealItems.forEach(function (el) { el.classList.add('visible'); });
+    document.querySelectorAll('.bar-fill').forEach(function (fill) {
+      fill.style.width = (fill.getAttribute('data-width') || 0) + '%';
+    });
+  }
+
+  /* 4. शहद कण जनरेटर */
+  var particleLayer = document.getElementById('particles');
+  function buildParticles() {
+    if (!particleLayer) return;
+    particleLayer.innerHTML = '';
+    var isSmall = window.innerWidth < 600;
+    var count   = isSmall ? 22 : 44;
+    var frag    = document.createDocumentFragment();
+    for (var i = 0; i < count; i++) {
+      var p = document.createElement('span');
+      p.className = 'particle';
+      var size = (Math.random() * 6 + 2).toFixed(1);
+      p.style.left = (Math.random() * 100).toFixed(2) + '%';
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.animationDuration = (Math.random() * 20 + 14).toFixed(1) + 's';
+      p.style.animationDelay = (-Math.random() * 34).toFixed(1) + 's';
+      p.style.setProperty('--drift', (Math.random() * 80 - 40).toFixed(0) + 'px');
+      frag.appendChild(p);
+    }
+    particleLayer.appendChild(frag);
+  }
+  buildParticles();
+
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    if (resizeTimer) window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(buildParticles, 300);
+  }, { passive: true });
+
+  /* 5. हीरो पैरालैक्स */
+  var hero        = document.querySelector('.hero');
+  var heroVisual  = document.getElementById('heroVisual');
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (hero && heroVisual && finePointer) {
+    var parallaxFrame = null;
+    hero.addEventListener('mousemove', function (e) {
+      if (parallaxFrame) return;
+      parallaxFrame = window.requestAnimationFrame(function () {
+        var rect = hero.getBoundingClientRect();
+        var cx = rect.width / 2;
+        var cy = rect.height / 2;
+        var dx = (e.clientX - rect.left - cx) / cx;
+        var dy = (e.clientY - rect.top  - cy) / cy;
+        heroVisual.style.transform =
+          'translate3d(' + (dx * 16).toFixed(2) + 'px,' +
+                            (dy * 12).toFixed(2) + 'px, 0)';
+        parallaxFrame = null;
+      });
+    }, { passive: true });
+    hero.addEventListener('mouseleave', function () {
+      heroVisual.style.transform = 'translate3d(0,0,0)';
+    });
+  }
+
+})();
+</script>
+</body>
+</html>

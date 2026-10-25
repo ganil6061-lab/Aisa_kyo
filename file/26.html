@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>बर्फ पानी पर तैरती क्यों है?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@500;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   1. CSS VARIABLES — हिम थीम (आइस ब्लू + सफ़ेद + डीप सी)
+   ============================================================ */
+:root{
+  --bg-deep:#020a14;
+  --bg-mid:#051a2e;
+  --bg-ice:#0a3352;
+  --bg-frost:#125b7a;
+
+  --ice-100:#f0fbff;
+  --ice-200:#d6f2ff;
+  --ice-300:#a6e6ff;
+  --ice-400:#62d2ff;
+  --ice-500:#22b8ee;
+  --ice-600:#0e91c8;
+
+  --deep-100:#7dd3fc;
+  --deep-200:#38bdf8;
+  --deep-300:#0ea5e9;
+  --deep-400:#0369a1;
+  --deep-500:#0c4a6e;
+
+  --frost-white:#ffffff;
+  --frost-blue:#e0f7ff;
+  --frost-glow:#b6ecff;
+
+  --text:#f2fbff;
+  --text-soft:#c0e3f2;
+  --muted:#7fa8bd;
+
+  --card:rgba(180,240,255,0.06);
+  --card-border:rgba(120,220,255,0.22);
+  --radius:20px;
+
+  --grad-ice:linear-gradient(135deg,#f0fbff,#a6e6ff,#62d2ff);
+  --grad-deep:linear-gradient(135deg,#62d2ff,#0e91c8);
+  --grad-frost:linear-gradient(135deg,#ffffff,#d6f2ff);
+
+  --shadow:0 18px 44px rgba(0,20,40,0.55);
+  --maxw:860px;
+}
+
+/* ============================================================
+   2. RESET + BASE
+   ============================================================ */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+
+body{
+  font-family:'Poppins',system-ui,sans-serif;
+  color:var(--text);
+  line-height:1.85;
+  background:var(--bg-deep);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- Fixed background ---------- */
+.bg-fixed{
+  position:fixed;
+  inset:0;
+  z-index:-7;
+  background:
+    radial-gradient(900px 620px at 50% -10%, rgba(98,210,255,0.22), transparent 70%),
+    radial-gradient(700px 500px at 88% 82%, rgba(255,255,255,0.07), transparent 72%),
+    linear-gradient(180deg,#020a14 0%,#051a2e 26%,#0a3352 56%,#0e4a6a 80%,#125b7a 100%);
+}
+
+/* ---------- Glowing blobs ---------- */
+.blob{
+  position:fixed;
+  border-radius:50%;
+  filter:blur(100px);
+  pointer-events:none;
+  z-index:-5;
+  opacity:.35;
+  animation:blobFloat 22s ease-in-out infinite alternate;
+}
+.blob-1{width:470px;height:470px;background:#0ea5e9;top:-160px;left:-120px;}
+.blob-2{width:430px;height:430px;background:#38bdf8;bottom:-170px;right:-140px;animation-delay:-8s;opacity:.3;}
+.blob-3{width:330px;height:330px;background:#e0f7ff;opacity:.14;top:48%;right:-130px;animation-delay:-14s;}
+
+@keyframes blobFloat{
+  from{transform:translate3d(0,0,0) scale(1);}
+  to{transform:translate3d(42px,-52px,0) scale(1.13);}
+}
+
+/* ---------- Snow particle layer ---------- */
+#particles{
+  position:fixed;
+  inset:0;
+  z-index:-4;
+  overflow:hidden;
+  pointer-events:none;
+}
+.particle{
+  position:absolute;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#ffffff,#d6f2ff 55%,rgba(166,230,255,0) 100%);
+  box-shadow:0 0 10px rgba(214,242,255,0.75);
+  animation-name:snowFall;
+  animation-timing-function:linear;
+  animation-iteration-count:infinite;
+  will-change:transform,opacity;
+}
+@keyframes snowFall{
+  0%{transform:translate3d(0,-10vh,0) scale(.7);opacity:0;}
+  12%{opacity:.9;}
+  85%{opacity:.7;}
+  100%{transform:translate3d(var(--drift,20px),110vh,0) scale(1.05);opacity:0;}
+}
+
+/* ---------- Reading progress ---------- */
+#progressBar{
+  position:fixed;
+  top:0;left:0;
+  height:4px;
+  width:0%;
+  z-index:100;
+  border-radius:0 4px 4px 0;
+  background:linear-gradient(90deg,#ffffff,#a6e6ff,#38bdf8,#0e91c8);
+  box-shadow:0 0 14px rgba(98,210,255,0.85);
+  transition:width .09s linear;
+}
+
+/* ============================================================
+   3. HERO
+   ============================================================ */
+.hero{
+  min-height:100vh;
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:96px 20px 78px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ---------- Hero visual: तैरता हिमखंड ---------- */
+.hero-visual{
+  position:relative;
+  width:290px;
+  height:270px;
+  margin-bottom:20px;
+  transition:transform .35s ease-out;
+  will-change:transform;
+}
+
+/* ठंडी चमक */
+.cold-glow{
+  position:absolute;
+  top:50%;left:50%;
+  width:250px;height:250px;
+  margin:-125px 0 0 -125px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(166,230,255,0.45),rgba(98,210,255,0) 70%);
+  animation:coldPulse 4s ease-in-out infinite;
+}
+@keyframes coldPulse{
+  0%,100%{transform:scale(1);opacity:.75;}
+  50%{transform:scale(1.15);opacity:.5;}
+}
+
+/* हिमखंड */
+.iceberg{
+  position:absolute;
+  top:50%;left:50%;
+  width:200px;height:180px;
+  margin:-90px 0 0 -100px;
+  animation:iceFloat 6s ease-in-out infinite;
+  filter:drop-shadow(0 12px 24px rgba(0,80,120,0.55));
+}
+@keyframes iceFloat{
+  0%,100%{transform:translateY(0) rotate(-1deg);}
+  50%{transform:translateY(-10px) rotate(1deg);}
+}
+
+/* हिमखंड का ऊपरी हिस्सा */
+.ice-top{
+  position:absolute;
+  top:0;left:50%;
+  width:140px;height:90px;
+  margin-left:-70px;
+  background:linear-gradient(160deg,#ffffff,#d6f2ff 40%,#a6e6ff 80%,#62d2ff);
+  clip-path:polygon(50% 0%, 85% 40%, 100% 100%, 0% 100%, 15% 40%);
+  box-shadow:inset 8px 8px 20px rgba(255,255,255,0.85),inset -8px -8px 20px rgba(34,184,238,0.5);
+  opacity:.95;
+}
+.ice-top::after{
+  content:'';
+  position:absolute;
+  top:16px;left:34px;
+  width:20px;height:32px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(214,242,255,0.3));
+  clip-path:polygon(50% 0%, 100% 60%, 70% 100%, 30% 100%, 0% 60%);
+  opacity:.85;
+}
+
+/* पानी की सतह */
+.water-line{
+  position:absolute;
+  top:88px;left:50%;
+  width:210px;height:5px;
+  margin-left:-105px;
+  border-radius:99px;
+  background:linear-gradient(90deg,rgba(166,230,255,0.2),#62d2ff,#a6e6ff,#62d2ff,rgba(166,230,255,0.2));
+  box-shadow:0 0 14px rgba(98,210,255,0.9);
+  z-index:3;
+}
+
+/* हिमखंड का पानी के नीचे वाला हिस्सा */
+.ice-bottom{
+  position:absolute;
+  top:90px;left:50%;
+  width:170px;height:110px;
+  margin-left:-85px;
+  background:linear-gradient(180deg,#62d2ff,#0e91c8 60%,#0c4a6e);
+  clip-path:polygon(0% 0%, 100% 0%, 80% 70%, 60% 100%, 40% 100%, 20% 70%);
+  opacity:.75;
+  box-shadow:inset 8px 0 24px rgba(255,255,255,0.35),inset -8px 0 24px rgba(12,74,110,0.7);
+}
+
+/* पानी में तैरती लहरें */
+.wave{
+  position:absolute;
+  top:88px;left:50%;
+  width:230px;height:30px;
+  margin-left:-115px;
+  border-radius:50%;
+  border:2px solid rgba(166,230,255,0.4);
+  border-bottom-color:transparent;
+  border-left-color:transparent;
+  border-right-color:transparent;
+  animation:waveMove 3.5s ease-in-out infinite;
+}
+.wave:nth-child(2){animation-delay:-1s;top:94px;width:200px;margin-left:-100px;opacity:.7;}
+.wave:nth-child(3){animation-delay:-2s;top:100px;width:170px;margin-left:-85px;opacity:.5;}
+@keyframes waveMove{
+  0%,100%{transform:scaleX(1);}
+  50%{transform:scaleX(1.08);}
+}
+
+/* तैरते हिम टुकड़े */
+.flake{
+  position:absolute;
+  width:10px;height:10px;
+  background:linear-gradient(135deg,#ffffff,#a6e6ff);
+  border-radius:2px;
+  box-shadow:0 0 8px rgba(214,242,255,0.9);
+  transform:rotate(45deg);
+  animation:flakeFloat 5s ease-in-out infinite;
+}
+.flake:nth-child(1){top:20px;left:24px;animation-delay:0s;}
+.flake:nth-child(2){top:40px;right:22px;animation-delay:-1.4s;width:8px;height:8px;}
+.flake:nth-child(3){bottom:32px;left:12px;animation-delay:-2.8s;width:6px;height:6px;}
+.flake:nth-child(4){bottom:52px;right:14px;animation-delay:-3.6s;}
+@keyframes flakeFloat{
+  0%,100%{transform:rotate(45deg) translateY(0);opacity:.7;}
+  50%{transform:rotate(45deg) translateY(-8px);opacity:1;}
+}
+
+/* ---------- Hero text ---------- */
+.hero h1{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:clamp(1.9rem,7.3vw,4.4rem);
+  line-height:1.22;
+  letter-spacing:-.5px;
+  background:linear-gradient(120deg,#ffffff 8%,#d6f2ff 38%,#a6e6ff 60%,#62d2ff 82%,#38bdf8 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  max-width:16ch;
+  margin-bottom:18px;
+  filter:drop-shadow(0 8px 26px rgba(98,210,255,0.35));
+}
+
+.hero p{
+  max-width:620px;
+  font-size:clamp(.92rem,2.4vw,1.06rem);
+  color:var(--text-soft);
+  font-weight:300;
+  text-align:center;
+}
+
+/* ---------- Scroll hint ---------- */
+.scroll-hint{
+  position:absolute;
+  bottom:26px;left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  color:var(--ice-300);
+  font-size:.74rem;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+  opacity:.85;
+}
+.scroll-hint span{
+  font-size:1.5rem;
+  line-height:1;
+  animation:bounce 1.9s ease-in-out infinite;
+}
+@keyframes bounce{
+  0%,100%{transform:translateY(0);opacity:.65;}
+  50%{transform:translateY(9px);opacity:1;}
+}
+
+/* ============================================================
+   4. ARTICLE LAYOUT
+   ============================================================ */
+.article{
+  width:100%;
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:0 20px 40px;
+  position:relative;
+}
+
+.section{margin-bottom:clamp(56px,8vw,92px);}
+
+.section-head{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.badge{
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  width:52px;height:52px;
+  border-radius:16px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:1.28rem;
+  color:#032030;
+  background:linear-gradient(135deg,#a6e6ff,#0e91c8);
+  box-shadow:0 10px 26px rgba(98,210,255,0.45);
+}
+
+h2{
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:clamp(1.32rem,4vw,2rem);
+  line-height:1.35;
+  color:#f2fbff;
+}
+
+.article p{
+  text-align:justify;
+  text-justify:inter-word;
+  color:var(--text-soft);
+  font-size:clamp(.9rem,2.3vw,1rem);
+  font-weight:300;
+  margin-bottom:18px;
+}
+
+.hl{color:var(--ice-300);font-weight:600;}
+.hl-warm{color:#ffffff;font-weight:600;}
+.hl-deep{color:var(--deep-200);font-weight:600;}
+.hl-frost{color:var(--frost-glow);font-weight:600;}
+
+/* ---------- Callouts ---------- */
+.callout{
+  border-radius:18px;
+  padding:18px 22px;
+  margin:24px 0;
+  font-size:clamp(.85rem,2.2vw,.95rem);
+  line-height:1.8;
+  border:1px solid rgba(166,230,255,0.28);
+  background:linear-gradient(135deg,rgba(98,210,255,0.15),rgba(14,145,200,0.06));
+  border-left:4px solid var(--ice-400);
+  color:#e0f5ff;
+}
+.callout.fact{
+  border-color:rgba(255,255,255,0.32);
+  background:linear-gradient(135deg,rgba(255,255,255,0.12),rgba(214,242,255,0.04));
+  border-left-color:#ffffff;
+}
+.callout.deep{
+  border-color:rgba(56,189,248,0.32);
+  background:linear-gradient(135deg,rgba(56,189,248,0.13),rgba(3,105,161,0.05));
+  border-left-color:var(--deep-200);
+}
+
+/* ---------- Stats ---------- */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(152px,1fr));
+  gap:16px;
+  margin:30px 0;
+}
+.stat{
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  padding:22px 16px;
+  text-align:center;
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;
+}
+.stat:hover{
+  transform:translateY(-9px);
+  box-shadow:var(--shadow);
+  border-color:rgba(166,230,255,0.55);
+}
+.stat .num{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:clamp(1.4rem,4.2vw,1.9rem);
+  line-height:1.15;
+  background:var(--grad-ice);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.stat .label{
+  display:block;
+  margin-top:8px;
+  font-size:.78rem;
+  line-height:1.55;
+  color:var(--muted);
+}
+
+/* ---------- Density bar comparison ---------- */
+.density{
+  margin:28px 0;
+  padding:22px 20px;
+  border-radius:var(--radius);
+  background:rgba(180,240,255,0.045);
+  border:1px solid var(--card-border);
+}
+.density-row{
+  display:grid;
+  grid-template-columns:100px 1fr 80px;
+  align-items:center;
+  gap:12px;
+  font-size:.84rem;
+  color:var(--text-soft);
+  margin-bottom:14px;
+}
+.density-row:last-child{margin-bottom:0;}
+.density-row .name{font-weight:500;}
+.density-row .val{text-align:right;color:var(--muted);font-size:.76rem;}
+.density-track{
+  height:16px;
+  border-radius:99px;
+  background:rgba(255,255,255,0.08);
+  overflow:hidden;
+  position:relative;
+}
+.density-fill{
+  height:100%;
+  width:0;
+  border-radius:99px;
+  transition:width 1.4s cubic-bezier(.22,1,.36,1);
+}
+.density-fill.water{background:linear-gradient(90deg,#0e91c8,#38bdf8);}
+.density-fill.ice{background:linear-gradient(90deg,#a6e6ff,#ffffff);}
+
+/* ---------- Progress bars ---------- */
+.bars{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  margin:28px 0;
+  padding:22px 20px;
+  border-radius:var(--radius);
+  background:rgba(180,240,255,0.045);
+  border:1px solid var(--card-border);
+}
+.bar-row{
+  display:grid;
+  grid-template-columns:128px 1fr 80px;
+  align-items:center;
+  gap:12px;
+  font-size:.82rem;
+  color:var(--text-soft);
+}
+.bar-row .name{font-weight:500;}
+.bar-row .val{text-align:right;color:var(--muted);font-size:.76rem;}
+.bar-track{
+  height:12px;
+  border-radius:99px;
+  background:rgba(255,255,255,0.08);
+  overflow:hidden;
+}
+.bar-fill{
+  height:100%;
+  width:0;
+  border-radius:99px;
+  transition:width 1.35s cubic-bezier(.22,1,.36,1);
+}
+.bar-fill.i1{background:linear-gradient(90deg,#0e91c8,#62d2ff);}
+.bar-fill.i2{background:linear-gradient(90deg,#62d2ff,#a6e6ff);}
+.bar-fill.i3{background:linear-gradient(90deg,#a6e6ff,#ffffff);}
+.bar-fill.i4{background:linear-gradient(90deg,#38bdf8,#d6f2ff);}
+
+/* ---------- Comparison ---------- */
+.compare{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin:28px 0;
+}
+.compare .card{
+  padding:22px 20px;
+  border-radius:var(--radius);
+  background:var(--card);
+  border:1px solid var(--card-border);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  transition:transform .35s ease,border-color .35s ease,box-shadow .35s ease;
+}
+.compare .card:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow);
+}
+.compare .card.ice{border-color:rgba(255,255,255,0.5);}
+.compare .card.water{border-color:rgba(56,189,248,0.5);}
+.compare h3{
+  font-family:'Baloo Bhai 2',cursive;
+  font-size:1.12rem;
+  font-weight:700;
+  margin-bottom:10px;
+}
+.compare .card.ice h3{color:#ffffff;}
+.compare .card.water h3{color:var(--deep-200);}
+.compare ul{
+  list-style:none;
+  font-size:.86rem;
+  color:var(--text-soft);
+  line-height:1.9;
+}
+.compare li::before{
+  content:'•';
+  color:var(--ice-300);
+  margin-right:8px;
+  font-weight:700;
+}
+
+/* ---------- Steps ---------- */
+.steps{
+  display:grid;
+  gap:14px;
+  margin:28px 0;
+}
+.step{
+  display:flex;
+  align-items:flex-start;
+  gap:16px;
+  padding:18px 20px;
+  border-radius:18px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  font-size:.9rem;
+  color:var(--text-soft);
+  transition:transform .3s ease,border-color .3s ease;
+}
+.step:hover{
+  transform:translateX(6px);
+  border-color:rgba(166,230,255,0.5);
+}
+.step .n{
+  flex:0 0 38px;
+  width:38px;height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:800;
+  font-size:1rem;
+  color:#032030;
+  background:var(--grad-frost);
+  box-shadow:0 6px 18px rgba(166,230,255,0.35);
+}
+.step .txt strong{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:#f2fbff;
+  margin-bottom:2px;
+}
+
+/* ---------- Diagram ---------- */
+.diagram{
+  margin:30px 0;
+  padding:18px;
+  border-radius:var(--radius);
+  background:rgba(180,240,255,0.035);
+  border:1px solid var(--card-border);
+}
+.diagram svg{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.svg-label{
+  font-family:'Poppins',sans-serif;
+  font-size:12px;
+  fill:#a7c4d4;
+}
+.svg-label-bright{
+  font-family:'Poppins',sans-serif;
+  font-size:12.5px;
+  font-weight:600;
+  fill:#f0fbff;
+}
+
+/* ---------- Timeline ---------- */
+.timeline{
+  position:relative;
+  margin:32px 0;
+  padding-left:34px;
+}
+.timeline::before{
+  content:'';
+  position:absolute;
+  top:8px;bottom:8px;left:11px;
+  width:3px;
+  border-radius:99px;
+  background:linear-gradient(180deg,#ffffff,#a6e6ff,#0e91c8);
+  opacity:.6;
+}
+.tl-item{
+  position:relative;
+  margin-bottom:22px;
+  padding:16px 18px;
+  border-radius:16px;
+  background:var(--card);
+  border:1px solid var(--card-border);
+  font-size:.88rem;
+  color:var(--text-soft);
+  transition:transform .3s ease,border-color .3s ease;
+}
+.tl-item:hover{
+  transform:translateX(4px);
+  border-color:rgba(166,230,255,0.5);
+}
+.tl-item::before{
+  content:'';
+  position:absolute;
+  left:-31px;top:22px;
+  width:14px;height:14px;
+  border-radius:50%;
+  background:var(--ice-300);
+  box-shadow:0 0 0 4px rgba(166,230,255,0.2),0 0 12px rgba(166,230,255,0.75);
+}
+.tl-item strong{
+  display:block;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:700;
+  font-size:1rem;
+  color:#f2fbff;
+  margin-bottom:3px;
+}
+
+/* ---------- Quote ---------- */
+.quote{
+  max-width:720px;
+  margin:clamp(56px,8vw,86px) auto;
+  text-align:center;
+  padding:38px 26px;
+  font-family:'Baloo Bhai 2',cursive;
+  font-weight:600;
+  font-size:clamp(1.1rem,3.1vw,1.55rem);
+  line-height:1.72;
+  color:#f2fbff;
+  border-top:1px solid rgba(166,230,255,0.3);
+  border-bottom:1px solid rgba(166,230,255,0.3);
+  background:radial-gradient(circle at 50% 0%,rgba(98,210,255,0.16),transparent 72%);
+}
+.quote .mark{
+  display:block;
+  font-size:2.4rem;
+  line-height:1;
+  margin-bottom:12px;
+  color:#ffffff;
+}
+
+/* ---------- Footer ---------- */
+footer{
+  text-align:center;
+  padding:46px 22px 84px;
+  font-size:.85rem;
+  color:var(--muted);
+  border-top:1px solid rgba(166,230,255,0.14);
+  max-width:var(--maxw);
+  margin:0 auto;
+}
+
+/* ---------- Back to top ---------- */
+#backToTop{
+  position:fixed;
+  right:20px;bottom:22px;
+  width:52px;height:52px;
+  border:none;
+  border-radius:50%;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  font-size:1.35rem;
+  font-weight:700;
+  color:#032030;
+  background:linear-gradient(135deg,#a6e6ff,#0e91c8);
+  box-shadow:0 12px 30px rgba(98,210,255,0.45);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(18px) scale(.88);
+  transition:opacity .35s ease,transform .35s ease,box-shadow .35s ease;
+  z-index:99;
+}
+#backToTop.show{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0) scale(1);
+}
+#backToTop:hover{box-shadow:0 16px 38px rgba(98,210,255,0.65);}
+
+/* ---------- Scroll reveal ---------- */
+.reveal{
+  opacity:0;
+  transform:translateY(38px);
+  transition:opacity .85s ease,transform .85s cubic-bezier(.22,1,.36,1);
+}
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ============================================================
+   5. RESPONSIVE
+   ============================================================ */
+@media (max-width:600px){
+  .hero{padding:80px 18px 64px;}
+  .hero-visual{width:226px;height:214px;margin-bottom:16px;}
+  .iceberg{width:160px;height:145px;margin:-72px 0 0 -80px;}
+  .ice-top{width:112px;height:72px;margin-left:-56px;}
+  .ice-top::after{top:12px;left:26px;width:16px;height:26px;}
+  .water-line{top:70px;width:168px;margin-left:-84px;}
+  .ice-bottom{top:72px;width:136px;height:88px;margin-left:-68px;}
+  .wave{top:70px;width:184px;margin-left:-92px;}
+  .wave:nth-child(2){top:76px;width:160px;margin-left:-80px;}
+  .wave:nth-child(3){top:82px;width:136px;margin-left:-68px;}
+  .cold-glow{width:200px;height:200px;margin:-100px 0 0 -100px;}
+  .flake:nth-child(1){top:16px;left:20px;}
+  .flake:nth-child(2){top:32px;right:18px;}
+  .flake:nth-child(3){bottom:26px;left:10px;}
+  .flake:nth-child(4){bottom:42px;right:12px;}
+
+  .article{padding:0 16px 30px;}
+
+  .section-head{gap:12px;margin-bottom:16px;}
+  .badge{width:44px;height:44px;border-radius:13px;font-size:1.1rem;}
+
+  .stats{grid-template-columns:1fr;}
+  .compare{grid-template-columns:1fr;}
+  .bar-row{grid-template-columns:100px 1fr 64px;font-size:.76rem;}
+  .bar-row .val{font-size:.7rem;}
+  .density-row{grid-template-columns:82px 1fr 66px;font-size:.78rem;}
+  .density-row .val{font-size:.72rem;}
+
+  .step{flex-direction:row;padding:16px;}
+  .step:hover{transform:none;}
+
+  .callout{padding:16px 18px;}
+  .quote{padding:30px 18px;}
+
+  .timeline{padding-left:30px;}
+  .tl-item::before{left:-27px;}
+
+  #backToTop{width:46px;height:46px;right:14px;bottom:16px;font-size:1.2rem;}
+}
+
+@media (min-width:601px) and (max-width:900px){
+  .stats{grid-template-columns:repeat(2,1fr);}
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,
+  *::before,
+  *::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+  .reveal{opacity:1;transform:none;}
+  html{scroll-behavior:auto;}
+  .iceberg{animation:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Fixed background ===== -->
+<div class="bg-fixed" aria-hidden="true"></div>
+<div class="blob blob-1" aria-hidden="true"></div>
+<div class="blob blob-2" aria-hidden="true"></div>
+<div class="blob blob-3" aria-hidden="true"></div>
+<div id="particles" aria-hidden="true"></div>
+
+<!-- ===== Reading progress ===== -->
+<div id="progressBar" aria-hidden="true"></div>
+
+<main>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="hero-visual" id="heroVisual" aria-hidden="true">
+      <div class="cold-glow"></div>
+      <span class="flake"></span>
+      <span class="flake"></span>
+      <span class="flake"></span>
+      <span class="flake"></span>
+      <div class="iceberg">
+        <div class="ice-bottom"></div>
+        <div class="ice-top"></div>
+        <div class="water-line"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+      </div>
+    </div>
+
+    <h1>बर्फ पानी पर तैरती क्यों है?</h1>
+    <p>दुनिया में ज़्यादातर ठोस पदार्थ अपने तरल रूप में डूब जाते हैं — लेकिन बर्फ नहीं। वह पानी पर तैरती है, हल्की और स्थिर। इसके पीछे छिपी है पानी के अणुओं की एक अद्भुत बनावट, जो जीवन को संभव बनाती है। आइए इस रहस्य को खोलते हैं।</p>
+
+    <div class="scroll-hint">
+      <span>↓</span>
+      ठंडे पानी में उतरें
+    </div>
+  </section>
+
+  <!-- ================= ARTICLE ================= -->
+  <div class="article">
+
+    <!-- ---------- 01 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">01</span>
+        <h2>एक सवाल, जिसने विज्ञान को चौंकाया</h2>
+      </div>
+      <p>अगर आप पानी में लकड़ी का टुकड़ा डालें, तो वह तैरेगा — क्योंकि लकड़ी पानी से हल्की होती है। अगर लोहे का टुकड़ा डालें, तो वह डूब जाएगा। यही नियम लगभग हर पदार्थ पर लागू होता है। लेकिन बर्फ इस नियम को तोड़ती है।</p>
+      <p>बर्फ, पानी का ही ठोस रूप है। लेकिन सामान्य नियम यह कहता है कि ठोस पदार्थ अपने तरल रूप से भारी होता है। बर्फ के साथ <span class="hl">उल्टा होता है</span> — वह अपने ही तरल पर तैरती है। यह पृथ्वी के सबसे अनोखे प्राकृतिक गुणों में से एक है।</p>
+      <p>इसी गुण के कारण सर्दियों में झीलों और नदियों की सतह पर बर्फ जम जाती है, लेकिन उसके नीचे पानी तरल बना रहता है — और मछलियाँ जिंदा रहती हैं। अगर बर्फ डूबती, तो पूरी झील जम जाती और जलीय जीवन समाप्त हो जाता।</p>
+
+      <div class="callout fact">🌟 <strong>रोचक तथ्य:</strong> अगर बर्फ पानी में डूबती, तो पृथ्वी पर जीवन शायद कभी विकसित ही नहीं होता। यह छोटा-सा गुण पूरे पारिस्थितिकी तंत्र की नींव है।</div>
+    </section>
+
+    <!-- ---------- 02 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">02</span>
+        <h2>घनत्व: तैरने का असली नियम</h2>
+      </div>
+      <p>कोई वस्तु पानी में तैरेगी या डूबेगी, यह उसके <span class="hl">घनत्व (density)</span> पर निर्भर करता है। घनत्व का मतलब है — किसी वस्तु का एक निश्चित आयतन में कितना द्रव्यमान है। जिस वस्तु का घनत्व कम होगा, वह तैरेगी।</p>
+      <p>पानी का घनत्व लगभग <span class="hl-warm">1 ग्राम प्रति घन सेंटीमीटर</span> होता है। बर्फ का घनत्व इससे थोड़ा कम — लगभग <span class="hl">0.917 ग्राम प्रति घन सेंटीमीटर</span> होता है। यानी बर्फ पानी से लगभग 9 प्रतिशत हल्की होती है। यही कारण है कि बर्फ का एक छोटा हिस्सा पानी के ऊपर दिखता है, बाकी पानी के अंदर रहता है।</p>
+      <p>हिमखंड के साथ भी ऐसा ही होता है। जो हिमखंड हमें समुद्र में तैरते दिखते हैं, उनका लगभग <span class="hl-deep">90 प्रतिशत हिस्सा</span> पानी के नीचे छिपा रहता है और सिर्फ़ 10 प्रतिशत ऊपर दिखता है। यही कारण है कि हिमखंड की असली गहराई कभी देख नहीं पाते।</p>
+
+      <div class="density">
+        <div class="density-row">
+          <span class="name">पानी</span>
+          <span class="density-track"><span class="density-fill water" data-width="100"></span></span>
+          <span class="val">1.000 g/cm³</span>
+        </div>
+        <div class="density-row">
+          <span class="name">बर्फ</span>
+          <span class="density-track"><span class="density-fill ice" data-width="91.7"></span></span>
+          <span class="val">0.917 g/cm³</span>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="num">0.917</span>
+          <span class="label">बर्फ का घनत्व (g/cm³)</span>
+        </div>
+        <div class="stat">
+          <span class="num">1.000</span>
+          <span class="label">पानी का घनत्व (g/cm³)</span>
+        </div>
+        <div class="stat">
+          <span class="num">~9%</span>
+          <span class="label">बर्फ, पानी से हल्की</span>
+        </div>
+        <div class="stat">
+          <span class="num">~90%</span>
+          <span class="label">हिमखंड का हिस्सा पानी के नीचे</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 03 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">03</span>
+        <h2>पानी का अनोखा व्यवहार</h2>
+      </div>
+      <p>सामान्यतः किसी पदार्थ को ठंडा करने पर उसके अणु पास-पास आ जाते हैं, जिससे वह सिकुड़ जाता है और उसका घनत्व बढ़ जाता है। लेकिन पानी के साथ एक खास मोड़ आता है — जब वह <span class="hl">4°C</span> से नीचे ठंडा होता है, तो उसके अणु अजीब तरीके से फैलने लगते हैं।</p>
+      <p>जब पानी जमकर बर्फ बनता है, तो उसके अणु <span class="hl-warm">हेक्सागोनल (षट्कोणीय) जाली</span> में व्यवस्थित हो जाते हैं। इस जाली में अणुओं के बीच खाली जगहें बन जाती हैं, जिससे आयतन बढ़ जाता है, लेकिन वज़न वही रहता है — यानी घनत्व घट जाता है।</p>
+      <p>यही कारण है कि बर्फ पानी पर तैरती है। अगर पानी का यह अनोखा गुण न होता, तो बर्फ डूब जाती और झीलें नीचे से जमने लगतीं। यह प्रकृति की एक बहुत सुंदर और ज़रूरी व्यवस्था है।</p>
+
+      <div class="steps">
+        <div class="step">
+          <span class="n">1</span>
+          <span class="txt"><strong>पानी 4°C तक ठंडा होता है</strong>अणु पास आते हैं, घनत्व बढ़ता है।</span>
+        </div>
+        <div class="step">
+          <span class="n">2</span>
+          <span class="txt"><strong>4°C के नीचे मोड़ आता है</strong>अणु फैलने लगते हैं — यह पानी की खासियत है।</span>
+        </div>
+        <div class="step">
+          <span class="n">3</span>
+          <span class="txt"><strong>जमने पर षट्कोणीय जाली</strong>अणुओं के बीच खाली जगह बन जाती है।</span>
+        </div>
+        <div class="step">
+          <span class="n">4</span>
+          <span class="txt"><strong>घनत्व घट जाता है</strong>बर्फ पानी से हल्की हो जाती है और तैरने लगती है।</span>
+        </div>
+      </div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 660 300" role="img" aria-label="बर्फ और पानी के अणुओं की व्यवस्था — बर्फ में अणु दूर-दूर, पानी में पास-पास">
+          <defs>
+            <radialGradient id="molWater">
+              <stop offset="0%" stop-color="#d6f2ff"/>
+              <stop offset="60%" stop-color="#38bdf8"/>
+              <stop offset="100%" stop-color="#0e91c8"/>
+            </radialGradient>
+            <radialGradient id="molIce">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="60%" stop-color="#a6e6ff"/>
+              <stop offset="100%" stop-color="#62d2ff"/>
+            </radialGradient>
+            <linearGradient id="boxGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="rgba(98,210,255,0.18)"/>
+              <stop offset="100%" stop-color="rgba(14,145,200,0.05)"/>
+            </linearGradient>
+          </defs>
+
+          <!-- बाईं ओर: पानी (पास-पास अणु) -->
+          <rect x="30" y="40" width="270" height="210" rx="16" fill="url(#boxGrad)" stroke="rgba(56,189,248,0.4)"/>
+          <text x="165" y="30" text-anchor="middle" class="svg-label-bright">पानी (तरल)</text>
+
+          <!-- पानी के अणु -->
+          <g fill="url(#molWater)">
+            <circle cx="70" cy="80" r="12"/>
+            <circle cx="110" cy="80" r="12"/>
+            <circle cx="150" cy="80" r="12"/>
+            <circle cx="190" cy="80" r="12"/>
+            <circle cx="230" cy="80" r="12"/>
+
+            <circle cx="70" cy="120" r="12"/>
+            <circle cx="110" cy="120" r="12"/>
+            <circle cx="150" cy="120" r="12"/>
+            <circle cx="190" cy="120" r="12"/>
+            <circle cx="230" cy="120" r="12"/>
+
+            <circle cx="70" cy="160" r="12"/>
+            <circle cx="110" cy="160" r="12"/>
+            <circle cx="150" cy="160" r="12"/>
+            <circle cx="190" cy="160" r="12"/>
+            <circle cx="230" cy="160" r="12"/>
+
+            <circle cx="70" cy="200" r="12"/>
+            <circle cx="110" cy="200" r="12"/>
+            <circle cx="150" cy="200" r="12"/>
+            <circle cx="190" cy="200" r="12"/>
+            <circle cx="230" cy="200" r="12"/>
+          </g>
+          <text x="165" y="278" text-anchor="middle" class="svg-label">अणु पास-पास · ज़्यादा घनत्व</text>
+
+          <!-- दाईं ओर: बर्फ (दूर-दूर अणु) -->
+          <rect x="360" y="40" width="270" height="210" rx="16" fill="url(#boxGrad)" stroke="rgba(255,255,255,0.5)"/>
+          <text x="495" y="30" text-anchor="middle" class="svg-label-bright">बर्फ (ठोस)</text>
+
+          <!-- बर्फ के अणु — षट्कोणीय जाली -->
+          <g fill="url(#molIce)">
+            <circle cx="395" cy="80" r="12"/>
+            <circle cx="450" cy="65" r="12"/>
+            <circle cx="505" cy="80" r="12"/>
+
+            <circle cx="425" cy="115" r="12"/>
+            <circle cx="480" cy="115" r="12"/>
+            <circle cx="535" cy="100" r="12"/>
+
+            <circle cx="395" cy="150" r="12"/>
+            <circle cx="450" cy="150" r="12"/>
+            <circle cx="505" cy="150" r="12"/>
+
+            <circle cx="425" cy="190" r="12"/>
+            <circle cx="480" cy="190" r="12"/>
+            <circle cx="535" cy="170" r="12"/>
+
+            <circle cx="395" cy="225" r="12"/>
+            <circle cx="450" cy="225" r="12"/>
+          </g>
+          <text x="495" y="278" text-anchor="middle" class="svg-label">अणु दूर-दूर · कम घनत्व</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ---------- 04 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">04</span>
+        <h2>हेक्सागोनल जाली: बर्फ का राज़</h2>
+      </div>
+      <p>बर्फ में पानी के अणु एक खास ज्यामितीय आकृति में जुड़ते हैं — <span class="hl">हेक्सागोनल जाली</span>। हर पानी का अणु अपने चार पड़ोसियों से हाइड्रोजन बंधन से जुड़ता है, जिससे एक खुला षट्कोणीय ढाँचा बनता है।</p>
+      <p>इस ढाँचे में अणुओं के बीच खाली जगहें रह जाती हैं — जैसे मधुमक्खी के छत्ते में खाली कोने। इसी वजह से बर्फ का आयतन बढ़ता है, लेकिन उसका द्रव्यमान वही रहता है। नतीजा — घनत्व कम, यानी हल्की।</p>
+      <p>यह जाली इतनी सुंदर है कि इसी कारण बर्फ के टुकड़े बर्फीले फूलों (स्नोफ्लेक) जैसी सुंदर आकृतियों में बनते हैं। हर स्नोफ्लेक की बनावट अलग होती है, लेकिन सभी छह-कोणीय होते हैं — यही हेक्सागोनल जाली की छाप है।</p>
+
+      <div class="callout">💡 <strong>आसान उदाहरण:</strong> अगर आप कुछ मोती एक डिब्बे में पास-पास रखें, तो वे कम जगह लेंगे। लेकिन अगर उन्हें एक खास आकृति में व्यवस्थित करें, तो बीच में खाली जगह बच जाएगी — बर्फ के अणुओं के साथ भी ऐसा ही होता है।</div>
+    </section>
+
+    <!-- ---------- QUOTE ---------- -->
+    <div class="quote reveal">
+      <span class="mark">❝</span>
+      बर्फ का तैरना कोई संयोग नहीं — यह प्रकृति की वह सूक्ष्म योजना है, जो सर्दियों में भी नीचे जीवन को जीवित रखती है।
+    </div>
+
+    <!-- ---------- 05 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">05</span>
+        <h2>अगर बर्फ न तैरती, तो क्या होता?</h2>
+      </div>
+      <p>यह सोचकर देखिए — अगर बर्फ पानी से भारी होती, तो झीलों, नदियों और समुद्रों में बर्फ नीचे बैठ जाती। सर्दियों में पानी की सतह जमती नहीं, बल्कि नीचे से जमना शुरू होता। धीरे-धीरे पूरा पानी जम जाता।</p>
+      <p>इसका मतलब यह होता कि जलीय जीव — मछलियाँ, कछुए, पौधे — सर्दियों में जीवित नहीं बच पाते। और अगर झीलें हर साल पूरी जम जातीं, तो पृथ्वी पर जल-चक्र और जलवायु भी बुरी तरह बदल जाते।</p>
+      <p>लेकिन बर्फ तैरती है, इसलिए सिर्फ़ ऊपर की सतह जमती है और नीचे पानी तरल बना रहता है। यही कारण है कि <span class="hl-deep">ध्रुवीय इलाकों और ठंडे प्रदेशों</span> में जीवन संभव है।</p>
+
+      <div class="compare">
+        <div class="card ice">
+          <h3>अगर बर्फ तैरती है</h3>
+          <ul>
+            <li>सतह पर बर्फ की परत बनती है</li>
+            <li>नीचे पानी तरल रहता है</li>
+            <li>जलीय जीव जीवित रहते हैं</li>
+            <li>जलवायु संतुलित रहती है</li>
+          </ul>
+        </div>
+        <div class="card water">
+          <h3>अगर बर्फ डूबती</h3>
+          <ul>
+            <li>बर्फ नीचे बैठ जाती</li>
+            <li>पानी नीचे से जमता</li>
+            <li>जीवों का जीवन खतरे में</li>
+            <li>पूरा पारिस्थितिकी तंत्र बदल जाता</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 06 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">06</span>
+        <h2>पानी के और भी अनोखे गुण</h2>
+      </div>
+      <p>बर्फ का तैरना पानी के कई अनोखे गुणों में से एक है। पानी को अक्सर <span class="hl">“असामान्य तरल”</span> कहा जाता है, क्योंकि उसमें कई ऐसे गुण हैं जो आम पदार्थों में नहीं मिलते।</p>
+      <p>जैसे — पानी की <span class="hl-warm">विशिष्ट ऊष्मा</span> बहुत ज़्यादा होती है। इसका मतलब है कि उसे गर्म करने या ठंडा करने में ज़्यादा ऊर्जा लगती है। यही कारण है कि समुद्र का पानी तापमान को संतुलित रखता है और धरती का मौसम इतना चरम नहीं होता।</p>
+      <p>पानी की <span class="hl-deep">सतह तनाव</span> भी बहुत ज़्यादा होती है, जिससे कीट पानी पर चल पाते हैं। पानी में <span class="hl">ध्वनि तेज़ी से</span> चलती है, और वह बहुत अच्छा विलायक भी है। ये सभी गुण मिलकर पानी को जीवन के लिए अनिवार्य बनाते हैं।</p>
+
+      <div class="bars">
+        <div class="bar-row">
+          <span class="name">विशिष्ट ऊष्मा</span>
+          <span class="bar-track"><span class="bar-fill i1" data-width="95"></span></span>
+          <span class="val">बहुत ज़्यादा</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">सतह तनाव</span>
+          <span class="bar-track"><span class="bar-fill i2" data-width="80"></span></span>
+          <span class="val">ज़्यादा</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">विलायक क्षमता</span>
+          <span class="bar-track"><span class="bar-fill i3" data-width="90"></span></span>
+          <span class="val">बहुत ज़्यादा</span>
+        </div>
+        <div class="bar-row">
+          <span class="name">ध्वनि संचरण</span>
+          <span class="bar-track"><span class="bar-fill i4" data-width="70"></span></span>
+          <span class="val">तेज़</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 07 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">07</span>
+        <h2>हिमखंड और तैरती बर्फ</h2>
+      </div>
+      <p>समुद्र में तैरते हिमखंड (आइसबर्ग) इसी सिद्धांत पर तैरते हैं। लेकिन उनका मामला थोड़ा अलग है, क्योंकि वे मीठे पानी की बर्फ से बने होते हैं और खारे समुद्री पानी में तैरते हैं।</p>
+      <p>समुद्री पानी खारा होने के कारण उसका घनत्व अधिक होता है — लगभग <span class="hl-deep">1.025 g/cm³</span>। मीठे पानी की बर्फ का घनत्व 0.917 g/cm³ है, इसलिए हिमखंड का लगभग 90 प्रतिशत हिस्सा पानी के नीचे रहता है।</p>
+      <p>यही कारण है कि हिमखंड केवल अपनी सतह का छोटा हिस्सा दिखाते हैं। नाविक इसे लेकर बहुत सतर्क रहते हैं, क्योंकि जो नीचे छिपा है, वह ऊपर से कई गुना बड़ा और खतरनाक हो सकता है।</p>
+
+      <div class="callout fact">🌟 <strong>रोचक तथ्य:</strong> एक बड़े हिमखंड का नीचे वाला हिस्सा कई सौ मीटर गहरा हो सकता है। इसीलिए कहा जाता है — <em>“हिमखंड का सिर्फ़ सिरा दिखता है।”</em></div>
+    </section>
+
+    <!-- ---------- 08 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">08</span>
+        <h2>बर्फ से जुड़े कुछ दिलचस्प तथ्य</h2>
+      </div>
+      <p>बर्फ को लेकर कई आश्चर्यजनक बातें हैं, जो हमें हैरान कर देती हैं। जैसे — बर्फ का रंग सफ़ेद दिखता है, लेकिन असल में वह पारदर्शी होती है। सफ़ेद रंग उसके अंदर की अनगिनत हवा की बुलबुलों और क्रिस्टलों से रोशनी के बिखरने के कारण दिखता है।</p>
+      <p>बर्फ कई तरह की होती है — नरम बर्फ, सख़्त बर्फ, बर्फीली चादर और गहरी बर्फ। अंटार्कटिका की बर्फ की परतें हज़ारों साल पुरानी हैं और उनमें धरती की जलवायु का इतिहास दबा हुआ है। वैज्ञानिक इन परतों को पढ़कर लाखों साल पहले का मौसम जान लेते हैं।</p>
+      <p>इसके अलावा — बर्फ ध्वनि को सोखती है, इसीलिए बर्फीले इलाकों में चारों तरफ़ अजीब-सी शांति महसूस होती है। यह भी एक अनोखा गुण है, जो बर्फ को खास बनाता है।</p>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <strong>पारदर्शी नहीं, सफ़ेद</strong>
+          बर्फ पारदर्शी होती है, लेकिन हवा के बुलबुले उसे सफ़ेद बनाते हैं।
+        </div>
+        <div class="tl-item">
+          <strong>कई प्रकार</strong>
+          नरम, सख़्त, चादर और गहरी — हर बर्फ की अपनी पहचान।
+        </div>
+        <div class="tl-item">
+          <strong>इतिहास का खज़ाना</strong>
+          बर्फ की परतों में लाखों साल पुरानी जलवायु छिपी है।
+        </div>
+        <div class="tl-item">
+          <strong>ध्वनि सोखती है</strong>
+          बर्फीले इलाकों में शांति का एहसास इसी वजह से होता है।
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 09 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">09</span>
+        <h2>बर्फ और जलवायु परिवर्तन</h2>
+      </div>
+      <p>आज बर्फ सिर्फ़ विज्ञान का विषय नहीं, बल्कि पर्यावरण और जलवायु परिवर्तन से भी जुड़ी है। ग्लोबल वार्मिंग के कारण दुनिया भर में ग्लेशियर पिघल रहे हैं और ध्रुवीय बर्फ तेज़ी से कम हो रही है।</p>
+      <p>इसका सीधा असर समुद्र के जल स्तर पर पड़ता है, क्योंकि पिघली बर्फ समुद्र में मिल जाती है। इसके अलावा — सफ़ेद बर्फ सूरज की रोशनी को परावर्तित करती है और पृथ्वी को ठंडा रखती है। बर्फ कम होने पर यह परावर्तन कम हो जाता है, जिससे और ज़्यादा गर्मी बढ़ती है।</p>
+      <p>इसीलिए वैज्ञानिक बर्फ को <span class="hl-deep">“पृथ्वी का एयर कंडीशनर”</span> कहते हैं। इसे बचाना सिर्फ़ पर्यावरण की नहीं, बल्कि पूरी मानवता की ज़िम्मेदारी है।</p>
+
+      <div class="callout deep">💡 <strong>जानिए:</strong> अगर धरती की सारी बर्फ पिघल जाए, तो समुद्र का जल स्तर लगभग <strong>70 मीटर</strong> तक बढ़ सकता है — जिससे दुनिया के कई तटीय शहर पानी में डूब सकते हैं।</div>
+    </section>
+
+    <!-- ---------- 10 ---------- -->
+    <section class="section reveal">
+      <div class="section-head">
+        <span class="badge">10</span>
+        <h2>निष्कर्ष</h2>
+      </div>
+      <p>तो सवाल का जवाब यह है — बर्फ पानी पर तैरती है क्योंकि <span class="hl">पानी का घनत्व बर्फ से थोड़ा ज़्यादा होता है</span>। जब पानी जमकर बर्फ बनता है, तो उसके अणु हेक्सागोनल जाली में व्यवस्थित हो जाते हैं, जिसमें खाली जगहें रह जाती हैं — नतीजा, आयतन बढ़ता है और घनत्व घट जाता है।</p>
+      <p>यह छोटा-सा गुण पृथ्वी पर जीवन के लिए बहुत बड़ा है। इसी कारण सर्दियों में झीलों में मछलियाँ जीवित रहती हैं, ध्रुवीय क्षेत्रों में जीवन संभव है और जलवायु संतुलित रहती है।</p>
+      <p>अगली बार जब आप बर्फ को पानी में तैरते देखें, तो याद रखें — वह सिर्फ़ तैर नहीं रही, वह पूरी पृथ्वी के जीवन को सहारा दे रही है।</p>
+    </section>
+
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>❄️ बर्फ एक छोटा-सा आश्चर्य है — जो पूरे ग्रह के जीवन का आधार बना हुआ है।</footer>
+
+</main>
+
+<!-- ===== Back to top ===== -->
+<button id="backToTop" aria-label="ऊपर जाएँ">↑</button>
+
+<script>
+/* ============================================================
+   सारा JavaScript — शुद्ध वैनिला
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var docEl       = document.documentElement;
+  var progressBar = document.getElementById('progressBar');
+  var backToTop   = document.getElementById('backToTop');
+
+  /* 1. स्क्रॉल हैंडलर */
+  var ticking = false;
+  function handleScroll() {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(function () {
+      var scrollTop = window.pageYOffset || docEl.scrollTop || 0;
+      var maxScroll = docEl.scrollHeight - docEl.clientHeight;
+      var percent   = maxScroll > 0 ? (scrollTop / maxScroll) * 100 : 0;
+      progressBar.style.width = percent.toFixed(2) + '%';
+      if (scrollTop > 500) {
+        backToTop.classList.add('show');
+      } else {
+        backToTop.classList.remove('show');
+      }
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  window.addEventListener('resize', handleScroll, { passive: true });
+  handleScroll();
+
+  /* 2. स्मूद स्क्रॉल */
+  backToTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* 3. स्क्रॉल रिवील + बार एनिमेशन */
+  var revealItems = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('visible');
+        var fills = entry.target.querySelectorAll('.bar-fill, .density-fill');
+        fills.forEach(function (fill) {
+          var w = fill.getAttribute('data-width') || '0';
+          window.setTimeout(function () {
+            fill.style.width = w + '%';
+          }, 180);
+        });
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    revealItems.forEach(function (el) { observer.observe(el); });
+  } else {
+    revealItems.forEach(function (el) { el.classList.add('visible'); });
+    document.querySelectorAll('.bar-fill, .density-fill').forEach(function (fill) {
+      fill.style.width = (fill.getAttribute('data-width') || 0) + '%';
+    });
+  }
+
+  /* 4. हिम कण जनरेटर */
+  var particleLayer = document.getElementById('particles');
+  function buildParticles() {
+    if (!particleLayer) return;
+    particleLayer.innerHTML = '';
+    var isSmall = window.innerWidth < 600;
+    var count   = isSmall ? 24 : 48;
+    var frag    = document.createDocumentFragment();
+    for (var i = 0; i < count; i++) {
+      var p = document.createElement('span');
+      p.className = 'particle';
+      var size = (Math.random() * 5 + 1.5).toFixed(1);
+      p.style.left = (Math.random() * 100).toFixed(2) + '%';
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.animationDuration = (Math.random() * 16 + 10).toFixed(1) + 's';
+      p.style.animationDelay = (-Math.random() * 30).toFixed(1) + 's';
+      p.style.setProperty('--drift', (Math.random() * 80 - 40).toFixed(0) + 'px');
+      frag.appendChild(p);
+    }
+    particleLayer.appendChild(frag);
+  }
+  buildParticles();
+
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    if (resizeTimer) window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(buildParticles, 300);
+  }, { passive: true });
+
+  /* 5. हीरो पैरालैक्स */
+  var hero        = document.querySelector('.hero');
+  var heroVisual  = document.getElementById('heroVisual');
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (hero && heroVisual && finePointer) {
+    var parallaxFrame = null;
+    hero.addEventListener('mousemove', function (e) {
+      if (parallaxFrame) return;
+      parallaxFrame = window.requestAnimationFrame(function () {
+        var rect = hero.getBoundingClientRect();
+        var cx = rect.width / 2;
+        var cy = rect.height / 2;
+        var dx = (e.clientX - rect.left - cx) / cx;
+        var dy = (e.clientY - rect.top  - cy) / cy;
+        heroVisual.style.transform =
+          'translate3d(' + (dx * 16).toFixed(2) + 'px,' +
+                            (dy * 12).toFixed(2) + 'px, 0)';
+        parallaxFrame = null;
+      });
+    }, { passive: true });
+    hero.addEventListener('mouseleave', function () {
+      heroVisual.style.transform = 'translate3d(0,0,0)';
+    });
+  }
+
+})();
+</script>
+</body>
+</html>

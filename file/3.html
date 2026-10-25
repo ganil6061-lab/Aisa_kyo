@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>चांद की सतह पर गड्ढे क्यों होते हैं?</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400;600;700;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #060812;
+    --card: rgba(255,255,255,0.04);
+    --moon: #e8eaf0;
+    --silver: #b8c2d9;
+    --accent: #cfd8ff;
+    --accent2: #ffd97a;
+    --text: #e8ecf5;
+    --muted: #8f9bb3;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.9;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ===== Space Background ===== */
+  #starfield {
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    background: radial-gradient(ellipse at 50% 30%, #0f1428 0%, #060812 70%);
+  }
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+    animation: twinkle 4s infinite ease-in-out;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.15; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.15); }
+  }
+
+  /* Big moon glow top-right */
+  .moon-glow {
+    position: fixed;
+    top: -200px;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,234,240,0.18) 0%, rgba(184,194,217,0.08) 40%, transparent 70%);
+    filter: blur(30px);
+    z-index: -2;
+    pointer-events: none;
+    animation: moonPulse 8s ease-in-out infinite;
+  }
+  @keyframes moonPulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+  }
+
+  /* ===== Reading progress ===== */
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 4px;
+    width: 0%;
+    background: linear-gradient(90deg, #b8c2d9, #cfd8ff, #ffd97a);
+    z-index: 999;
+    box-shadow: 0 0 12px rgba(207,216,255,0.6);
+    transition: width 0.1s linear;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+    position: relative;
+  }
+
+  /* Animated Moon with craters */
+  .moon-visual {
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ffffff 0%, #e8eaf0 40%, #b8c2d9 100%);
+    position: relative;
+    margin-bottom: 30px;
+    box-shadow: 
+      0 0 60px rgba(232,234,240,0.4),
+      0 0 120px rgba(207,216,255,0.2),
+      inset -20px -20px 50px rgba(100,110,140,0.3);
+    animation: moonFloat 5s ease-in-out infinite;
+  }
+  @keyframes moonFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(3deg); }
+  }
+  .crater {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(100,110,140,0.6), rgba(140,150,180,0.4));
+    box-shadow: inset 2px 2px 4px rgba(60,70,100,0.5), inset -1px -1px 3px rgba(255,255,255,0.3);
+  }
+  .crater.c1 { width: 30px; height: 30px; top: 30%; left: 25%; }
+  .crater.c2 { width: 20px; height: 20px; top: 55%; left: 60%; }
+  .crater.c3 { width: 14px; height: 14px; top: 20%; left: 55%; }
+  .crater.c4 { width: 22px; height: 22px; top: 65%; left: 30%; }
+  .crater.c5 { width: 10px; height: 10px; top: 45%; left: 75%; }
+  .crater.c6 { width: 16px; height: 16px; top: 75%; left: 55%; }
+
+  .hero h1 {
+    font-family: 'Baloo Bhai 2', cursive;
+    font-size: clamp(1.8rem, 5.5vw, 3.8rem);
+    font-weight: 800;
+    line-height: 1.3;
+    background: linear-gradient(135deg, #e8eaf0 0%, #cfd8ff 50%, #ffd97a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+    animation: fadeUp 1s ease both;
+  }
+
+  .hero p {
+    color: var(--muted);
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    max-width: 620px;
+    animation: fadeUp 1s 0.3s ease both;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 30px;
+    font-size: 28px;
+    color: var(--accent2);
+    animation: bounce 2s infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(12px); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== Container ===== */
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 40px 24px 100px;
+  }
+
+  .section {
+    margin-bottom: 70px;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .section.visible { opacity: 1; transform: translateY(0); }
+
+  .section h2 {
+    font-family: 'Baloo Bhai 2', cursive;
+    font-size: clamp(1.5rem, 4vw, 2.1rem);
+    color: var(--accent);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    line-height: 1.4;
+  }
+
+  .section h2 .num {
+    font-size: 0.9rem;
+    width: 40px; height: 40px;
+    min-width: 40px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    color: #060812;
+    background: linear-gradient(135deg, #cfd8ff, #ffd97a);
+    box-shadow: 0 6px 20px rgba(207,216,255,0.3);
+  }
+
+  .section p {
+    font-size: 1.08rem;
+    color: #cdd4e3;
+    margin-bottom: 18px;
+    text-align: justify;
+  }
+  .section p strong { color: var(--accent2); font-weight: 600; }
+  .section p .silver { color: var(--accent); font-weight: 600; }
+
+  /* Highlight */
+  .highlight {
+    background: var(--card);
+    border-left: 4px solid var(--accent2);
+    border-radius: 14px;
+    padding: 22px 26px;
+    margin: 26px 0;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .highlight::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(207,216,255,0.06), transparent);
+    pointer-events: none;
+  }
+  .highlight p { margin: 0; color: var(--text); font-size: 1.02rem; }
+
+  /* Crater formation card */
+  .crater-demo {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 30px 26px;
+    margin: 30px 0;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.45);
+  }
+  .demo-title {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.82rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.03);
+    margin-bottom: 12px;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+  }
+  .step:hover {
+    background: rgba(207,216,255,0.08);
+    border-color: rgba(207,216,255,0.15);
+    transform: translateX(6px);
+  }
+  .step-icon {
+    width: 44px; height: 44px;
+    min-width: 44px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+    background: linear-gradient(135deg, rgba(207,216,255,0.15), rgba(255,217,122,0.1));
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .step-text h4 {
+    font-family: 'Baloo Bhai 2', cursive;
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .step-text p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+    text-align: left;
+  }
+
+  /* Moon facts stats */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin: 30px 0;
+  }
+  .stat {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 22px 16px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .stat:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(207,216,255,0.15);
+  }
+  .stat .val {
+    font-family: 'Baloo Bhai 2', cursive;
+    font-size: 1.6rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #cfd8ff, #ffd97a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .stat .lbl { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+
+  /* Compare cards */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin: 30px 0;
+  }
+  .compare-card {
+    border-radius: 18px;
+    padding: 24px 20px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .compare-card:hover { transform: translateY(-6px); }
+  .compare-card.earth {
+    background: linear-gradient(180deg, rgba(111,177,255,0.12), rgba(111,177,255,0.03));
+    box-shadow: 0 10px 30px rgba(111,177,255,0.12);
+  }
+  .compare-card.moon {
+    background: linear-gradient(180deg, rgba(207,216,255,0.12), rgba(207,216,255,0.03));
+    box-shadow: 0 10px 30px rgba(207,216,255,0.12);
+  }
+  .compare-card .icon { font-size: 44px; margin-bottom: 10px; }
+  .compare-card h3 {
+    font-family: 'Baloo Bhai 2', cursive;
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+    color: var(--accent);
+  }
+  .compare-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
+  /* Quote */
+  .quote {
+    text-align: center;
+    padding: 40px 20px;
+    font-family: 'Baloo Bhai 2', cursive;
+    font-size: clamp(1.2rem, 3vw, 1.7rem);
+    background: linear-gradient(135deg, #e8eaf0, #cfd8ff, #ffd97a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.6;
+    position: relative;
+  }
+  .quote::before {
+    content: '"';
+    position: absolute;
+    top: -10px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 5rem;
+    color: rgba(207,216,255,0.12);
+    font-family: serif;
+  }
+
+  /* Back to top */
+  #topBtn {
+    position: fixed;
+    bottom: 30px; right: 30px;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #cfd8ff, #ffd97a);
+    color: #060812;
+    font-size: 22px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s;
+    box-shadow: 0 8px 24px rgba(207,216,255,0.35);
+    z-index: 998;
+  }
+  #topBtn.show { opacity: 1; pointer-events: auto; }
+  #topBtn:hover { transform: translateY(-5px) scale(1.05); }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  footer span {
+    background: linear-gradient(135deg, #cfd8ff, #ffd97a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 600;
+  }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .section p { text-align: left; }
+    .compare { grid-template-columns: 1fr; }
+    .moon-visual { width: 130px; height: 130px; }
+    .crater.c1 { width: 22px; height: 22px; }
+    .crater.c2 { width: 15px; height: 15px; }
+    .crater.c4 { width: 16px; height: 16px; }
+    #topBtn { bottom: 20px; right: 20px; width: 46px; height: 46px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Background -->
+<div id="starfield"></div>
+<div class="moon-glow"></div>
+
+<!-- Reading progress -->
+<div id="progress-bar"></div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="moon-visual">
+    <div class="crater c1"></div>
+    <div class="crater c2"></div>
+    <div class="crater c3"></div>
+    <div class="crater c4"></div>
+    <div class="crater c5"></div>
+    <div class="crater c6"></div>
+  </div>
+  <h1>चांद की सतह पर<br>गड्ढे क्यों होते हैं?</h1>
+  <p>चांद की सतह को देखो तो वह छोटे-बड़े गड्ढों से भरी हुई है। ये गड्ढे या 'क्रेटर' आखिर बने कैसे? क्या वे किसी युद्ध के निशान हैं या ब्रह्मांड की कोई और कहानी? चलिए जानते हैं।</p>
+  <div class="scroll-hint">↓</div>
+</header>
+
+<!-- ARTICLE -->
+<main class="container">
+
+  <section class="section">
+    <h2><span class="num">1</span> चांद की सतह — एक नज़र</h2>
+    <p>जब हम चांद को दूरबीन या टेलीस्कोप से देखते हैं, तो उसकी सतह पर <span class="silver">कई गोल गड्ढे</span> साफ़ नज़र आते हैं। इन्हें विज्ञान की भाषा में <strong>क्रेटर (Craters)</strong> कहा जाता है।</p>
+    <p>चांद की सतह पर लाखों क्रेटर हैं — कुछ तो कुछ मीटर चौड़े हैं, तो कुछ सैकड़ों किलोमीटर तक फैले हुए। इन्हें देखकर ऐसा लगता है जैसे चांद पर लगातार कुछ गिरता रहा है — और सच में ऐसा ही हुआ है!</p>
+  </section>
+
+  <section class="section">
+    <h2><span class="num">2</span> क्रेटर कैसे बनते हैं?</h2>
+    <p>चांद के गड्ढों का सबसे बड़ा कारण है — <strong>उल्कापिंडों (Meteoroids) की बमबारी</strong>। जब ये अंतरिक्ष से आने वाले पत्थर बहुत तेज़ गति से चांद की सतह से टकराते हैं, तो वे एक बड़ा-सा गड्ढा बना देते हैं।</p>
+
+    <div class="crater-demo">
+      <div class="demo-title">क्रेटर बनने की प्रक्रिया</div>
+      <div class="step">
+        <div class="step-icon">☄️</div>
+        <div class="step-text">
+          <h4>1. उल्कापिंड का आगमन</h4>
+          <p>अंतरिक्ष से एक पत्थर लाखों किलोमीटर प्रति घंटे की गति से चांद की ओर आता है।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-icon">💥</div>
+        <div class="step-text">
+          <h4>2. ज़ोरदार टकराव</h4>
+          <p>चांद की सतह से टकराते ही एक ज़बरदस्त विस्फोट होता है — पत्थर और धूल हवा में उड़ जाते हैं।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-icon">🕳️</div>
+        <div class="step-text">
+          <h4>3. गड्ढे का निर्माण</h4>
+          <p>टकराव के कारण सतह धँस जाती है और एक गोल क्रेटर बन जाता है। किनारे ऊँचे हो जाते हैं।</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-icon">🌑</div>
+        <div class="step-text">
+          <h4>4. क्रेटर स्थायी हो जाता है</h4>
+          <p>चांद पर हवा और पानी नहीं है, इसलिए ये गड्ढे लाखों सालों तक वैसे ही बने रहते हैं।</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2><span class="num">3</span> पृथ्वी पर ऐसे गड्ढे क्यों नहीं दिखते?</h2>
+    <p>यह एक दिलचस्प सवाल है! पृथ्वी पर भी उल्कापिंड गिरते हैं, लेकिन वहाँ के गड्ढे जल्दी ही गायब हो जाते हैं। इसकी कुछ खास वजहें हैं:</p>
+
+    <div class="compare">
+      <div class="compare-card earth">
+        <div class="icon">🌍</div>
+        <h3>पृथ्वी</h3>
+        <p>वायुमंडल, हवा, पानी, प्लेट टेक्टोनिक्स — ये सब गड्ढों को धीरे-धीरे मिटा देते हैं।</p>
+      </div>
+      <div class="compare-card moon">
+        <div class="icon">🌙</div>
+        <h3>चांद</h3>
+        <p>न वायुमंडल, न हवा, न पानी — इसलिए क्रेटर लाखों साल तक सुरक्षित रहते हैं।</p>
+      </div>
+    </div>
+
+    <p>पृथ्वी पर <strong>वायुमंडल</strong> होने के कारण ज़्यादातर उल्कापिंड हवा में ही जल जाते हैं। साथ ही बारिश, हवा और भूकंप जैसी प्रक्रियाएँ गड्ढों को भर देती हैं। लेकिन चांद पर ऐसा कुछ नहीं होता — इसलिए वहाँ के क्रेटर <span class="silver">अरबों साल पुराने</span> भी हो सकते हैं।</p>
+  </section>
+
+  <section class="section">
+    <h2><span class="num">4</span> चांद के क्रेटर — कुछ आँकड़े</h2>
+    <div class="stats">
+      <div class="stat"><div class="val">5 लाख+</div><div class="lbl">चांद पर क्रेटर<br>(1 किमी से बड़े)</div></div>
+      <div class="stat"><div class="val">2,500 km</div><div class="lbl">सबसे बड़ा क्रेटर<br>एटकेन बेसिन</div></div>
+      <div class="stat"><div class="val">4 अरब</div><div class="lbl">साल तक पुराने<br>क्रेटर</div></div>
+      <div class="stat"><div class="val">1.6 km/s</div><div class="lbl">उल्कापिंड की<br>सामान्य गति</div></div>
+    </div>
+    <p>चांद का सबसे बड़ा क्रेटर <strong>साउथ पोल – एटकेन बेसिन</strong> है, जो लगभग 2,500 किलोमीटर चौड़ा है — यानी भारत के आकार से भी बड़ा!</p>
+  </section>
+
+  <section class="section">
+    <h2><span class="num">5</span> क्या चांद पर ज्वालामुखी भी थे?</h2>
+    <p>सिर्फ़ टकराव ही नहीं, चांद पर <strong>ज्वालामुखी विस्फोट</strong> भी हुए थे। कई अरब साल पहले चांद के अंदर से लावा निकला और सतह पर फैल गया।</p>
+    <p>जब यह लावा ठंडा होकर जम गया, तो उससे चांद की सतह पर <span class="silver">गहरे रंग के बड़े मैदान</span> बन गए। इन्हें <strong>मारिया (Maria)</strong> कहा जाता है, जिसका लैटिन में मतलब होता है 'समुद्र'।</p>
+
+    <div class="highlight">
+      <p>💡 <strong>दिलचस्प बात:</strong> जब हम चांद को देखते हैं, तो जो अंधेरे धब्बे दिखते हैं — वे असल में यही जमे हुए लावा के मैदान हैं। कई लोग इन्हें 'चांद का चेहरा' या 'खरगोश' कहते हैं!</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2><span class="num">6</span> क्या क्रेटर हमें इतिहास बताते हैं?</h2>
+    <p>बिल्कुल! चांद के क्रेटर <strong>ब्रह्मांड के इतिहास की किताब</strong> की तरह हैं। जितना पुराना क्रेटर, उतने ही पुराने समय की जानकारी वह हमें देता है।</p>
+    <p>वैज्ञानिक क्रेटरों की गिनती और उनकी गहराई से यह पता लगाते हैं कि किस समय चांद पर कितने उल्कापिंड गिरे थे। इससे हमें पूरे <span class="silver">सौरमंडल की शुरुआती दौर</span> की जानकारी मिलती है।</p>
+  </section>
+
+  <section class="section">
+    <h2><span class="num">7</span> अपोलो मिशन और चांद के क्रेटर</h2>
+    <p>1969 में जब इंसान पहली बार चांद पर पहुँचा (अपोलो 11 मिशन), तब वैज्ञानिकों ने वहाँ के क्रेटरों का गहराई से अध्ययन किया। चांद से लाए गए पत्थरों ने बताया कि चांद पर <strong>अरबों साल पहले</strong> भयंकर उल्कापिंड बमबारी हुई थी।</p>
+    <p>आज भी कई देशों के अंतरिक्ष मिशन चांद के क्रेटरों का अध्ययन कर रहे हैं — क्योंकि वहाँ के क्रेटरों में बर्फ़ और कीमती खनिजों के संकेत मिल सकते हैं।</p>
+  </section>
+
+  <div class="quote">
+    "चांद के गड्ढे उसके घाव नहीं — वे उसकी यादें हैं,<br>जो अरबों साल की कहानियाँ सुनाती हैं।"
+  </div>
+
+  <section class="section">
+    <h2><span class="num">8</span> निष्कर्ष</h2>
+    <p>तो अब आप जान गए कि चांद के गड्ढे आसमान से आने वाले पत्थरों की बमबारी और ज्वालामुखी विस्फोटों का नतीजा हैं। और चूँकि चांद पर वायुमंडल नहीं है, ये गड्ढे अरबों सालों तक वैसे ही बने रहते हैं।</p>
+    <p>अगली बार जब रात में चांद को देखें, तो उसके धब्बों को ध्यान से देखिए — वे सिर्फ़ सतह पर बने निशान नहीं हैं, बल्कि <strong>ब्रह्मांड की एक अनोखी डायरी</strong> हैं। 🌙</p>
+  </section>
+
+</main>
+
+<footer>
+  🌙 <span>विज्ञान की दुनिया</span> — चांद की सतह की अनोखी कहानी
+</footer>
+
+<button id="topBtn" aria-label="ऊपर जाएँ">↑</button>
+
+<script>
+/* ===== Starfield generator ===== */
+const starfield = document.getElementById('starfield');
+const starCount = 150;
+for (let i = 0; i < starCount; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const size = Math.random() * 2.2 + 0.6;
+  s.style.width = size + 'px';
+  s.style.height = size + 'px';
+  s.style.left = Math.random() * 100 + '%';
+  s.style.top = Math.random() * 100 + '%';
+  s.style.animationDelay = (Math.random() * 4) + 's';
+  s.style.animationDuration = (2.5 + Math.random() * 3) + 's';
+  const colors = ['#ffffff', '#cfd8ff', '#e8eaf0', '#ffd97a'];
+  s.style.background = colors[Math.floor(Math.random() * colors.length)];
+  s.style.boxShadow = `0 0 ${size * 3}px ${s.style.background}`;
+  starfield.appendChild(s);
+}
+
+/* ===== Reading progress + back to top ===== */
+const progressBar = document.getElementById('progress-bar');
+const topBtn = document.getElementById('topBtn');
+
+function updateScroll() {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const percent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = percent + '%';
+
+  if (scrollTop > 500) topBtn.classList.add('show');
+  else topBtn.classList.remove('show');
+}
+
+window.addEventListener('scroll', updateScroll, { passive: true });
+topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+/* ===== Scroll reveal ===== */
+const sections = document.querySelectorAll('.section');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.12 });
+sections.forEach(sec => observer.observe(sec));
+
+/* ===== Init ===== */
+updateScroll();
+
+/* ===== Moon parallax tilt on hero ===== */
+const moonVisual = document.querySelector('.moon-visual');
+if (moonVisual) {
+  document.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    moonVisual.style.transform = `translateY(${Math.sin(Date.now()/5000)*5}px) rotate(${x*0.15}deg) translateX(${x*0.1}px)`;
+  });
+}
+</script>
+
+</body>
+</html>

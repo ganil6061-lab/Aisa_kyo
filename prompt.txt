@@ -1,22 +1,137 @@
+Mujhe ek complete single-page HTML article likhna hai jo ek premium, modern aur visually stunning webpage ho. Neeche jo TITLE diya gaya hai, us par ek badhiya, informative aur engaging article likhna hai — Hindi bhasha me.
 
-मैं तुम्हें नीचे एक 'शीर्षक' (Title) दूँगा। तुम्हें उस विषय पर एक आकर्षक, वैज्ञानिक और सरल हिंदी में लेख लिखना है और उसे नीचे दिए गए नियमों के अनुसार एक सुंदर वेबपेज में बदलना है:
+TITLE: "[YAHAN TITLE LIKHEIN]"
 
-डिजाइन और कोडिंग नियम:
+═══════════════════════════════════════
+📌 OUTPUT FORMAT (STRICT REQUIREMENTS)
+═══════════════════════════════════════
 
-1. सिंगल फाइल (Single File): पूरा कोड एक ही HTML फाइल में होना चाहिए जिसमें अंदर ही <style> (CSS) और <script> (JS) शामिल हों।
-2. भाषा और टोन (Language & Tone): भाषा बिल्कुल सरल, स्पष्ट और रोचक हिंदी (Hinglish/Hindi) होनी वैसी ही हो जैसी 'Aisa Kyo' ऐप या वेबसाइट पर होती है।
-3. लेआउट और स्टाइल (Layout & Style):
-   · मॉडर्न, क्लीन और मोबाइल-फ्रेंडली (Responsive) डिजाइन हो।
-   · पढ़ने में आसान फॉन्ट (जैसे sans-serif), सुंदर हेडिंग्स और पैराग्राफ्स हों।
-   · एक आकर्षक हेडर हो जिस पर वेबसाइट का नाम "Aisa Kyo" लिखा हो।
-   · पेज में कोई फुटर (Footer) नहीं बनाना है — न कॉपीराइट लाइन, न Back to Home बटन, न ही कोई नीचे वाला सेक्शन।
-4. कंटेंट स्ट्रक्चर (Content Structure):
-   · मुख्य शीर्षक (Heading) बड़ा और आकर्षक हो।
-   · विषय का मुख्य वैज्ञानिक या प्राकृतिक कारण (Scientific Reason) बुलेट पॉइंट्स या छोटे पैराग्राफ में समझाया गया हो।
-   · एक "क्या आप जानते हैं?" (Did You Know?) या रोचक तथ्य (Interesting Fact) का बॉक्स भी हो।
-5. इंटरएक्टिविटी (Interactivity): JavaScript का उपयोग करके पेज पर कोई एक छोटी सी काम की चीज़ जोड़ी जाए (जैसे डार्क/लाइट मोड टॉगल बटन, या शेयर करने का एक वर्किंग बटन, या पेज पर ऊपर जाने का 'Back to Top' स्क्रॉल बटन)।
+1. Sirf EK single HTML file do — jisme CSS <style> tag ke andar aur JavaScript <script> tag ke andar ho.
+2. Koi external file nahi (koi separate .css ya .js nahi).
+3. Google Fonts ke liye <link> allowed hai (Baloo Bhai 2 + Poppins recommended).
+4. Complete, copy-paste ready code do jo seedha browser me kholne par kaam kare.
+5. Koi incomplete section ya "..." placeholder nahi — pura code.
 
-मेरा विषय (Title) यह है: 
-[यहाँ अपना विषय लिखें, जैसे: "समुद्र का पानी नीला क्यों दिखता है"]
+═══════════════════════════════════════
+🎨 DESIGN REQUIREMENTS
+═══════════════════════════════════════
 
-मुझे केवल पूरा और साफ-सुथरा HTML कोड आउटपुट में दो, जिसे मैं सीधे सेव करके अपनी वेबसाइट या ऐप में इस्तेमाल कर सकूं।
+• Theme: Title ke topic ke hisaab se ek matching color theme aur visual identity (jaise space = dark + stars, desert = golden sand, ocean = blues, nature = greens, autumn = oranges, etc.)
+
+• Background:
+  - Fixed gradient background
+  - Animated effects topic ke hisaab se (stars, rain, snowflakes, bubbles, falling leaves, sand particles, clouds, lightning, etc.)
+  - Glowing blobs/auroras for depth
+
+• HERO Section (100vh, center-aligned):
+  - Topic-relevant custom CSS/SVG visual (e.g., animated planet, cloud, leaf, sun, wave, mountain, dune)
+  - Large gradient headline (Clamp-based responsive)
+  - Subtitle paragraph
+  - Animated scroll-down hint (↓)
+
+• Reading Progress Bar:
+  - Fixed top, 4px height
+  - Topic-matching gradient
+  - Real-time width update on scroll
+
+• Article Sections:
+  - Har section me numbered heading (badge with gradient)
+  - Scroll reveal animation (fade-up via IntersectionObserver)
+  - Justified paragraphs with highlight colors
+  - At least 1 quote block in center
+  - Total 8-10 sections
+
+• Interactive Elements (topic ke hisaab se 3-4 choose karo):
+  - Animated stats cards (hover lift effect)
+  - Comparison cards (side-by-side)
+  - Step-by-step process cards
+  - Composition/progress bars (animate on scroll)
+  - Diagram with labels (SVG allowed)
+  - Demo/simulation card
+  - Highlight callout boxes
+  - Timeline
+
+• Typography:
+  - Headings: 'Baloo Bhai 2' (cursive, bold)
+  - Body: 'Poppins' (clean, readable)
+  - Responsive font sizes using clamp()
+
+• Footer:
+  - Simple text only — topic-related emoji + short line
+  - NO links, NO author name, NO social icons
+
+• Back-to-Top Button:
+  - Fixed bottom-right, circular, gradient
+  - Appears only after scrolling 500px
+  - Smooth scroll on click
+
+═══════════════════════════════════════
+🚫 STRICTLY DO NOT INCLUDE
+═══════════════════════════════════════
+
+❌ Koi navigation bar / menu / header links nahi
+❌ Koi footer links / social media icons nahi
+❌ Koi hyperlink jo kisi doosre page par le jaaye
+❌ Koi "Home / About / Contact" type links nahi
+❌ Author name, writer credit, ya "By [Name]" nahi
+❌ Reading duration / "X min read" nahi
+❌ Publish date / "Last updated" nahi
+❌ Comments section nahi
+❌ Share buttons / like buttons nahi
+❌ Advertisement ya promotional content nahi
+❌ Newsletter signup nahi
+❌ Koi bhi external URL (Google Fonts ke alawa)
+❌ Hindi title ko English me translate mat karo — title jaisa hai waisa hi use karo
+
+═══════════════════════════════════════
+📚 CONTENT REQUIREMENTS
+═══════════════════════════════════════
+
+• Language: Shudh aur saral Hindi (Devanagari script)
+• Tone: Informative, engaging, thoda storytelling style
+• Article length: 8-10 detailed sections
+• Har section me 2-3 paragraphs
+• Scientific facts ke saath simple examples do ("💡 आसान उदाहरण:" type)
+• Interesting facts ke liye special callout ("🌟 रोचक तथ्य:" type)
+• Numbers/statistics ko stats cards me show karo
+• Comparison ho to side-by-side cards use karo
+• End me ek nishkarsh (conclusion) section zaroor
+• Beech me ek inspiring quote zaroor
+
+═══════════════════════════════════════
+📱 RESPONSIVE REQUIREMENTS
+═══════════════════════════════════════
+
+• Mobile-first approach
+• @media (max-width: 600px) me:
+  - Cards single column me stack ho jaayein
+  - Font sizes chhoti
+  - Hero visual chhota
+  - Padding adjust
+• Tablet aur desktop par bhi perfect
+
+═══════════════════════════════════════
+⚙️ JAVASCRIPT REQUIREMENTS
+═══════════════════════════════════════
+
+• Reading progress bar update on scroll
+• Scroll reveal animations (IntersectionObserver)
+• Back-to-top button show/hide + click handler
+• Topic-specific particle/effect generator (stars, rain, snow, bubbles, leaves, sand, etc.)
+• Chart bars animate on scroll reveal
+• Mouse parallax on hero visual (subtle)
+• Passive scroll listener for performance
+• NO external libraries — pure vanilla JS
+
+═══════════════════════════════════════
+✅ DELIVERABLE
+═══════════════════════════════════════
+
+Ek complete, production-ready HTML file jisme:
+- Semantically correct HTML5
+- Clean organized CSS with CSS variables
+- Well-commented vanilla JavaScript
+- Koi bhi link/navigation/reference nahi jo user ko page se bahar le jaaye
+- Bas pura article + beautiful design + smooth animations
+
+Ab title ke basis par ye complete page generate karo.

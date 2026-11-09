@@ -580,17 +580,18 @@
     if(synth) synth.cancel();
   }
 
-  function speakScene(idx){
+  // Global function jise Java ka evaluateJavascript ya DOMContentLoaded call kar sake
+  window.playTextToSpeech = function(customText) {
     if(!synth || !voiceOn) return;
-    const text = NARRATION[idx];
+    const text = customText || NARRATION[curIdx >= 0 ? curIdx : 0];
     if(!text) return;
 
     const myToken = ++speakToken;
-    synth.cancel();                       // purani line kaato
+    synth.cancel();
 
     const u = new SpeechSynthesisUtterance(text);
     u.lang   = 'hi-IN';
-    u.rate   = 1;      // 0.8 = dheema, 1.2 = tez
+    u.rate   = 1;
     u.pitch  = 1;
     u.volume = 1;
     if(hindiVoice) u.voice = hindiVoice;
@@ -603,13 +604,12 @@
       }
     };
 
-    /* Chrome bug workaround: cancel() ke turant baad speak() fail ho jaata hai */
     setTimeout(() => {
       if(myToken !== speakToken || !voiceOn) return;
       if(synth.paused) synth.resume();
       synth.speak(u);
     }, 80);
-  }
+  };
 
   /* agar ~1.5s tak kuch bola hi nahi => autoplay blocked maan lo */
   setTimeout(() => { if(!spokeOnce && voiceOn) showHint(); }, 1500);
@@ -632,7 +632,7 @@
     if (idx !== curIdx){
       curIdx = idx;
       scenes.forEach((s, i) => s.classList.toggle('on', i === idx));
-      speakScene(idx);                     // <-- scene badla => naya voice line
+      window.playTextToSpeech(NARRATION[idx]); // Scene change par narration play karein
     }
 
     bars.forEach((b, i) => {
@@ -701,7 +701,7 @@
     if (e.target.closest('.pbar') || e.target.closest('.replay') ||
         e.target.closest('.voice-btn') || e.target.closest('.voice-hint')) return;
 
-    if (!spokeOnce && voiceOn) speakScene(curIdx);   // gesture mil gaya, retry
+    if (!spokeOnce && voiceOn) window.playTextToSpeech(NARRATION[curIdx]);
     togglePlay();
   });
 
@@ -720,7 +720,7 @@
     updateVoiceBtn();
     if (voiceOn){
       if (synth && synth.paused) synth.resume();
-      speakScene(curIdx);        // user gesture hai => block nahi hoga
+      window.playTextToSpeech(NARRATION[curIdx]);
     } else {
       stopVoice();
       hideHint();
@@ -732,7 +732,7 @@
     e.stopPropagation();
     voiceOn = true;
     updateVoiceBtn();
-    speakScene(curIdx);
+    window.playTextToSpeech(NARRATION[curIdx]);
   });
 
   replayBtn.addEventListener('click', function(e){

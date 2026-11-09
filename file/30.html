@@ -1,86 +1,761 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>पत्तियाँ हरी क्यों होती हैं?</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rang alag-alag kyun dikhte hain? — Reel + Voice</title>
 <style>
-:root{color-scheme:dark;--ac:#a3e635;--tx:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-html,body{height:100%;margin:0;background:#000;font-family:'Noto Sans Devanagari',Arial,sans-serif}
-body{display:flex;justify-content:center;align-items:center}
-#reel{position:relative;width:min(360px,100%);aspect-ratio:9/16;max-height:100%;background:linear-gradient(170deg,#052e16,#166534);overflow:hidden;border-radius:16px;color:var(--tx)}
-.sc{position:absolute;inset:0;opacity:0;transition:opacity .5s;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
-.sc.on{opacity:1}
-.t{font-size:27px;font-weight:bold;color:var(--ac);margin:10px 0}
-.cap{position:absolute;bottom:48px;left:14px;right:14px;font-size:18px;line-height:1.4;background:rgba(0,0,0,.55);padding:10px;border-radius:10px}
-.big{font-size:64px}
-.pop{animation:pop .7s ease}
-@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
-.sway{transform-origin:50% 100%;animation:sway 2.5s ease-in-out infinite}
-@keyframes sway{50%{transform:rotate(8deg)}}
-.ray{animation:ray 1.2s linear infinite}
-@keyframes ray{from{transform:translateY(-20px);opacity:0}50%{opacity:1}to{transform:translateY(40px);opacity:0}}
-.sp{display:flex;gap:6px;margin:14px 0}
-.sp div{width:34px;height:110px;border-radius:6px;animation:fade 4s forwards}
-@keyframes fade{0%{opacity:1}100%{opacity:.15}}
-.bar{position:absolute;top:0;left:0;height:5px;background:var(--ac);width:0;z-index:5}
-#hint{position:absolute;top:14px;left:0;right:0;text-align:center;font-size:14px;background:#000a;padding:6px;z-index:6;display:none}
+  *{margin:0;padding:0;box-sizing:border-box}
+
+  :root{
+    --r:#ff2d55; --o:#ff9500; --y:#ffd60a; --g:#34c759;
+    --b:#0a84ff; --i:#5e5ce6; --v:#bf5af2;
+  }
+
+  html,body{height:100%}
+  body{
+    background:
+      radial-gradient(1100px 700px at 50% -10%, #17233f 0%, #07090f 55%, #000 100%);
+    display:grid; place-items:center;
+    min-height:100vh; min-height:100dvh;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color:#fff; overflow:hidden;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .stage{padding:12px;display:grid;place-items:center}
+
+  /* ---------- REEL FRAME (9:16) ---------- */
+  .reel{
+    position:relative;
+    width: min(94vw, calc(92dvh * 9 / 16));
+    aspect-ratio: 9 / 16;
+    border-radius:28px;
+    overflow:hidden;
+    isolation:isolate;
+    cursor:pointer;
+    user-select:none;
+    touch-action:manipulation;
+    background:
+      radial-gradient(120% 70% at 50% 0%, #16203a 0%, #0a0d18 55%, #05060a 100%);
+    box-shadow:
+      0 40px 90px rgba(0,0,0,.75),
+      0 0 0 1px rgba(255,255,255,.09) inset,
+      0 0 60px rgba(90,140,255,.12);
+  }
+  .reel::after{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:25;
+    background:radial-gradient(110% 80% at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%);
+  }
+
+  /* ---------- PROGRESS BARS ---------- */
+  .progress{
+    position:absolute;top:0;left:0;right:0;z-index:35;
+    display:flex;gap:4px;padding:12px 14px;
+  }
+  .pbar{
+    flex:1;height:3px;border-radius:99px;
+    background:rgba(255,255,255,.18);overflow:hidden;cursor:pointer;
+  }
+  .pbar::before{
+    content:"";position:absolute;height:22px;width:100%;top:-10px;left:0;
+  }
+  .pfill{
+    height:100%;width:0;border-radius:99px;
+    background:#fff;
+    box-shadow:0 0 10px rgba(255,255,255,.9);
+  }
+
+  /* ---------- VOICE BUTTON ---------- */
+  .voice-btn{
+    position:absolute; top:34px; right:12px; z-index:38;
+    width:34px;height:34px;border-radius:50%;
+    display:grid;place-items:center;
+    font-size:14px;line-height:1;cursor:pointer;
+    border:1px solid rgba(255,255,255,.18);
+    background:rgba(12,16,28,.55);
+    -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+    color:#fff;transition:opacity .2s, transform .15s;
+  }
+  .voice-btn.off{opacity:.45}
+  .voice-btn:active{transform:scale(.9)}
+
+  /* ---------- VOICE HINT CHIP ---------- */
+  .voice-hint{
+    position:absolute;left:50%;bottom:52px;z-index:39;
+    transform:translateX(-50%) translateY(10px);
+    opacity:0;pointer-events:none;transition:.3s;
+    font-family:inherit;font-size:12.5px;font-weight:800;
+    padding:10px 16px;border-radius:99px;border:0;cursor:pointer;
+    background:rgba(255,255,255,.95);color:#0a0d18;
+    box-shadow:0 10px 30px rgba(0,0,0,.55);
+    white-space:nowrap;
+  }
+  .voice-hint.show{opacity:1;transform:translateX(-50%);pointer-events:auto}
+
+  /* ---------- SCENES ---------- */
+  .scenes{position:absolute;inset:0}
+  .scene{
+    position:absolute;inset:0;
+    padding:44px 22px 26px;
+    opacity:0;pointer-events:none;
+    transition:opacity .5s ease;
+  }
+  .scene.on{opacity:1}
+
+  .inner{
+    display:flex;flex-direction:column;
+    height:100%;gap:14px;
+  }
+  .inner.center{align-items:center;justify-content:center;text-align:center}
+
+  .eyebrow{
+    font-size:11px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;
+    color:rgba(255,255,255,.42);
+  }
+  h1.big{
+    font-size:clamp(25px, 7.6vw, 34px);
+    line-height:1.12;font-weight:850;letter-spacing:-.025em;
+  }
+  h2{
+    font-size:clamp(19px, 5.4vw, 25px);
+    line-height:1.25;font-weight:800;letter-spacing:-.015em;
+  }
+  .grad{
+    background:linear-gradient(90deg,var(--r),var(--o),var(--y),var(--g),var(--b),var(--v));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .cap{
+    font-size:13px;line-height:1.5;
+    color:rgba(255,255,255,.58);text-align:center;
+  }
+
+  .art{
+    flex:1;min-height:0;
+    display:grid;place-items:center;
+    width:100%;
+  }
+  .art-svg{width:100%;height:100%;display:block;overflow:visible}
+
+  /* ---------- ENTRY ANIMATIONS ---------- */
+  @keyframes fadeUp{ from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+  @keyframes slideIn{ from{opacity:0;transform:translateX(-26px)} to{opacity:1;transform:none} }
+  @keyframes draw{ to{ stroke-dashoffset:0 } }
+  @keyframes pulseRing{
+    0%{transform:scale(.85);opacity:.8}
+    100%{transform:scale(1.35);opacity:0}
+  }
+
+  .scene.on .anim{
+    animation:fadeUp .75s cubic-bezier(.16,1,.3,1) both;
+    animation-delay:var(--d, 0s);
+  }
+
+  .draw{stroke-dasharray:1000;stroke-dashoffset:1000}
+  .scene.on .draw{
+    animation:draw .9s cubic-bezier(.4,0,.2,1) forwards;
+    animation-delay:var(--d, .1s);
+  }
+
+  /* ---------- SCENE 1 : PRISM ---------- */
+  .beam{
+    stroke:#fff;stroke-width:4;stroke-linecap:round;
+    filter:drop-shadow(0 0 10px rgba(255,255,255,.95));
+  }
+  .prism-shape{
+    fill:rgba(140,190,255,.10);
+    stroke:rgba(175,215,255,.7);
+    stroke-width:2;stroke-linejoin:round;
+  }
+  .ray{
+    stroke:var(--c);color:var(--c);
+    stroke-width:3.6;stroke-linecap:round;
+    filter:drop-shadow(0 0 7px currentColor);
+  }
+
+  /* ---------- SCENE 2 : SPECTRUM LIST ---------- */
+  .spec-list{
+    list-style:none;width:100%;max-width:320px;
+    display:flex;flex-direction:column;gap:7px;
+  }
+  .spec-list li{
+    display:flex;align-items:center;gap:11px;
+    padding:7px 12px;border-radius:11px;
+    background:rgba(255,255,255,.045);
+    border:1px solid rgba(255,255,255,.08);
+    font-size:13.5px;
+  }
+  .scene.on .spec-list li{
+    animation:slideIn .55s cubic-bezier(.16,1,.3,1) both;
+    animation-delay:var(--d);
+  }
+  .spec-list i{
+    width:13px;height:13px;border-radius:4px;flex:none;
+    background:var(--c);
+    box-shadow:0 0 14px var(--c);
+  }
+  .spec-list b{font-weight:700}
+  .spec-list em{
+    margin-left:auto;font-style:normal;font-size:11.5px;
+    color:rgba(255,255,255,.45);font-variant-numeric:tabular-nums;
+  }
+
+  /* ---------- SCENE 3 : APPLE ---------- */
+  .ring{
+    fill:none;stroke:#ff2d55;stroke-width:1.5;
+    transform-origin:262px 172px;
+  }
+  .scene.on .ring{
+    animation:pulseRing 2.2s ease-out infinite;
+    animation-delay:1.2s;
+  }
+
+  /* ---------- SCENE 4 : TWO APPLES ---------- */
+  .lbl{font-size:11.5px;font-weight:700;letter-spacing:.06em}
+  .lbl-sub{font-size:12px;fill:rgba(255,255,255,.62)}
+
+  /* ---------- SCENE 5 : SKY PANELS ---------- */
+  .sky-wrap{width:100%;display:flex;flex-direction:column;gap:12px;height:100%}
+  .sky{
+    position:relative;flex:1;border-radius:16px;overflow:hidden;
+    border:1px solid rgba(255,255,255,.12);
+    min-height:0;
+  }
+  .sky.day{background:linear-gradient(180deg,#0a2a6b 0%,#2b7fe0 55%,#a8d8ff 100%)}
+  .sky.dusk{background:linear-gradient(180deg,#1b0a2e 0%,#8e1f1f 55%,#ff9a3c 100%)}
+  .sun{
+    position:absolute;left:50%;width:30px;height:30px;border-radius:50%;
+    background:#fff;transform:translateX(-50%);
+    box-shadow:0 0 34px 12px rgba(255,255,255,.85);
+  }
+  .day .sun{top:12px}
+  .dusk .sun{
+    bottom:-8px;background:#ffd08a;
+    box-shadow:0 0 46px 16px rgba(255,140,60,.95);
+  }
+  .fx{position:absolute;inset:0;width:100%;height:100%}
+  .fx line{vector-effect:non-scaling-stroke}
+  .tag{
+    position:absolute;left:12px;bottom:10px;z-index:3;
+    font-size:10.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+    color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.7);
+  }
+
+  /* ---------- SCENE 6 : OUTRO ---------- */
+  .rainbow-strip{
+    width:74%;height:9px;border-radius:99px;margin:6px 0;
+    background:linear-gradient(90deg,var(--r),var(--o),var(--y),var(--g),var(--b),var(--i),var(--v));
+    box-shadow:0 0 26px rgba(120,160,255,.5);
+  }
+
+  /* ---------- UI ---------- */
+  .replay{
+    position:absolute;left:50%;bottom:46px;z-index:40;
+    transform:translateX(-50%) translateY(12px);
+    opacity:0;pointer-events:none;
+    transition:opacity .35s, transform .35s;
+    font-family:inherit;font-size:14px;font-weight:800;
+    padding:12px 24px;border:0;border-radius:99px;
+    background:#fff;color:#080a12;cursor:pointer;
+    box-shadow:0 10px 36px rgba(255,255,255,.28);
+  }
+  .replay.show{opacity:1;transform:translateX(-50%);pointer-events:auto}
+
+  .pause-hint{
+    position:absolute;inset:0;z-index:20;display:grid;place-items:center;
+    font-size:34px;color:rgba(255,255,255,.85);
+    opacity:0;pointer-events:none;transition:opacity .25s;
+    text-shadow:0 4px 20px rgba(0,0,0,.8);
+  }
+  .reel.paused .pause-hint{opacity:1}
 </style>
 </head>
 <body>
-<div id="reel">
-<div id="hint">🔊 आवाज़ के लिए स्क्रीन को एक बार छूएँ</div>
-<div class="bar" id="bar"></div>
 
-<div class="sc" id="s0"><div class="big pop">🌿</div><div class="t">पत्तियाँ हरी क्यों होती हैं?</div><div class="cap">क्या आपने कभी सोचा है कि पत्तियाँ हरी ही क्यों होती हैं, लाल या नीली क्यों नहीं?</div></div>
+<div class="stage">
+  <div class="reel" id="reel">
 
-<div class="sc" id="s1"><div class="t">सूरज की रोशनी</div>
-<svg width="240" height="170" viewBox="0 0 240 170"><circle cx="120" cy="40" r="26" fill="#facc15"/><g stroke="#fde047" stroke-width="4"><line class="ray" x1="90" y1="80" x2="90" y2="110"/><line class="ray" x1="120" y1="80" x2="120" y2="110" style="animation-delay:.3s"/><line class="ray" x1="150" y1="80" x2="150" y2="110" style="animation-delay:.6s"/></g><ellipse cx="120" cy="150" rx="50" ry="14" fill="#15803d"/></svg>
-<div class="cap">सूरज की सफ़ेद रोशनी असल में कई रंगों से मिलकर बनी होती है।</div></div>
+    <!-- progress -->
+    <div class="progress" id="progress">
+      <div class="pbar"><div class="pfill"></div></div>
+      <div class="pbar"><div class="pfill"></div></div>
+      <div class="pbar"><div class="pfill"></div></div>
+      <div class="pbar"><div class="pfill"></div></div>
+      <div class="pbar"><div class="pfill"></div></div>
+      <div class="pbar"><div class="pfill"></div></div>
+    </div>
 
-<div class="sc" id="s2"><div class="t">क्लोरोफिल</div>
-<svg width="140" height="140" viewBox="0 0 100 100" class="sway"><path d="M50 95 C10 60 15 15 50 5 C85 15 90 60 50 95Z" fill="#22c55e"/><line x1="50" y1="95" x2="50" y2="15" stroke="#14532d" stroke-width="3"/></svg>
-<div class="cap">पत्तियों में क्लोरोफिल नाम का हरा पदार्थ होता है, जो सूरज की रोशनी पकड़ता है।</div></div>
+    <!-- voice toggle -->
+    <button class="voice-btn" id="voiceBtn" aria-label="Awaaz band karein">🔊</button>
 
-<div class="sc" id="s3"><div class="t">कौन सा रंग गया कहाँ?</div>
-<div class="sp"><div style="background:#ef4444"></div><div style="background:#f97316"></div><div style="background:#facc15"></div><div style="background:#22c55e;animation:none"></div><div style="background:#3b82f6"></div><div style="background:#8b5cf6"></div></div>
-<div class="cap">क्लोरोफिल लाल और नीली रोशनी सोख लेता है, लेकिन हरी रोशनी को लौटा देता है।</div></div>
+    <div class="scenes" id="scenes">
 
-<div class="sc" id="s4"><div class="big pop">👁️</div><div class="t">इसलिए हरा दिखता है!</div><div class="cap">वही लौटी हुई हरी रोशनी हमारी आँखों तक पहुँचती है, इसलिए पत्तियाँ हमें हरी दिखती हैं।</div></div>
+      <!-- ================= SCENE 1 ================= -->
+      <section class="scene">
+        <div class="inner center">
+          <p class="eyebrow anim">Science Reel · 01</p>
+          <h1 class="big anim" style="--d:.08s">
+            Rang alag-alag<br><span class="grad">kyun dikhte hain?</span>
+          </h1>
 
-<div class="sc" id="s5"><div class="big pop">🍂</div><div class="t">पतझड़ में क्या होता है?</div><div class="cap">पतझड़ में क्लोरोफिल कम हो जाता है, तब पीले और नारंगी रंग दिखने लगते हैं। फ़ॉलो करें!</div></div>
+          <div class="art">
+            <svg class="art-svg" viewBox="0 0 400 260">
+              <defs>
+                <radialGradient id="halo">
+                  <stop offset="0" stop-color="#7aa8ff" stop-opacity=".30"/>
+                  <stop offset="1" stop-color="#7aa8ff" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+
+              <circle cx="205" cy="118" r="145" fill="url(#halo)"/>
+
+              <line class="draw beam" style="--d:.15s" x1="8" y1="120" x2="168" y2="120"/>
+
+              <polygon class="prism-shape" points="205,50 262,158 148,158"/>
+
+              <g>
+                <line class="draw ray" style="--c:#ff2d55;--d:.55s" x1="244" y1="125" x2="396" y2="30"/>
+                <line class="draw ray" style="--c:#ff9500;--d:.63s" x1="244" y1="125" x2="396" y2="62"/>
+                <line class="draw ray" style="--c:#ffd60a;--d:.71s" x1="244" y1="125" x2="396" y2="94"/>
+                <line class="draw ray" style="--c:#34c759;--d:.79s" x1="244" y1="125" x2="396" y2="126"/>
+                <line class="draw ray" style="--c:#0a84ff;--d:.87s" x1="244" y1="125" x2="396" y2="158"/>
+                <line class="draw ray" style="--c:#5e5ce6;--d:.95s" x1="244" y1="125" x2="396" y2="190"/>
+                <line class="draw ray" style="--c:#bf5af2;--d:1.03s" x1="244" y1="125" x2="396" y2="222"/>
+              </g>
+            </svg>
+          </div>
+
+          <p class="cap anim" style="--d:.35s">Chalo 40 second mein science samajh lete hain 👇</p>
+        </div>
+      </section>
+
+      <!-- ================= SCENE 2 ================= -->
+      <section class="scene">
+        <div class="inner">
+          <p class="eyebrow anim">Step 01</p>
+          <h2 class="anim" style="--d:.08s">
+            Safed roshni <span class="grad">7 rangon</span> ka mixture hai
+          </h2>
+
+          <div class="art">
+            <ul class="spec-list">
+              <li style="--c:#ff2d55;--d:.30s"><i></i><b>Laal</b><em>700 nm</em></li>
+              <li style="--c:#ff9500;--d:.38s"><i></i><b>Narangi</b><em>620 nm</em></li>
+              <li style="--c:#ffd60a;--d:.46s"><i></i><b>Peela</b><em>580 nm</em></li>
+              <li style="--c:#34c759;--d:.54s"><i></i><b>Hara</b><em>530 nm</em></li>
+              <li style="--c:#0a84ff;--d:.62s"><i></i><b>Neela</b><em>470 nm</em></li>
+              <li style="--c:#5e5ce6;--d:.70s"><i></i><b>Jamuni</b><em>440 nm</em></li>
+              <li style="--c:#bf5af2;--d:.78s"><i></i><b>Baingani</b><em>410 nm</em></li>
+            </ul>
+          </div>
+
+          <p class="cap anim" style="--d:.9s">Har rang ki apni wavelength — 700nm se 400nm tak</p>
+        </div>
+      </section>
+
+      <!-- ================= SCENE 3 ================= -->
+      <section class="scene">
+        <div class="inner">
+          <p class="eyebrow anim">Step 02</p>
+          <h2 class="anim" style="--d:.08s">
+            Object ka rang = <span class="grad">jo reflect hota hai</span>
+          </h2>
+
+          <div class="art">
+            <svg class="art-svg" viewBox="0 0 400 300">
+              <defs>
+                <radialGradient id="appleG" cx="34%" cy="28%">
+                  <stop offset="0" stop-color="#ff7a7a"/>
+                  <stop offset=".5" stop-color="#e01b3c"/>
+                  <stop offset="1" stop-color="#7d081e"/>
+                </radialGradient>
+                <radialGradient id="appleGlow">
+                  <stop offset="0" stop-color="#ff2d55" stop-opacity=".45"/>
+                  <stop offset="1" stop-color="#ff2d55" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+
+              <g fill="none" stroke-width="3.4" stroke-linecap="round">
+                <line class="draw" style="--d:.15s" stroke="#bf5af2" x1="14" y1="48"  x2="196" y2="140"/>
+                <line class="draw" style="--d:.22s" stroke="#0a84ff" x1="14" y1="88"  x2="196" y2="150"/>
+                <line class="draw" style="--d:.29s" stroke="#34c759" x1="14" y1="128" x2="196" y2="160"/>
+                <line class="draw" style="--d:.36s" stroke="#ffd60a" x1="14" y1="168" x2="196" y2="170"/>
+                <line class="draw" style="--d:.43s" stroke="#ff9500" x1="14" y1="208" x2="196" y2="180"/>
+                <line class="draw" style="--d:.50s" stroke="#ff2d55" x1="14" y1="248" x2="196" y2="190"/>
+              </g>
+
+              <circle cx="262" cy="172" r="100" fill="url(#appleGlow)"/>
+
+              <circle class="ring" cx="262" cy="172" r="62"/>
+              <circle cx="262" cy="172" r="60" fill="url(#appleG)"/>
+              <path d="M262 112 q16 -20 38 -13 q-7 22 -38 13" fill="#2fa84f"/>
+              <line x1="262" y1="114" x2="256" y2="94" stroke="#7a4a20" stroke-width="4" stroke-linecap="round"/>
+
+              <line class="draw" style="--d:.95s" x1="322" y1="150" x2="378" y2="105"
+                    stroke="#ff2d55" stroke-width="4.5" stroke-linecap="round"/>
+              <polygon points="388,96 379,110 369,99" fill="#ff2d55"/>
+            </svg>
+          </div>
+
+          <p class="cap anim" style="--d:.6s">Seb baaki 6 rang nigal leta hai — sirf laal wapas bhejta hai</p>
+        </div>
+      </section>
+
+      <!-- ================= SCENE 4 ================= -->
+      <section class="scene">
+        <div class="inner">
+          <p class="eyebrow anim">Step 03</p>
+          <h2 class="anim" style="--d:.08s">
+            Roshni badlo — <span class="grad">rang badal jaayega</span>
+          </h2>
+
+          <div class="art">
+            <svg class="art-svg" viewBox="0 0 400 270">
+              <defs>
+                <radialGradient id="redA" cx="34%" cy="28%">
+                  <stop offset="0" stop-color="#ff7a7a"/>
+                  <stop offset=".55" stop-color="#e01b3c"/>
+                  <stop offset="1" stop-color="#7d081e"/>
+                </radialGradient>
+                <radialGradient id="darkA" cx="34%" cy="28%">
+                  <stop offset="0" stop-color="#2a2a2a"/>
+                  <stop offset="1" stop-color="#0a0a0a"/>
+                </radialGradient>
+              </defs>
+
+              <text class="lbl" x="105" y="22" text-anchor="middle" fill="rgba(255,255,255,.62)">SAFED ROSHNI</text>
+              <g stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity=".92">
+                <line class="draw" style="--d:.15s" x1="75" y1="40"  x2="88"  y2="96"/>
+                <line class="draw" style="--d:.20s" x1="105" y1="36" x2="105" y2="96"/>
+                <line class="draw" style="--d:.25s" x1="135" y1="40" x2="122" y2="96"/>
+              </g>
+              <circle cx="105" cy="145" r="46" fill="url(#redA)"/>
+              <text class="lbl-sub" x="105" y="232" text-anchor="middle">Laal dikhta hai</text>
+
+              <line x1="200" y1="26" x2="200" y2="212" stroke="rgba(255,255,255,.12)" stroke-width="1.5" stroke-dasharray="5 6"/>
+
+              <text class="lbl" x="295" y="22" text-anchor="middle" fill="#7CFF9E">HARI ROSHNI</text>
+              <g stroke="#34c759" stroke-width="3" stroke-linecap="round" opacity=".95">
+                <line class="draw" style="--d:.35s" x1="265" y1="40"  x2="278" y2="96"/>
+                <line class="draw" style="--d:.40s" x1="295" y1="36" x2="295" y2="96"/>
+                <line class="draw" style="--d:.45s" x1="325" y1="40" x2="312" y2="96"/>
+              </g>
+              <circle cx="295" cy="145" r="46" fill="url(#darkA)" stroke="rgba(255,255,255,.16)" stroke-width="1.5"/>
+              <text class="lbl-sub" x="295" y="232" text-anchor="middle">Kaala dikhta hai</text>
+            </svg>
+          </div>
+
+          <p class="cap anim" style="--d:.55s">Hari roshni mein laal seb ke paas reflect karne ko kuch nahi 🖤</p>
+        </div>
+      </section>
+
+      <!-- ================= SCENE 5 ================= -->
+      <section class="scene">
+        <div class="inner">
+          <p class="eyebrow anim">Step 04</p>
+          <h2 class="anim" style="--d:.08s">
+            Aakash neela, shaam <span class="grad">laal</span> — kyun?
+          </h2>
+
+          <div class="art">
+            <div class="sky-wrap">
+
+              <div class="sky day">
+                <div class="sun"></div>
+                <svg class="fx" viewBox="0 0 300 120" preserveAspectRatio="none">
+                  <g stroke="#cfe9ff" stroke-width="2" stroke-linecap="round" opacity=".85">
+                    <line class="draw" style="--d:.25s" x1="150" y1="34" x2="80"  y2="88"/>
+                    <line class="draw" style="--d:.30s" x1="150" y1="34" x2="220" y2="88"/>
+                    <line class="draw" style="--d:.35s" x1="150" y1="34" x2="150" y2="102"/>
+                    <line class="draw" style="--d:.40s" x1="150" y1="34" x2="46"  y2="48"/>
+                    <line class="draw" style="--d:.45s" x1="150" y1="34" x2="254" y2="48"/>
+                  </g>
+                </svg>
+                <span class="tag">Din · Neela bikharta hai</span>
+              </div>
+
+              <div class="sky dusk">
+                <div class="sun"></div>
+                <svg class="fx" viewBox="0 0 300 120" preserveAspectRatio="none">
+                  <g stroke="#ffb066" stroke-width="2.4" stroke-linecap="round" opacity=".95">
+                    <line class="draw" style="--d:.55s" x1="24" y1="96" x2="276" y2="96"/>
+                  </g>
+                  <g stroke="#ff5a3c" stroke-width="2.4" stroke-linecap="round" opacity=".95">
+                    <line class="draw" style="--d:.68s" x1="60" y1="107" x2="240" y2="107"/>
+                  </g>
+                </svg>
+                <span class="tag">Shaam · Lamba raasta, laal</span>
+              </div>
+
+            </div>
+          </div>
+
+          <p class="cap anim" style="--d:.8s">Chhoti wavelength (neela) zyada scatter hoti hai — isliye aakash neela</p>
+        </div>
+      </section>
+
+      <!-- ================= SCENE 6 ================= -->
+      <section class="scene">
+        <div class="inner center">
+          <p class="eyebrow anim">Conclusion</p>
+          <h2 class="big anim" style="--d:.10s">
+            Rang cheezon mein nahi,<br><span class="grad">roshni mein</span> hota hai.
+          </h2>
+          <div class="rainbow-strip anim" style="--d:.30s"></div>
+          <p class="cap anim" style="--d:.45s">
+            Object jo rang reflect karta hai — wahi tumhari aankh tak pahunchta hai.
+          </p>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="pause-hint">❚❚</div>
+    <button class="voice-hint" id="voiceHint">🔊 Awaaz chalu karein</button>
+    <button class="replay" id="replay">↻ Dobara dekho</button>
+  </div>
 </div>
+
 <script>
-const S=[
-[4,"क्या आपने कभी सोचा है कि पत्तियाँ हरी ही क्यों होती हैं, लाल या नीली क्यों नहीं?"],
-[4,"सूरज की सफ़ेद रोशनी असल में कई रंगों से मिलकर बनी होती है।"],
-[5,"पत्तियों में क्लोरोफिल नाम का हरा पदार्थ होता है, जो सूरज की रोशनी पकड़कर पौधे के लिए भोजन बनाता है।"],
-[5,"क्लोरोफिल लाल और नीली रोशनी को सोख लेता है, लेकिन हरी रोशनी को वापस लौटा देता है।"],
-[5,"वही लौटी हुई हरी रोशनी हमारी आँखों तक पहुँचती है, इसलिए पत्तियाँ हमें हरी दिखती हैं।"],
-[6,"पतझड़ में क्लोरोफिल कम हो जाता है, तब पीले और नारंगी रंग दिखने लगते हैं। ऐसी ही बातों के लिए फ़ॉलो करें।"]
-];
-const total=S.reduce((a,s)=>a+s[0]+1.5,0),bar=document.getElementById('bar'),hint=document.getElementById('hint');
-let cur=0,started=false,spoke=false;
-function say(t){
- try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='hi-IN';u.rate=.95;
- u.onstart=()=>{spoke=true;hint.style.display='none'};speechSynthesis.speak(u);}catch(e){}
-}
-function play(i){
- if(i>=S.length){setTimeout(()=>{started=false;start()},1500);return}
- cur=i;
- document.querySelectorAll('.sc').forEach(e=>e.classList.remove('on'));
- document.getElementById('s'+i).classList.add('on');
- say(S[i][1]);
- if(i===0){setTimeout(()=>{if(!spoke)hint.style.display='block'},1200)}
- setTimeout(()=>play(i+1),S[i][0]*1000+1500);
-}
-function start(){
- bar.style.transition='none';bar.style.width='0';
- setTimeout(()=>{bar.style.transition='width '+total+'s linear';bar.style.width='100%'},50);
- play(0);
-}
-addEventListener('pointerdown',()=>{if(!spoke){say(S[cur][1])}},{passive:true});
-addEventListener('load',()=>setTimeout(start,1000));
+(function(){
+  const reel      = document.getElementById('reel');
+  const scenes    = Array.from(reel.querySelectorAll('.scene'));
+  const bars      = Array.from(reel.querySelectorAll('.pfill'));
+  const replayBtn = document.getElementById('replay');
+  const voiceBtn  = document.getElementById('voiceBtn');
+  const voiceHint = document.getElementById('voiceHint');
+
+  /* ---------- TIMELINE ---------- */
+  const DUR   = [6500, 7500, 8000, 7500, 9000, 6500];
+  const TOTAL = DUR.reduce((a, b) => a + b, 0);
+
+  let elapsed = 0;
+  let last    = performance.now();
+  let playing = true;
+  let curIdx  = -1;
+
+  /* ============================================================
+     TTS VOICE-OVER
+     ============================================================ */
+  const NARRATION = [
+    "Rang alag-alag kyun dikhte hain? Aaiye science samajhte hain.",
+    "Safed roshni saat rangon ka mixture hai. Har rang ki apni wavelength hoti hai.",
+    "Kisi cheez ka rang wahi hota hai jo wo reflect karti hai. Seb sirf laal rang wapas bhejta hai.",
+    "Roshni badlo to rang badal jaata hai. Hari roshni mein laal seb kaala dikhta hai.",
+    "Aakash neela kyun? Chhoti wavelength zyada scatter hoti hai. Shaam ko raasta lamba hota hai, isliye laal.",
+    "Rang cheezon mein nahi, roshni mein hota hai."
+  ];
+
+  const synth = window.speechSynthesis || null;
+  let hindiVoice   = null;
+  let voiceOn      = true;
+  let voiceBlocked = false;   // browser ne autoplay block kiya
+  let spokeOnce    = false;   // kabhi awaaz chali?
+  let speakToken   = 0;       // stale timeouts rokne ke liye
+
+  function pickHindiVoice(){
+    if(!synth) return;
+    const vs = synth.getVoices() || [];
+    hindiVoice =
+      vs.find(v => /^hi[-_]IN$/i.test(v.lang)) ||
+      vs.find(v => /^hi/i.test(v.lang)) ||
+      vs.find(v => /india/i.test(v.name)) ||
+      null;
+  }
+  if(synth){
+    pickHindiVoice();
+    synth.onvoiceschanged = pickHindiVoice;
+  }
+
+  function updateVoiceBtn(){
+    voiceBtn.textContent = voiceOn ? '🔊' : '🔇';
+    voiceBtn.classList.toggle('off', !voiceOn);
+    voiceBtn.setAttribute('aria-label', voiceOn ? 'Awaaz band karein' : 'Awaaz chalu karein');
+  }
+  function showHint(){ voiceHint.classList.add('show'); }
+  function hideHint(){ voiceHint.classList.remove('show'); }
+
+  function stopVoice(){
+    speakToken++;
+    if(synth) synth.cancel();
+  }
+
+  function speakScene(idx){
+    if(!synth || !voiceOn) return;
+    const text = NARRATION[idx];
+    if(!text) return;
+
+    const myToken = ++speakToken;
+    synth.cancel();                       // purani line kaato
+
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang   = 'hi-IN';
+    u.rate   = 1;      // 0.8 = dheema, 1.2 = tez
+    u.pitch  = 1;
+    u.volume = 1;
+    if(hindiVoice) u.voice = hindiVoice;
+
+    u.onstart = () => { spokeOnce = true; voiceBlocked = false; hideHint(); };
+    u.onerror = (e) => {
+      if(e.error === 'not-allowed' || e.error === 'NotAllowedError'){
+        voiceBlocked = true;
+        showHint();
+      }
+    };
+
+    /* Chrome bug workaround: cancel() ke turant baad speak() fail ho jaata hai */
+    setTimeout(() => {
+      if(myToken !== speakToken || !voiceOn) return;
+      if(synth.paused) synth.resume();
+      synth.speak(u);
+    }, 80);
+  }
+
+  /* agar ~1.5s tak kuch bola hi nahi => autoplay blocked maan lo */
+  setTimeout(() => { if(!spokeOnce && voiceOn) showHint(); }, 1500);
+
+  /* ============================================================
+     RENDER
+     ============================================================ */
+  function render(e){
+    if (e > TOTAL) e = TOTAL;
+
+    let acc = 0, idx = 0;
+    for (; idx < DUR.length; idx++){
+      if (e < acc + DUR[idx]) break;
+      acc += DUR[idx];
+    }
+    if (idx >= DUR.length) idx = DUR.length - 1;
+
+    const p = Math.min(1, Math.max(0, (e - acc) / DUR[idx]));
+
+    if (idx !== curIdx){
+      curIdx = idx;
+      scenes.forEach((s, i) => s.classList.toggle('on', i === idx));
+      speakScene(idx);                     // <-- scene badla => naya voice line
+    }
+
+    bars.forEach((b, i) => {
+      b.style.width = i < idx ? '100%' : (i === idx ? (p * 100) + '%' : '0%');
+    });
+  }
+
+  /* ---------- MAIN LOOP ---------- */
+  function frame(now){
+    const dt = now - last;
+    last = now;
+
+    if (playing && elapsed < TOTAL){
+      elapsed = Math.min(TOTAL, elapsed + dt);
+      render(elapsed);
+
+      if (elapsed >= TOTAL){
+        playing = false;
+        replayBtn.classList.add('show');
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------- CONTROLS ---------- */
+  function resetScenes(){
+    scenes.forEach(s => s.classList.remove('on'));
+    void reel.offsetWidth;   // reflow => CSS animations dobara chalengi
+    curIdx = -1;
+  }
+
+  function restart(){
+    replayBtn.classList.remove('show');
+    reel.classList.remove('paused');
+    stopVoice();
+    resetScenes();
+    elapsed = 0;
+    playing = true;
+    render(0);
+  }
+
+  function seekTo(i){
+    let acc = 0;
+    for (let k = 0; k < i; k++) acc += DUR[k];
+    replayBtn.classList.remove('show');
+    reel.classList.remove('paused');
+    stopVoice();
+    resetScenes();
+    elapsed = acc + 1;
+    playing = true;
+    render(elapsed);
+  }
+
+  function togglePlay(){
+    if (elapsed >= TOTAL) { restart(); return; }
+    playing = !playing;
+    reel.classList.toggle('paused', !playing);
+    if(synth){
+      if(!playing) synth.pause();
+      else         synth.resume();
+    }
+  }
+
+  /* reel tap => pause / play (+ voice unlock try) */
+  reel.addEventListener('click', function(e){
+    if (e.target.closest('.pbar') || e.target.closest('.replay') ||
+        e.target.closest('.voice-btn') || e.target.closest('.voice-hint')) return;
+
+    if (!spokeOnce && voiceOn) speakScene(curIdx);   // gesture mil gaya, retry
+    togglePlay();
+  });
+
+  /* progress bar tap => us scene par jump */
+  bars.forEach((b, i) => {
+    b.parentElement.addEventListener('click', function(e){
+      e.stopPropagation();
+      seekTo(i);
+    });
+  });
+
+  /* voice on/off */
+  voiceBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    voiceOn = !voiceOn;
+    updateVoiceBtn();
+    if (voiceOn){
+      if (synth && synth.paused) synth.resume();
+      speakScene(curIdx);        // user gesture hai => block nahi hoga
+    } else {
+      stopVoice();
+      hideHint();
+    }
+  });
+
+  /* hint chip = unlock button */
+  voiceHint.addEventListener('click', function(e){
+    e.stopPropagation();
+    voiceOn = true;
+    updateVoiceBtn();
+    speakScene(curIdx);
+  });
+
+  replayBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    restart();
+  });
+
+  /* keyboard */
+  window.addEventListener('keydown', function(e){
+    if (e.code === 'Space'){ e.preventDefault(); togglePlay(); }
+    if (e.code === 'ArrowRight'){ e.preventDefault(); seekTo(Math.min(DUR.length - 1, curIdx + 1)); }
+    if (e.code === 'ArrowLeft'){  e.preventDefault(); seekTo(Math.max(0, curIdx - 1)); }
+    if (e.code === 'KeyR'){ restart(); }
+    if (e.code === 'KeyM'){ voiceBtn.click(); }
+  });
+
+  window.addEventListener('beforeunload', stopVoice);
+
+  /* ---------- START ---------- */
+  updateVoiceBtn();
+  render(0);
+  requestAnimationFrame(function(t){ last = t; requestAnimationFrame(frame); });
+})();
 </script>
 </body>
 </html>

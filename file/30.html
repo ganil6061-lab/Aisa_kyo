@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>पत्तियाँ हरी क्यों होती हैं?</title>
+<style>
+:root{color-scheme:dark;--ac:#a3e635;--tx:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{height:100%;margin:0;background:#000;font-family:'Noto Sans Devanagari',Arial,sans-serif}
+body{display:flex;justify-content:center;align-items:center}
+#reel{position:relative;width:min(360px,100%);aspect-ratio:9/16;max-height:100%;background:linear-gradient(170deg,#052e16,#166534);overflow:hidden;border-radius:16px;color:var(--tx)}
+.sc{position:absolute;inset:0;opacity:0;transition:opacity .5s;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+.sc.on{opacity:1}
+.t{font-size:27px;font-weight:bold;color:var(--ac);margin:10px 0}
+.cap{position:absolute;bottom:48px;left:14px;right:14px;font-size:18px;line-height:1.4;background:rgba(0,0,0,.55);padding:10px;border-radius:10px}
+.big{font-size:64px}
+.pop{animation:pop .7s ease}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.sway{transform-origin:50% 100%;animation:sway 2.5s ease-in-out infinite}
+@keyframes sway{50%{transform:rotate(8deg)}}
+.ray{animation:ray 1.2s linear infinite}
+@keyframes ray{from{transform:translateY(-20px);opacity:0}50%{opacity:1}to{transform:translateY(40px);opacity:0}}
+.sp{display:flex;gap:6px;margin:14px 0}
+.sp div{width:34px;height:110px;border-radius:6px;animation:fade 4s forwards}
+@keyframes fade{0%{opacity:1}100%{opacity:.15}}
+.bar{position:absolute;top:0;left:0;height:5px;background:var(--ac);width:0;z-index:5}
+#hint{position:absolute;top:14px;left:0;right:0;text-align:center;font-size:14px;background:#000a;padding:6px;z-index:6;display:none}
+</style>
+</head>
+<body>
+<div id="reel">
+<div id="hint">🔊 आवाज़ के लिए स्क्रीन को एक बार छूएँ</div>
+<div class="bar" id="bar"></div>
+
+<div class="sc" id="s0"><div class="big pop">🌿</div><div class="t">पत्तियाँ हरी क्यों होती हैं?</div><div class="cap">क्या आपने कभी सोचा है कि पत्तियाँ हरी ही क्यों होती हैं, लाल या नीली क्यों नहीं?</div></div>
+
+<div class="sc" id="s1"><div class="t">सूरज की रोशनी</div>
+<svg width="240" height="170" viewBox="0 0 240 170"><circle cx="120" cy="40" r="26" fill="#facc15"/><g stroke="#fde047" stroke-width="4"><line class="ray" x1="90" y1="80" x2="90" y2="110"/><line class="ray" x1="120" y1="80" x2="120" y2="110" style="animation-delay:.3s"/><line class="ray" x1="150" y1="80" x2="150" y2="110" style="animation-delay:.6s"/></g><ellipse cx="120" cy="150" rx="50" ry="14" fill="#15803d"/></svg>
+<div class="cap">सूरज की सफ़ेद रोशनी असल में कई रंगों से मिलकर बनी होती है।</div></div>
+
+<div class="sc" id="s2"><div class="t">क्लोरोफिल</div>
+<svg width="140" height="140" viewBox="0 0 100 100" class="sway"><path d="M50 95 C10 60 15 15 50 5 C85 15 90 60 50 95Z" fill="#22c55e"/><line x1="50" y1="95" x2="50" y2="15" stroke="#14532d" stroke-width="3"/></svg>
+<div class="cap">पत्तियों में क्लोरोफिल नाम का हरा पदार्थ होता है, जो सूरज की रोशनी पकड़ता है।</div></div>
+
+<div class="sc" id="s3"><div class="t">कौन सा रंग गया कहाँ?</div>
+<div class="sp"><div style="background:#ef4444"></div><div style="background:#f97316"></div><div style="background:#facc15"></div><div style="background:#22c55e;animation:none"></div><div style="background:#3b82f6"></div><div style="background:#8b5cf6"></div></div>
+<div class="cap">क्लोरोफिल लाल और नीली रोशनी सोख लेता है, लेकिन हरी रोशनी को लौटा देता है।</div></div>
+
+<div class="sc" id="s4"><div class="big pop">👁️</div><div class="t">इसलिए हरा दिखता है!</div><div class="cap">वही लौटी हुई हरी रोशनी हमारी आँखों तक पहुँचती है, इसलिए पत्तियाँ हमें हरी दिखती हैं।</div></div>
+
+<div class="sc" id="s5"><div class="big pop">🍂</div><div class="t">पतझड़ में क्या होता है?</div><div class="cap">पतझड़ में क्लोरोफिल कम हो जाता है, तब पीले और नारंगी रंग दिखने लगते हैं। फ़ॉलो करें!</div></div>
+</div>
+<script>
+const S=[
+[4,"क्या आपने कभी सोचा है कि पत्तियाँ हरी ही क्यों होती हैं, लाल या नीली क्यों नहीं?"],
+[4,"सूरज की सफ़ेद रोशनी असल में कई रंगों से मिलकर बनी होती है।"],
+[5,"पत्तियों में क्लोरोफिल नाम का हरा पदार्थ होता है, जो सूरज की रोशनी पकड़कर पौधे के लिए भोजन बनाता है।"],
+[5,"क्लोरोफिल लाल और नीली रोशनी को सोख लेता है, लेकिन हरी रोशनी को वापस लौटा देता है।"],
+[5,"वही लौटी हुई हरी रोशनी हमारी आँखों तक पहुँचती है, इसलिए पत्तियाँ हमें हरी दिखती हैं।"],
+[6,"पतझड़ में क्लोरोफिल कम हो जाता है, तब पीले और नारंगी रंग दिखने लगते हैं। ऐसी ही बातों के लिए फ़ॉलो करें।"]
+];
+const total=S.reduce((a,s)=>a+s[0]+1.5,0),bar=document.getElementById('bar'),hint=document.getElementById('hint');
+let cur=0,started=false,spoke=false;
+function say(t){
+ try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='hi-IN';u.rate=.95;
+ u.onstart=()=>{spoke=true;hint.style.display='none'};speechSynthesis.speak(u);}catch(e){}
+}
+function play(i){
+ if(i>=S.length){setTimeout(()=>{started=false;start()},1500);return}
+ cur=i;
+ document.querySelectorAll('.sc').forEach(e=>e.classList.remove('on'));
+ document.getElementById('s'+i).classList.add('on');
+ say(S[i][1]);
+ if(i===0){setTimeout(()=>{if(!spoke)hint.style.display='block'},1200)}
+ setTimeout(()=>play(i+1),S[i][0]*1000+1500);
+}
+function start(){
+ bar.style.transition='none';bar.style.width='0';
+ setTimeout(()=>{bar.style.transition='width '+total+'s linear';bar.style.width='100%'},50);
+ play(0);
+}
+addEventListener('pointerdown',()=>{if(!spoke){say(S[cur][1])}},{passive:true});
+addEventListener('load',()=>setTimeout(start,1000));
+</script>
+</body>
+</html>
